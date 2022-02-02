@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Birds of a Feather</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="confirm_name">Confirm name:</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="cont">CONTINUE</string>
 </resources>

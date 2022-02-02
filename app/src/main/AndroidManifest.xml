@@ -10,6 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
         <activity
+            android:name=".UserName"
+            android:exported="false" />
+        <activity
+            android:name=".StartSearch"
+            android:exported="false" />
+        <activity
+            android:name=".StopSearch"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
