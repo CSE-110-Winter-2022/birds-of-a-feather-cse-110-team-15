@@ -80,14 +80,39 @@ public class CreateStudentUnitTest {
     }
 
     @Test
+    public void editCoursesTaken() {
+       // add duplicate
+       String oldCourseTaken = "CSE 30 Fall 2020";
+       assertFalse(student2.addCourse(oldCourseTaken));
+
+       // add new course
+       String newCourseTaken = "CSE 101 Spring 2021";
+       assertTrue(student2.addCourse(newCourseTaken));
+       assertTrue(student2.getCourses().contains(newCourseTaken));
+
+       // remove class that doesn't exist in list
+       String newCourse = "CSE 131 Spring 2020";
+       assertFalse(student2.removeCourse(newCourse));
+       assertFalse(student2.getCourses().contains(newCourse));
+
+       // remove class on empty list
+       assertFalse(student1.removeCourse(newCourse));
+       assertEquals(student1.getCourses().size(), 0);
+
+       // remove class that exists
+       assertTrue(student2.removeCourse(oldCourseTaken));
+       assertFalse(student2.getCourses().contains(oldCourseTaken));
+    }
+
+    @Test
     public void testUniqueStudents() {
-        List<String> commonCourses = student2.getCommonClasses(student3);
+        List<String> commonCourses = student2.getCommonCourses(student3);
         assertEquals("Supposed to be empty", commonCourses.size(), 0);
     }
 
     @Test
     public void testCommonStudents() {
-        List<String> commonCourses = student2.getCommonClasses(student4);
+        List<String> commonCourses = student2.getCommonCourses(student4);
         List<String> correctRes = new ArrayList<>(Arrays.asList(new String[] {"CSE 30 Fall 2020", "CSE 100 Winter 2021"}));
         for (int i = 0; i < correctRes.size(); i++) {
             assertEquals("wrong classes", commonCourses.get(i), correctRes.get(i));

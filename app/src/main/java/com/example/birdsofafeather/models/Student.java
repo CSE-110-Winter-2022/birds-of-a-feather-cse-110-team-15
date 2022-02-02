@@ -76,6 +76,29 @@ public class Student {
     }
 
     /**
+     * Add one course to list of courses taken
+     * @param courseQuery that will be added
+     * @return True if successful add, False otherwise
+     */
+    public boolean addCourse(String courseQuery) {
+        // check for duplicate
+        if (courses.contains(courseQuery)) {
+            return false;
+        }
+        courses.add(courseQuery);
+        return true;
+    }
+
+    /**
+     * Delete a course from the list of courses taken
+     * @param courseQuery that will be deleted from list 
+     * @return True if successful remove, False otherwise
+     */
+    public boolean removeCourse(String courseQuery) {
+        return courses.remove(courseQuery);
+    }
+
+    /**
      * @return student first name
      */
     public String getFirstName() {
@@ -124,18 +147,18 @@ public class Student {
      * @param otherStudent the other student being compared with
      * @return List of classes in common between students
      */
-    public List<String> getCommonClasses(Student otherStudent) {
+    public List<String> getCommonCourses(Student otherStudent) {
         List<String> otherStudentCourses = otherStudent.getCourses();
         Set<String> curStudentSet = new HashSet<>(courses);
         // store common classes
-        List<String> commonClasses = new ArrayList<>();
+        List<String> commonCourses = new ArrayList<>();
 
         // go through hashset to look for common classes
         for (String course : otherStudentCourses) {
             if (curStudentSet.contains(course))
-                commonClasses.add(course);
+                commonCourses.add(course);
         }
 
-        return commonClasses;
+        return commonCourses;
     }
 }
