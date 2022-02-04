@@ -13,7 +13,7 @@ public class Student {
     @ColumnInfo(name = "name")
     public String name;
 
-    @ColumnInfo(name = "headshotURL")
+    @ColumnInfo(name = "headshot_url")
     public String headshotURL;
 
     public Student(int studentId, String name, String headshotURL) {
