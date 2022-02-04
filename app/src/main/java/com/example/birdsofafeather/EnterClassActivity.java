@@ -19,6 +19,9 @@ public class EnterClassActivity extends AppCompatActivity {
     ArrayList<String> enteredCourseList=new ArrayList<String>();
     CourseViewAdapter listAdapter;
 
+    String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
+    String[] years = {"2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,15 +31,13 @@ public class EnterClassActivity extends AppCompatActivity {
 
         // dropdown for quarter
         quarterSpinner = (Spinner) findViewById(R.id.quarter_spinner);
-        ArrayAdapter<CharSequence> quarterAdapter = ArrayAdapter.createFromResource(this,
-                R.array.quarter_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> quarterAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, quarters);
         quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         quarterSpinner.setAdapter(quarterAdapter);
 
         // dropdown for year
         yearSpinner = (Spinner) findViewById(R.id.year_spinner);
-        ArrayAdapter<CharSequence> yearAdapter = ArrayAdapter.createFromResource(this,
-                R.array.year_array, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> yearAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, years);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
 
@@ -71,6 +72,7 @@ public class EnterClassActivity extends AppCompatActivity {
             return;
         }
 
+        // update course list
         enteredCourseList.add(courseEntry);
         listAdapter.notifyDataSetChanged();
     }

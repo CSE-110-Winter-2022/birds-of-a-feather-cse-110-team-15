@@ -1,2 +1,5 @@
-package com.example.birdsofafeather;public class Utilities {
+package com.example.birdsofafeather;
+
+public class Utilities {
+
 }
