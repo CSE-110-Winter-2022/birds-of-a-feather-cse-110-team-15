@@ -15,4 +15,10 @@ public class Student {
 
     @ColumnInfo(name = "headshotURL")
     public String headshotURL;
+
+    public Student(int studentId, String name, String headshotURL) {
+        this.studentId = studentId;
+        this.name = name;
+        this.headshotURL = headshotURL;
+    }
 }

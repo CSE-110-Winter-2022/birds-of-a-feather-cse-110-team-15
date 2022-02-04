@@ -7,7 +7,7 @@ import androidx.room.Transaction;
 import java.util.List;
 
 @Dao
-public interface StudentWithNotesDao {
+public interface StudentWithCoursesDao {
    @Transaction
    @Query("SELECT * FROM students")
    List<StudentWithCourses> getAll();

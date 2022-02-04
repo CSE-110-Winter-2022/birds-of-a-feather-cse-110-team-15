@@ -21,6 +21,6 @@ public abstract class AppDatabase extends RoomDatabase {
         return singletonInstance;
     }
 
-//    public abstract StudentWithCoursesDao studentWithCoursesDao();
-//    public abstract CoursesDao coursesDao();
+    public abstract StudentWithCoursesDao studentWithCoursesDao();
+    public abstract CourseDao coursesDao();
 }
