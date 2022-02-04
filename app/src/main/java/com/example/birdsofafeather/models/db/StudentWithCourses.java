@@ -38,12 +38,8 @@ public class StudentWithCourses implements IStudent {
     }
 
     public List<String> getCommonCourses(StudentWithCourses otherStudent) {
-        Set<String> curStudentCourseSet = new HashSet<>(this.courses);
-        List<String> commonCourses = new ArrayList<>();
-        for (String course : otherStudent.courses) {
-            if (curStudentCourseSet.contains(course))
-                commonCourses.add(course);
-        }
+        List<String> commonCourses = new ArrayList<>(this.courses);
+        commonCourses.retainAll(otherStudent.getCourses());
         return commonCourses;
     }
 }
