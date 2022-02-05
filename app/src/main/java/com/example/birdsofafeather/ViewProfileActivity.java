@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ViewProfile extends AppCompatActivity {
+public class ViewProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,9 +30,9 @@ public class ViewProfile extends AppCompatActivity {
         setContentView(R.layout.activity_view_profile);
 
         // Retrieve Student from database to put on ProfileView
-        int test_id = 1;
+        int test_id = 2;
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        //TODO: Replace test_id with a id that user requests
+        //TODO: Replace test_id with an intent from classmate list activity
         StudentWithCourses student = db.studentWithCoursesDao().get(test_id);
 
         // Set profile name
@@ -40,11 +40,15 @@ public class ViewProfile extends AppCompatActivity {
         nameView.setText(student.getName());
 
         // Retrieve profile image from URL using Picasso
-        ImageView i = (ImageView)findViewById(R.id.profile_picture_view);
-        Picasso.get().load(student.getHeadshotURL()).into(i);
+        ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);
+        String url = student.getHeadshotURL();
+        Picasso.get().load(url).into(picture_view);
+        // Tag the image with its URL
+        picture_view.setTag(url);
 
-        // TODO: Replace 2 with user's own ID
-        StudentWithCourses me = db.studentWithCoursesDao().get(2);
+        // Compare other student with user's classes
+        // The user is always the first entry in the database
+        StudentWithCourses me = db.studentWithCoursesDao().get(1);
         List<String> cc = student.getCommonCourses(me);
         String displayList = "";
         for (String course : cc){
