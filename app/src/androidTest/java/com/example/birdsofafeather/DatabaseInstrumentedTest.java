@@ -38,12 +38,13 @@ public class DatabaseInstrumentedTest {
     @Test
     public void retrieveAllStudents() {
         // check for correct count
-        assertEquals(3, studentDao.count());
+        assertEquals(4, studentDao.count());
         // check if all students retrieved
         List<StudentWithCourses> students = studentDao.getAll();
         assertEquals(students.get(0).getId(), 1);
         assertEquals(students.get(1).getId(), 2);
         assertEquals(students.get(2).getId(), 3);
+        assertEquals(students.get(3).getId(), 4);
     }
 
     @Test
@@ -65,7 +66,7 @@ public class DatabaseInstrumentedTest {
         Student student = new Student(studentDao.count()+1, "Josh Doe", "link.com");
         studentDao.add(student);
         StudentWithCourses retrievedStudent = studentDao.get(studentDao.count());
-        assertEquals(4, retrievedStudent.getId());
+        assertEquals(5, retrievedStudent.getId());
         assertEquals("Josh Doe", retrievedStudent.getName());
         assertEquals("link.com", retrievedStudent.getHeadshotURL());
         assertEquals(0, retrievedStudent.getCourses().size());
@@ -75,8 +76,8 @@ public class DatabaseInstrumentedTest {
 
         // revert back to original state / test delete
         studentDao.delete(student);
-        assertNull(studentDao.get(4));
-        assertEquals(studentDao.count(), 3);
+        assertNull(studentDao.get(5));
+        assertEquals(studentDao.count(), 4);
     }
 
     @Test
