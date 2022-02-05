@@ -35,12 +35,6 @@ public class DatabaseInstrumentedTest {
         courseDao = db.coursesDao();
     }
 
-    // closing database messes with some test, so left commented out
-//    @After
-//    public void closeDb() {
-//        db.close();
-//    }
-
     @Test
     public void retrieveAllStudents() {
         // check for correct count
