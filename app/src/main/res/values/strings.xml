@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Birds of a Feather</string>
+    <string name="name_string">Ava</string>
+    <string name="student_profile_picture">Student profile picture</string>
+    <string name="common_classes_prompt_string">Common classes with you:</string>
+    <string name="class_data">Class data</string>
 </resources>
