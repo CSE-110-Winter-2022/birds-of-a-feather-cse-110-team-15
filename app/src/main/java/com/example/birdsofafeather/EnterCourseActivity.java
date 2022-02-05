@@ -18,6 +18,8 @@ import com.example.birdsofafeather.models.db.Course;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -45,6 +47,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         while (currYear <= maxYear) {
             yearsList.add(String.valueOf(currYear++));
         }
+        Collections.reverse(yearsList);
         return yearsList;
     }
 
@@ -69,7 +72,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> yearAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, yearsList);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
-        yearSpinner.setSelection(-1, true); // Starts by selecting the last year, not the first
+        yearSpinner.setSelection(1, true); // Starts by selecting the last year, not the first
 
         // recycle view for courses
         coursesRecyclerView = findViewById(R.id.courses_recycler_view);
@@ -87,7 +90,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         TextView subjectView = (TextView) findViewById(R.id.course_subject_textview);
         TextView numberView = (TextView) findViewById(R.id.course_number_textview);
         String courseSubject = subjectView.getText().toString().toUpperCase();
-        String courseNumber = numberView.getText().toString();
+        String courseNumber = numberView.getText().toString().toUpperCase();
         String courseQuarter = (String) quarterSpinner.getSelectedItem();
         String courseYear = (String) yearSpinner.getSelectedItem();
 
@@ -106,9 +109,13 @@ public class EnterCourseActivity extends AppCompatActivity {
         }
 
         // Check that course number is a string of one to four numbers
-        if ((courseNumber.length() > 3) ||
-                !(courseNumber.matches("[0-9]+"))) {
-            Utilities.showAlert(this, "Please enter a valid 1-3 digit course number.");
+        if ((courseNumber.length() > 4) ||
+                !((courseNumber.length() == 4 && courseNumber.matches("[0-9][0-9][0-9][a-zA-Z]")) || // e.g. 100A
+                        (courseNumber.length() == 3 && courseNumber.matches("[0-9][0-9][a-zA-Z]")) || //e.g. 15L
+                        (courseNumber.length() == 2 && courseNumber.matches("[0-9][a-zA-Z]")) || // e.g. 1A
+                        (courseNumber.length() <= 3 && courseNumber.matches("[0-9]+")))  // e.g. 100, 12
+        ) {
+            Utilities.showAlert(this, "Please enter a valid course number. \n(e.g. 100 or 15L)");
             return;
         }
 
