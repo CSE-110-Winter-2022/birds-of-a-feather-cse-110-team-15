@@ -99,7 +99,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         }
 
         // Check that course subject is a string of three or four letters
-        if (!(courseSubject.length() == 4 || courseSubject.length() == 3) ||
+        if (!(courseSubject.length() <= 4 && courseSubject.length() >= 2) ||
                 !(courseSubject.matches("[a-zA-Z]+"))) {
             Utilities.showAlert(this, "Please enter a three or four letter subject name.");
             return;
