@@ -10,14 +10,20 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.birdsofafeather.models.IStudent;
+import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.Course;
+
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 
 public class EnterClassActivity extends AppCompatActivity {
     Spinner quarterSpinner, yearSpinner;
     ArrayList<String> enteredCourseList=new ArrayList<String>();
     CourseViewAdapter listAdapter;
+    AppDatabase db;
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
     String[] years = {"2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
@@ -26,8 +32,10 @@ public class EnterClassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN); // to prevent software keyboard from messing up with the layout
         ListView courseListView = (ListView) findViewById(R.id.entered_class_list_view);
+
+        db = AppDatabase.singleton(this);
 
         // dropdown for quarter
         quarterSpinner = (Spinner) findViewById(R.id.quarter_spinner);
@@ -56,19 +64,19 @@ public class EnterClassActivity extends AppCompatActivity {
         String courseQuarter = (String) quarterSpinner.getSelectedItem();
         String courseYear = (String) yearSpinner.getSelectedItem();
 
-        // if any of the entries is empty, show an error message
-        if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
-        courseQuarter.isEmpty() || courseYear.isEmpty()){
-            // TODO
-            return;
-        }
-
         // create a string to show as a list in the page
         String courseEntry = courseSubject + " " + courseNumber + " " + courseQuarter + " "+ courseYear;
 
+        // if any of the entries is empty, show an error message
+        if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
+        courseQuarter.isEmpty() || courseYear.isEmpty()){
+            Utilities.showAlert(this, "Please fill in every field.");
+            return;
+        }
+
         // if the course is already entered, show an error message
         if (enteredCourseList.contains(courseEntry)){
-            // TODO
+            Utilities.showAlert(this, "This course is already entered");
             return;
         }
 
@@ -78,5 +86,19 @@ public class EnterClassActivity extends AppCompatActivity {
     }
 
     public void onFinishClicked(View view) {
+        // if no course is entered, show alert and return
+        if (enteredCourseList.isEmpty()){
+            Utilities.showAlert(this, "Please enter at least one course");
+            return;
+        }
+
+        // record courses in the database one by one
+        for (int count = 0; count < enteredCourseList.size(); count++){
+            Course newCourse = new Course(count, 0, enteredCourseList.get(count));
+            db.coursesDao().insert(newCourse);
+        }
+
+        // go to the next activity
+
     }
 }
