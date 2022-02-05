@@ -28,6 +28,7 @@ public class ViewProfileActivityTest {
 
     @Test
     public void testProfileLoad(){
+        // Multiple assertions in one test to avoid launching too many activities
         ActivityScenario<ViewProfileActivity> scenario = rule.getScenario();
         scenario.onActivity(activity -> {
             TextView name = (TextView)activity.findViewById(R.id.name_view);

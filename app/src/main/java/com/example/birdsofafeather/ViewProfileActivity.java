@@ -32,7 +32,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         // Retrieve Student from database to put on ProfileView
         int test_id = 2;
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        //TODO: Replace test_id with an intent from classmate list activity
+        //TODO: Replace test_id with an intent from classmate list activity during linking task
         StudentWithCourses student = db.studentWithCoursesDao().get(test_id);
 
         // Set profile name
@@ -47,7 +47,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         picture_view.setTag(url);
 
         // Compare other student with user's classes
-        // The user is always the first entry in the database
+        // The user is always the first entry in the database, so we use id 1
         StudentWithCourses me = db.studentWithCoursesDao().get(1);
         List<String> cc = student.getCommonCourses(me);
         String displayList = "";
