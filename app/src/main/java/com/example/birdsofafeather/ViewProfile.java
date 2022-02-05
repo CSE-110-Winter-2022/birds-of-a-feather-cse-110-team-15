@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.example.birdsofafeather.models.IStudent;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,29 +29,21 @@ public class ViewProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-
         // Retrieve Student from database to put on ProfileView
         int test_id = 1;
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
+        //TODO: Replace test_id with a id that user requests
         StudentWithCourses student = db.studentWithCoursesDao().get(test_id);
 
-        String s = student.getName();
-
+        // Set profile name
         TextView nameView = findViewById(R.id.name_view);
-        nameView.setText(s);
+        nameView.setText(student.getName());
 
-        // Retrieve profile image from URL
-        try {
-            ImageView i = (ImageView)findViewById(R.id.profile_picture_view);
-            Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL("https://cdn.britannica.com/18/137318-050-29F7072E/rooster-Rhode-Island-Red-roosters-chicken-domestication.jpg").getContent());
-            i.setImageBitmap(bitmap);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Retrieve profile image from URL using Picasso
+        ImageView i = (ImageView)findViewById(R.id.profile_picture_view);
+        Picasso.get().load(student.getHeadshotURL()).into(i);
 
-
+        // TODO: Replace 2 with user's own ID
         StudentWithCourses me = db.studentWithCoursesDao().get(2);
         List<String> cc = student.getCommonCourses(me);
         String displayList = "";
@@ -58,7 +51,6 @@ public class ViewProfile extends AppCompatActivity {
             displayList = displayList + course;
             displayList = displayList + "\n";
         }
-
         TextView common_courses = findViewById(R.id.common_classes_view);
         common_courses.setText(displayList);
         common_courses.setVisibility(View.VISIBLE);
