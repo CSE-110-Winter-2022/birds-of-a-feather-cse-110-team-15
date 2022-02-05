@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Birds of a Feather</string>
+    <string name="choose_your_classes_str">Choose your classes</string>
+    <string name="course_subject_hintStr">Subject</string>
+    <string name="course_number_hintStr">Number</string>
+    <string name="enter_button_str">Enter</string>
+    <string name="finish_button_str">Finish</string>
 </resources>
