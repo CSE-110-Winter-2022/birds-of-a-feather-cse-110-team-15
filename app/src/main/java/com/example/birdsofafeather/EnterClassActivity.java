@@ -32,8 +32,8 @@ public class EnterClassActivity extends AppCompatActivity{
     private RecyclerView.LayoutManager coursesLayoutManager;
     private CoursesViewAdapter coursesViewAdapter;
 
-    String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
-    String[] years = {"2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
+    String[] quarters = {"", "FA", "WI", "SP", "SS1", "SS2", "SSS"};
+    String[] years = {"", "2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -84,18 +84,21 @@ public class EnterClassActivity extends AppCompatActivity{
             return;
         }
 
-        // create a new course
+        // create a new course string
         String courseEntry = courseSubject + " " + courseNumber + " " + courseQuarter + " "+ courseYear;
-        int newId = db.coursesDao().count() + 1;
-        Course newCourse = new Course(newId, studentId, courseEntry);
 
-        // if the course is already entered, show an error message
-        if (enteredCourses.contains(courseEntry)){
-            Utilities.showAlert(this, "This course is already entered");
-            return;
+        // check if the course is already entered
+        // if so, show an alert and return
+        for (Course c : enteredCourses){
+            if (c.name.equals(courseEntry)){
+                Utilities.showAlert(this, "This course is already entered");
+                return;
+            }
         }
 
-        // update course list
+        // create a new course and update the list
+        int newId = db.coursesDao().count() + 1;
+        Course newCourse = new Course(newId, studentId, courseEntry);
         db.coursesDao().insert(newCourse);
         coursesViewAdapter.addCourse(newCourse);
     }
