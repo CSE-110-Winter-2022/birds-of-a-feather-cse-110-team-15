@@ -2,13 +2,24 @@ package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.birdsofafeather.models.IStudent;
+import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.StudentWithCourses;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class ViewProfile extends AppCompatActivity {
 
@@ -16,22 +27,34 @@ public class ViewProfile extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
-        // TODO: Convert this temporary placeholders to calls to Room API
-        String s = "Ava";
+
+
+        // Retrieve Student from database to put on ProfileView
+        int test_id = 1;
+        AppDatabase db = AppDatabase.singleton(getApplicationContext());
+        StudentWithCourses student = db.studentWithCoursesDao().get(test_id);
+
+        String s = student.getName();
 
         TextView nameView = findViewById(R.id.name_view);
         nameView.setText(s);
 
-        ImageView profile_pic_view = findViewById(R.id.profile_picture_view);
+        // Retrieve profile image from URL
+        try {
+            ImageView i = (ImageView)findViewById(R.id.profile_picture_view);
+            Bitmap bitmap = BitmapFactory.decodeStream((InputStream)new URL("https://cdn.britannica.com/18/137318-050-29F7072E/rooster-Rhode-Island-Red-roosters-chicken-domestication.jpg").getContent());
+            i.setImageBitmap(bitmap);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        // TODO: Get this image from persisted data, remove sample image from drawable
-        profile_pic_view.setImageResource(R.drawable.placeholder_profile_pic);
 
-
-        // TODO: Get a list of shared classes, format them as strings.
-        ArrayList<String> test_classes = new ArrayList<>(Arrays.asList("WI22 CSE 110", "FA19 CSE 12", "SP18 MATH 20A"));
+        StudentWithCourses me = db.studentWithCoursesDao().get(2);
+        List<String> cc = student.getCommonCourses(me);
         String displayList = "";
-        for (String course : test_classes){
+        for (String course : cc){
             displayList = displayList + course;
             displayList = displayList + "\n";
         }
