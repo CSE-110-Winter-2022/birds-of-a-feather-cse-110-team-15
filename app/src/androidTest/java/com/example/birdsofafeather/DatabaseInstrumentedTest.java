@@ -35,7 +35,7 @@ public class DatabaseInstrumentedTest {
     @Before
     public void init() {
         Context context = ApplicationProvider.getApplicationContext();
-        db = AppDatabase.singleton(context);
+        db = AppDatabase.singleton(context, "test1-students.db");
         studentDao = db.studentWithCoursesDao();
         courseDao = db.coursesDao();
     }
