@@ -24,6 +24,7 @@ public class EnterClassActivity extends AppCompatActivity {
     ArrayList<String> enteredCourseList=new ArrayList<String>();
     CourseViewAdapter listAdapter;
     AppDatabase db;
+    int studentId = 0; // for now set student id to 0
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
     String[] years = {"2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
@@ -32,10 +33,11 @@ public class EnterClassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN); // to prevent software keyboard from messing up with the layout
         ListView courseListView = (ListView) findViewById(R.id.entered_class_list_view);
-
         db = AppDatabase.singleton(this);
+
+        // prevent software keyboard from messing up with the layout
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         // dropdown for quarter
         quarterSpinner = (Spinner) findViewById(R.id.quarter_spinner);
@@ -88,17 +90,21 @@ public class EnterClassActivity extends AppCompatActivity {
     public void onFinishClicked(View view) {
         // if no course is entered, show alert and return
         if (enteredCourseList.isEmpty()){
-            Utilities.showAlert(this, "Please enter at least one course");
+            Utilities.showAlert(this, "Please enter at least one course.");
             return;
         }
 
-        // record courses in the database one by one
+        // record courses from the arraylist to the database one by one
+        // note: a user is creating a new profile, so i assumed course ids would be 1,2,...
+        // but honestly i'm not sure how this works yet
+        // also i might refactor the code so that the listview would display the date from
+        // the database, instead of local arraylist that i was using
         for (int count = 0; count < enteredCourseList.size(); count++){
-            Course newCourse = new Course(count, 0, enteredCourseList.get(count));
+            Course newCourse = new Course(count + 1, studentId, enteredCourseList.get(count));
             db.coursesDao().insert(newCourse);
         }
 
-        // go to the next activity
+        // go to the next activity?
 
     }
 }
