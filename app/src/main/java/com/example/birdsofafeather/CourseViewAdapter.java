@@ -8,17 +8,19 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 
 public class CourseViewAdapter extends BaseAdapter {
-    private Context context;
     private ArrayList<String> courses;
 
-    public CourseViewAdapter(Context context, ArrayList<String> courses){
-        this.context = context;
+    public CourseViewAdapter(ArrayList<String> courses){
+        super();
         this.courses = courses;
     }
 
+    @NonNull
     @Override
     public int getCount(){
         return this.courses.size();
@@ -36,15 +38,14 @@ public class CourseViewAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent){
-        View view = LayoutInflater
+        View rowView = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.course_row, parent, false);
 
-        TextView courseView = (TextView) view.findViewById(R.id.course_row_text);
+        TextView courseView = (TextView) rowView.findViewById(R.id.course_row_text);
         courseView.setText(courses.get(position));
 
-        Button deleteButton = (Button) view.findViewById(R.id.remove_course_button);
-        deleteButton.setTag(position);
+        Button deleteButton = (Button) rowView.findViewById(R.id.remove_course_button);
 
         deleteButton.setOnClickListener( (view1) ->{
             courses.remove(position);
@@ -52,6 +53,6 @@ public class CourseViewAdapter extends BaseAdapter {
                 }
         );
 
-        return view;
+        return rowView;
     }
 }

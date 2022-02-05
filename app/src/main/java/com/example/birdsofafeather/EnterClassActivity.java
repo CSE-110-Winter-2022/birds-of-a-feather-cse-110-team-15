@@ -24,7 +24,7 @@ public class EnterClassActivity extends AppCompatActivity {
     ArrayList<String> enteredCourseList=new ArrayList<String>();
     CourseViewAdapter listAdapter;
     AppDatabase db;
-    int studentId = 0; // for now set student id to 0
+    int studentId = 0; // TODO: get the user's id. for now set it to 0
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
     String[] years = {"2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
@@ -94,17 +94,17 @@ public class EnterClassActivity extends AppCompatActivity {
             return;
         }
 
+        // get current size
+        int currentCourseSize = db.coursesDao().count();
+
         // record courses from the arraylist to the database one by one
-        // note: a user is creating a new profile, so i assumed course ids would be 1,2,...
-        // but honestly i'm not sure how this works yet
-        // also i might refactor the code so that the listview would display the date from
-        // the database, instead of local arraylist that i was using
         for (int count = 0; count < enteredCourseList.size(); count++){
-            Course newCourse = new Course(count + 1, studentId, enteredCourseList.get(count));
+            Course newCourse = new Course(currentCourseSize + count + 1, studentId, enteredCourseList.get(count));
             db.coursesDao().insert(newCourse);
         }
 
-        // go to the next activity?
-
+        // TODO: go to the next activity
+        // for now, just go back
+        finish();
     }
 }
