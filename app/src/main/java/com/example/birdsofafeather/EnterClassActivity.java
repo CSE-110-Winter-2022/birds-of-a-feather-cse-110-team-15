@@ -1,6 +1,8 @@
 package com.example.birdsofafeather;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.view.View;
@@ -19,22 +21,26 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-public class EnterClassActivity extends AppCompatActivity {
+
+public class EnterClassActivity extends AppCompatActivity{
     Spinner quarterSpinner, yearSpinner;
-    ArrayList<String> enteredCourseList=new ArrayList<String>();
-    CourseViewAdapter listAdapter;
+    List<Course> enteredCourses;
     AppDatabase db;
     int studentId = 0; // TODO: get the user's id. for now set it to 0
+
+    private RecyclerView coursesRecyclerView;
+    private RecyclerView.LayoutManager coursesLayoutManager;
+    private CoursesViewAdapter coursesViewAdapter;
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
     String[] years = {"2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
-        ListView courseListView = (ListView) findViewById(R.id.entered_class_list_view);
         db = AppDatabase.singleton(this);
+        enteredCourses = db.coursesDao().getForStudent(studentId);
 
         // prevent software keyboard from messing up with the layout
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -51,11 +57,16 @@ public class EnterClassActivity extends AppCompatActivity {
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
 
-        // list of courses entered
-        listAdapter = new CourseViewAdapter(this, enteredCourseList);
-        courseListView.setAdapter(listAdapter);
-    }
+        // recycle view for courses
+        coursesRecyclerView = findViewById(R.id.courses_recycler_view);
+        coursesLayoutManager = new LinearLayoutManager(this);
+        coursesRecyclerView.setLayoutManager(coursesLayoutManager);
 
+        coursesViewAdapter = new CoursesViewAdapter(enteredCourses, (course) -> {
+            db.coursesDao().delete(course);
+        });
+        coursesRecyclerView.setAdapter(coursesViewAdapter);
+    }
 
     public void onEnterClicked(View view) {
         // retrieve the user inputs and convert them to strings
@@ -66,45 +77,37 @@ public class EnterClassActivity extends AppCompatActivity {
         String courseQuarter = (String) quarterSpinner.getSelectedItem();
         String courseYear = (String) yearSpinner.getSelectedItem();
 
-        // create a string to show as a list in the page
-        String courseEntry = courseSubject + " " + courseNumber + " " + courseQuarter + " "+ courseYear;
-
         // if any of the entries is empty, show an error message
         if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
-        courseQuarter.isEmpty() || courseYear.isEmpty()){
+                courseQuarter.isEmpty() || courseYear.isEmpty()){
             Utilities.showAlert(this, "Please fill in every field.");
             return;
         }
 
+        // create a new course
+        String courseEntry = courseSubject + " " + courseNumber + " " + courseQuarter + " "+ courseYear;
+        int newId = db.coursesDao().count() + 1;
+        Course newCourse = new Course(newId, studentId, courseEntry);
+
         // if the course is already entered, show an error message
-        if (enteredCourseList.contains(courseEntry)){
+        if (enteredCourses.contains(courseEntry)){
             Utilities.showAlert(this, "This course is already entered");
             return;
         }
 
         // update course list
-        enteredCourseList.add(courseEntry);
-        listAdapter.notifyDataSetChanged();
+        db.coursesDao().insert(newCourse);
+        coursesViewAdapter.addCourse(newCourse);
     }
 
     public void onFinishClicked(View view) {
         // if no course is entered, show alert and return
-        if (enteredCourseList.isEmpty()){
+        if (enteredCourses.isEmpty()){
             Utilities.showAlert(this, "Please enter at least one course.");
             return;
         }
 
-        // get current size
-        int currentCourseSize = db.coursesDao().count();
-
-        // record courses from the arraylist to the database one by one
-        for (int count = 0; count < enteredCourseList.size(); count++){
-            Course newCourse = new Course(currentCourseSize + count + 1, studentId, enteredCourseList.get(count));
-            db.coursesDao().insert(newCourse);
-        }
-
-        // TODO: go to the next activity
-        // for now, just go back
+        // go back to the main activity
         finish();
     }
 }
