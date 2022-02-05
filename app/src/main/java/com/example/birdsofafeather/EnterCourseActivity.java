@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-public class EnterClassActivity extends AppCompatActivity {
+public class EnterCourseActivity extends AppCompatActivity {
     Spinner quarterSpinner, yearSpinner;
     ArrayList<String> enteredCourseList=new ArrayList<String>();
     CourseViewAdapter listAdapter;
@@ -74,6 +74,18 @@ public class EnterClassActivity extends AppCompatActivity {
         courseQuarter.isEmpty() || courseYear.isEmpty()){
             Utilities.showAlert(this, "Please fill in every field.");
             return;
+        }
+
+        // Check that course subject is a string of three or four letters
+        if (!(courseSubject.length() == 4 || courseSubject.length() == 3) ||
+                !(courseSubject.matches("[a-zA-Z]+"))) {
+            Utilities.showAlert(this, "Please enter a three or four letter subject name.");
+        }
+
+        // Check that course number is a string of one to four numbers
+        if (!(courseSubject.length() <= 3) ||
+                !(courseSubject.matches("[0-9]+"))) {
+            Utilities.showAlert(this, "Please enter a valid 1-3 digit course number.");
         }
 
         // if the course is already entered, show an error message
