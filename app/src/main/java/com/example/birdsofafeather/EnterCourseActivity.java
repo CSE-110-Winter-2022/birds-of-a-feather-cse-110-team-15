@@ -21,8 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
 
-
-public class EnterClassActivity extends AppCompatActivity{
+public class EnterCourseActivity extends AppCompatActivity {
     Spinner quarterSpinner, yearSpinner;
     List<Course> enteredCourses;
     AppDatabase db;
@@ -35,8 +34,22 @@ public class EnterClassActivity extends AppCompatActivity{
     String[] quarters = {"", "FA", "WI", "SP", "SS1", "SS2", "SSS"};
     String[] years = {"", "2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
 
+    // firstYear: Year UCSD was founded
+    // maxYear: In a full release, could be replaced with call for current year.
+    List<String> yearsList = makeYearsList(1960, 2022);
+
+    // Take beginning and end years we want to support, create list of all years in between them
+    private List<String> makeYearsList(int firstYear, int maxYear) {
+        List<String> yearsList = new ArrayList<>();
+        int currYear = firstYear;
+        while (currYear <= maxYear) {
+            yearsList.add(String.valueOf(currYear++));
+        }
+        return yearsList;
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState){
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
         db = AppDatabase.singleton(this);
@@ -53,9 +66,10 @@ public class EnterClassActivity extends AppCompatActivity{
 
         // dropdown for year
         yearSpinner = (Spinner) findViewById(R.id.year_spinner);
-        ArrayAdapter<CharSequence> yearAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, years);
+        ArrayAdapter<CharSequence> yearAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, yearsList);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
+        yearSpinner.setSelection(-1, true); // Starts by selecting the last year, not the first
 
         // recycle view for courses
         coursesRecyclerView = findViewById(R.id.courses_recycler_view);
@@ -81,6 +95,20 @@ public class EnterClassActivity extends AppCompatActivity{
         if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
                 courseQuarter.isEmpty() || courseYear.isEmpty()){
             Utilities.showAlert(this, "Please fill in every field.");
+            return;
+        }
+
+        // Check that course subject is a string of three or four letters
+        if (!(courseSubject.length() <= 4 && courseSubject.length() >= 2) ||
+                !(courseSubject.matches("[a-zA-Z]+"))) {
+            Utilities.showAlert(this, "Please enter a three or four letter subject name.");
+            return;
+        }
+
+        // Check that course number is a string of one to four numbers
+        if ((courseNumber.length() > 3) ||
+                !(courseNumber.matches("[0-9]+"))) {
+            Utilities.showAlert(this, "Please enter a valid 1-3 digit course number.");
             return;
         }
 
