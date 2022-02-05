@@ -1,6 +1,7 @@
 package com.example.birdsofafeather;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
@@ -40,6 +41,7 @@ public class DatabaseInstrumentedTest {
         courseDao = db.coursesDao();
     }
 
+    // closing database messes with some test, so left commented out
 //    @After
 //    public void closeDb() throws IOException {
 //        db.close();
@@ -58,15 +60,20 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void retrieveStudentObject() throws IOException {
+        // retrieve student that exists in database
         StudentWithCourses student = studentDao.get(2);
         assertEquals(2, student.getId());
         assertEquals("Bill", student.getName());
         assertEquals("https://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0", student.getHeadshotURL());
         assertEquals(Arrays.asList("MATH 180A FA 2020", "CSE 100 SP 2021", "CSE 101 FA 2021"), student.getCourses());
+
+        // get student that doesn't exist
+        assertNull(studentDao.get(111));
     }
 
     @Test
     public void addStudentObject() throws IOException {
+        // add a new student
         Student student = new Student(studentDao.count()+1, "Josh Doe", "link.com");
         studentDao.add(student);
         IStudent retrievedStudent = studentDao.get(studentDao.count());
@@ -74,6 +81,9 @@ public class DatabaseInstrumentedTest {
         assertEquals("Josh Doe", retrievedStudent.getName());
         assertEquals("link.com", retrievedStudent.getHeadshotURL());
         assertEquals(0, retrievedStudent.getCourses().size());
+
+        // test delete student not in database
+        studentDao.delete(new Student(21, "asdf", "asdf"));
 
         // revert back to original state / test delete
         studentDao.delete(student);
@@ -87,15 +97,18 @@ public class DatabaseInstrumentedTest {
         StudentWithCourses s1 = studentDao.get(1);
         StudentWithCourses s2 = studentDao.get(2);
         StudentWithCourses s3 = studentDao.get(3);
-        assertEquals(s2.getCommonCourses(s3).size(), 0);
+        assertEquals(0, s2.getCommonCourses(s3).size());
 
         // test for common classes
-        assertEquals(s1.getCommonCourses(s2), Arrays.asList("CSE 100 SP 2021"));
+        assertEquals(Arrays.asList("CSE 100 SP 2021"), s1.getCommonCourses(s2));
+
+        // test comparing with a student not in database
+        StudentWithCourses s4 = studentDao.get(10);
+        assertEquals(0, s1.getCommonCourses(s4).size());
     }
 
     @Test
     public void getAllCoursesForStudent() throws IOException {
-
         // retrieve for student with courses inputted already
         assertEquals(courseDao.getForStudent(1).size(), 4);
 
@@ -118,10 +131,14 @@ public class DatabaseInstrumentedTest {
 
     @Test
     public void addDeleteCourse() throws IOException {
+        // add a new course
         Course newCourse = new Course(courseDao.count()+1, 3, "CSE 200 FA 2021");
         courseDao.insert(newCourse);
         assertEquals(courseDao.get(courseDao.count()).name, "CSE 200 FA 2021");
         assertTrue(studentDao.get(3).getCourses().contains("CSE 200 FA 2021"));
+
+        // delete course that doesn't exist
+        courseDao.delete(new Course(111, 212, "asdf"));
 
         // revert back to original state / test delete
         courseDao.delete(newCourse);
