@@ -1,12 +1,9 @@
 package com.example.birdsofafeather;
 
 import android.content.Context;
-import android.util.Log;
 
-import androidx.room.Room;
 import androidx.test.core.app.ApplicationProvider;
 
-import com.example.birdsofafeather.models.IStudent;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.CourseDao;
@@ -14,16 +11,13 @@ import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.example.birdsofafeather.models.db.StudentWithCoursesDao;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import static org.junit.Assert.*;
 
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,12 +37,12 @@ public class DatabaseInstrumentedTest {
 
     // closing database messes with some test, so left commented out
 //    @After
-//    public void closeDb() throws IOException {
+//    public void closeDb() {
 //        db.close();
 //    }
 
     @Test
-    public void retrieveAllStudents() throws IOException {
+    public void retrieveAllStudents() {
         // check for correct count
         assertEquals(3, studentDao.count());
         // check if all students retrieved
@@ -59,7 +53,7 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void retrieveStudentObject() throws IOException {
+    public void retrieveStudentObject() {
         // retrieve student that exists in database
         StudentWithCourses student = studentDao.get(2);
         assertEquals(2, student.getId());
@@ -72,11 +66,11 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void addStudentObject() throws IOException {
+    public void addStudentObject() {
         // add a new student
         Student student = new Student(studentDao.count()+1, "Josh Doe", "link.com");
         studentDao.add(student);
-        IStudent retrievedStudent = studentDao.get(studentDao.count());
+        StudentWithCourses retrievedStudent = studentDao.get(studentDao.count());
         assertEquals(4, retrievedStudent.getId());
         assertEquals("Josh Doe", retrievedStudent.getName());
         assertEquals("link.com", retrievedStudent.getHeadshotURL());
@@ -92,7 +86,7 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void compareStudents() throws IOException {
+    public void compareStudents() {
         // test for NO common classes
         StudentWithCourses s1 = studentDao.get(1);
         StudentWithCourses s2 = studentDao.get(2);
@@ -108,21 +102,19 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void getAllCoursesForStudent() throws IOException {
+    public void getAllCoursesForStudent() {
         // retrieve for student with courses inputted already
         assertEquals(courseDao.getForStudent(1).size(), 4);
 
-        // retrieve for student with no courses inputted yet AND/OR doesn't exist
-        Student newStudent = new Student(studentDao.count()+1, "testing", "link.com");
-        studentDao.add(newStudent);
-        assertEquals(courseDao.getForStudent(studentDao.count()).size(), 0);
+        // retrieve for student with no courses inputted yet
+        assertEquals(courseDao.getForStudent(4).size(), 0);
+
+        // retrieve for student that doesn't exist
         assertEquals(courseDao.getForStudent(10).size(), 0);
-        // revert to original state
-        studentDao.delete(newStudent);
     }
 
     @Test
-    public void getSpecificCourse() throws IOException {
+    public void getSpecificCourse() {
         // get course that exists
         assertEquals(courseDao.get(1).name, "CSE 21 FA 2020");
         // get course that doesn't exist
@@ -130,7 +122,7 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void addDeleteCourse() throws IOException {
+    public void addDeleteCourse() {
         // add a new course
         Course newCourse = new Course(courseDao.count()+1, 3, "CSE 200 FA 2021");
         courseDao.insert(newCourse);
@@ -146,7 +138,7 @@ public class DatabaseInstrumentedTest {
     }
 
     @Test
-    public void getCourseCount() throws IOException {
+    public void getCourseCount() {
         assertEquals(courseDao.count(), 9);
     }
 }
