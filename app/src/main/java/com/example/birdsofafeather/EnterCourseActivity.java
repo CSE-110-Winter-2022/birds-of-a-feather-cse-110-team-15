@@ -21,7 +21,7 @@ public class EnterCourseActivity extends AppCompatActivity {
     Spinner quarterSpinner, yearSpinner;
     List<Course> enteredCourses;
     AppDatabase db;
-    int studentId = 0; // TODO: get the user's id. for now set it to 0
+    int studentId = 1; // User's ID always set to 1
 
     private RecyclerView coursesRecyclerView;
     private RecyclerView.LayoutManager coursesLayoutManager;
@@ -36,9 +36,8 @@ public class EnterCourseActivity extends AppCompatActivity {
     // Take beginning and end years we want to support, create list of all years in between them
     private List<String> makeYearsList(int firstYear, int maxYear) {
         List<String> yearsList = new ArrayList<>();
-        int currYear = maxYear + 1;
-        while (currYear >= firstYear) {
-            yearsList.add(String.valueOf(currYear--));
+        for (int i = maxYear + 1; i >= firstYear; i--) {
+            yearsList.add(String.valueOf(i));
         }
         return yearsList;
     }
