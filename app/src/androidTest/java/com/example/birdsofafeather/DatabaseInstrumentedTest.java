@@ -27,6 +27,7 @@ public class DatabaseInstrumentedTest {
     private CourseDao courseDao;
     private AppDatabase db;
 
+
     @Before
     public void init() {
         Context context = ApplicationProvider.getApplicationContext();
