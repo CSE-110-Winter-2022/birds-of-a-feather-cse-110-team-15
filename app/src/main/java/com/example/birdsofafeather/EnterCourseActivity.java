@@ -95,14 +95,14 @@ public class EnterCourseActivity extends AppCompatActivity {
 
         // Check that course subject is a string of two to four letters
         if ( !(courseSubject.matches("[a-zA-Z]{2,4}"))) {
-            Utilities.showAlert(this, "Please enter a three or four letter subject name.");
+            Utilities.showAlert(this, "Please enter a 2-4 letter subject name.\n(e.g. SE or COGS)");
             return;
         }
 
         // Check that course number is a valid string of one to three numbers and an optional letter
         // Regex: 1-3 numerical digits followed by 0-1 letter
         if ( !courseNumber.matches("[1-9]{1,3}[a-zA-Z]?") ) {
-            Utilities.showAlert(this, "Please enter a valid course number. \n(e.g. 100 or 15L)");
+            Utilities.showAlert(this, "Please enter a valid course number.\n(e.g. 100 or 15L)");
             return;
         }
 
