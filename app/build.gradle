@@ -28,6 +28,7 @@ android {
 }
 
 dependencies {
+    androidTestImplementation 'androidx.test:rules:1.4.0'
     def room_version="2.4.1"
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'androidx.appcompat:appcompat:1.4.1'

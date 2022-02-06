@@ -3,6 +3,7 @@ package com.example.birdsofafeather.models.db;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
@@ -17,7 +18,7 @@ public interface CourseDao {
     @Query("SELECT * FROM courses WHERE id=:id")
     Course get(int id);
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Course course);
 
     @Delete

@@ -101,7 +101,7 @@ public class EnterCourseActivity extends AppCompatActivity {
 
         // Check that course number is a valid string of one to three numbers and an optional letter
         // Regex: 1-3 numerical digits followed by 0-1 letter
-        if ( !courseNumber.matches("[1-9][0-9]{1,2}[a-zA-Z]?(H)?") ) {
+        if ( !courseNumber.matches("[1-9][0-9]{0,2}[a-zA-Z]?(H)?") ) {
             Utilities.showAlert(this, getString(R.string.course_number_invalid_err_str));
             return;
         }
