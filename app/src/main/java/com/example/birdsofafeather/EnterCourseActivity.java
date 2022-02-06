@@ -27,7 +27,7 @@ public class EnterCourseActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager coursesLayoutManager;
     private CoursesViewAdapter coursesViewAdapter;
 
-    String[] quarters = {"", "FA", "WI", "SP", "SS1", "SS2", "SSS"};
+    String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
 
     // firstYear: Year UCSD was founded
     // maxYear: In a full release, could be replaced with call for current year.
@@ -89,20 +89,20 @@ public class EnterCourseActivity extends AppCompatActivity {
         // if any of the entries is empty, show an error message
         if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
                 courseQuarter.isEmpty() || courseYear.isEmpty()) {
-            Utilities.showAlert(this, "Please fill in every field.");
+            Utilities.showAlert(this, getString(R.string.empty_field_err_str));
             return;
         }
 
         // Check that course subject is a string of two to four letters
         if ( !(courseSubject.matches("[a-zA-Z]{2,4}"))) {
-            Utilities.showAlert(this, "Please enter a 2-4 letter subject name.\n(e.g. SE or COGS)");
+            Utilities.showAlert(this, getString(R.string.course_name_invalid_err_str));
             return;
         }
 
         // Check that course number is a valid string of one to three numbers and an optional letter
         // Regex: 1-3 numerical digits followed by 0-1 letter
-        if ( !courseNumber.matches("[1-9]{1,3}[a-zA-Z]?") ) {
-            Utilities.showAlert(this, "Please enter a valid course number.\n(e.g. 100 or 15L)");
+        if ( !courseNumber.matches("[1-9][0-9]{1,2}[a-zA-Z]?(H)?") ) {
+            Utilities.showAlert(this, getString(R.string.course_number_invalid_err_str));
             return;
         }
 
@@ -113,7 +113,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         // if so, show an alert and return
         for (Course c : enteredCourses){
             if (c.name.equals(courseEntry)){
-                Utilities.showAlert(this, "This course is already entered");
+                Utilities.showAlert(this, getString(R.string.duplicate_course_err_str));
                 return;
             }
         }
@@ -128,7 +128,7 @@ public class EnterCourseActivity extends AppCompatActivity {
     public void onFinishClicked(View view) {
         // if no course is entered, show alert and return
         if (enteredCourses.isEmpty()){
-            Utilities.showAlert(this, "Please enter at least one course.");
+            Utilities.showAlert(this, getString(R.string.no_course_entered_err_str));
             return;
         }
 
