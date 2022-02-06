@@ -1,27 +1,21 @@
 package com.example.birdsofafeather;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.birdsofafeather.models.IStudent;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Vector;
 
 public class EnterCourseActivity extends AppCompatActivity {
     Spinner quarterSpinner, yearSpinner;
@@ -34,7 +28,6 @@ public class EnterCourseActivity extends AppCompatActivity {
     private CoursesViewAdapter coursesViewAdapter;
 
     String[] quarters = {"", "FA", "WI", "SP", "SS1", "SS2", "SSS"};
-    String[] years = {"", "2022", "2021", "2020","2019","2018","2017","2016","2015","2014","2013"};
 
     // firstYear: Year UCSD was founded
     // maxYear: In a full release, could be replaced with call for current year.
@@ -43,11 +36,10 @@ public class EnterCourseActivity extends AppCompatActivity {
     // Take beginning and end years we want to support, create list of all years in between them
     private List<String> makeYearsList(int firstYear, int maxYear) {
         List<String> yearsList = new ArrayList<>();
-        int currYear = firstYear;
-        while (currYear <= maxYear) {
-            yearsList.add(String.valueOf(currYear++));
+        int currYear = maxYear + 1;
+        while (currYear >= firstYear) {
+            yearsList.add(String.valueOf(currYear--));
         }
-        Collections.reverse(yearsList);
         return yearsList;
     }
 
@@ -63,13 +55,13 @@ public class EnterCourseActivity extends AppCompatActivity {
 
         // dropdown for quarter
         quarterSpinner = (Spinner) findViewById(R.id.quarter_spinner);
-        ArrayAdapter<CharSequence> quarterAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, quarters);
+        ArrayAdapter<String> quarterAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, quarters);
         quarterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         quarterSpinner.setAdapter(quarterAdapter);
 
         // dropdown for year
         yearSpinner = (Spinner) findViewById(R.id.year_spinner);
-        ArrayAdapter<CharSequence> yearAdapter = new ArrayAdapter(this, android.R.layout.simple_spinner_item, yearsList);
+        ArrayAdapter<String> yearAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, yearsList);
         yearAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         yearSpinner.setAdapter(yearAdapter);
         yearSpinner.setSelection(1, true); // Starts by selecting the last year, not the first
@@ -96,31 +88,26 @@ public class EnterCourseActivity extends AppCompatActivity {
 
         // if any of the entries is empty, show an error message
         if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
-                courseQuarter.isEmpty() || courseYear.isEmpty()){
+                courseQuarter.isEmpty() || courseYear.isEmpty()) {
             Utilities.showAlert(this, "Please fill in every field.");
             return;
         }
 
-        // Check that course subject is a string of three or four letters
-        if (!(courseSubject.length() <= 4 && courseSubject.length() >= 2) ||
-                !(courseSubject.matches("[a-zA-Z]+"))) {
+        // Check that course subject is a string of two to four letters
+        if ( !(courseSubject.matches("[a-zA-Z]{2,4}"))) {
             Utilities.showAlert(this, "Please enter a three or four letter subject name.");
             return;
         }
 
-        // Check that course number is a string of one to four numbers
-        if ((courseNumber.length() > 4) ||
-                !((courseNumber.length() == 4 && courseNumber.matches("[0-9][0-9][0-9][a-zA-Z]")) || // e.g. 100A
-                        (courseNumber.length() == 3 && courseNumber.matches("[0-9][0-9][a-zA-Z]")) || //e.g. 15L
-                        (courseNumber.length() == 2 && courseNumber.matches("[0-9][a-zA-Z]")) || // e.g. 1A
-                        (courseNumber.length() <= 3 && courseNumber.matches("[0-9]+")))  // e.g. 100, 12
-        ) {
+        // Check that course number is a valid string of one to three numbers and an optional letter
+        // Regex: 1-3 numerical digits followed by 0-1 letter
+        if ( !courseNumber.matches("[1-9]{1,3}[a-zA-Z]?") ) {
             Utilities.showAlert(this, "Please enter a valid course number. \n(e.g. 100 or 15L)");
             return;
         }
 
         // create a new course string
-        String courseEntry = courseSubject + " " + courseNumber + " " + courseQuarter + " "+ courseYear;
+        String courseEntry = String.join(" ", courseSubject, courseNumber, courseQuarter, courseYear);
 
         // check if the course is already entered
         // if so, show an alert and return
