@@ -1,6 +1,5 @@
 package com.example.birdsofafeather;
 
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -25,16 +24,24 @@ import android.view.ViewParent;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
+
+import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.Course;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.List;
+import java.util.ListIterator;
 
 @SuppressWarnings("deprecation")
 @LargeTest
@@ -43,6 +50,16 @@ public class EnterCourseActivityTest {
 
     @Rule
     public ActivityTestRule<EnterCourseActivity> mActivityTestRule = new ActivityTestRule<>(EnterCourseActivity.class);
+
+    @Before
+    public void clearCourses() {
+        AppDatabase db = AppDatabase.singleton(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        List<Course> courseList= db.coursesDao().getForStudent(1);
+        for (ListIterator<Course> iter = courseList.listIterator(); iter.hasNext(); ) {
+            db.coursesDao().delete(iter.next());
+            iter.remove();
+        }
+    }
 
     @Test
     public void enterCourseActivityTest() {
