@@ -39,6 +39,7 @@ public class StudentWithCourses implements IStudent {
 
     public List<String> getCommonCourses(StudentWithCourses otherStudent) {
         List<String> commonCourses = new ArrayList<>(this.courses);
+        if (otherStudent == null) return new ArrayList<>();
         commonCourses.retainAll(otherStudent.getCourses());
         return commonCourses;
     }

@@ -14,18 +14,19 @@
             android:name=".EnterNameActivity"
             android:exported="true" />
         <activity
+            android:name=".UserName"
+            android:exported="false" />
+        <activity
             android:name=".StartSearch"
             android:exported="false" />
         <activity
-<<<<<<< HEAD
-=======
             android:name=".StopSearch"
             android:exported="false" />
         <activity
             android:name=".ViewProfileActivity"
             android:exported="true" />
+
         <activity
->>>>>>> afd31c1311898e47b8c6297a40ffb8905cbc729a
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
