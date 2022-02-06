@@ -12,21 +12,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        Intent intent = new Intent(this, StartSearch.class);
-        startActivity(intent);
-
     }
-
-//    public void onLoginClick(View view) {
-//        Intent intent = new Intent(this, StartSearch.class);
-//        startActivity(intent);
-//    }
-
-
 
     public void onLoginClick(View view) {
         Intent intent = new Intent(this, StartSearch.class);
+        startActivity(intent);
+    }
+
+    public void onCreateProfile(View view) {
+        Intent intent = new Intent(this, UserName.class);
         startActivity(intent);
     }
 }
