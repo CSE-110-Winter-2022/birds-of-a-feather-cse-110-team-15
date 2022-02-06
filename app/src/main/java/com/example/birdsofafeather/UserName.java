@@ -44,7 +44,6 @@ public class UserName extends AppCompatActivity {
     }
 
     public void onConfirmNameClick(View view) {
-
         finish();
     }
 }

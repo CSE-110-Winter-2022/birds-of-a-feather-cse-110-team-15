@@ -3,6 +3,11 @@
     <string name="start">START</string>
     <string name="stop">STOP</string>
     <string name="confirm_name">Confirm name:</string>
+    <string name="name_input">Name</string>
     <string name="confirm">CONFIRM</string>
     <string name="cont">CONTINUE</string>
+    <string name="name_string">Ava</string>
+    <string name="student_profile_picture">Student profile picture</string>
+    <string name="common_classes_prompt_string">Common classes with you:</string>
+    <string name="class_data">Class data</string>
 </resources>
