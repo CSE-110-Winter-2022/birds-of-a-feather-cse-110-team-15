@@ -26,8 +26,17 @@ jobs:
       run: ./gradlew build
 
     # Execute UI and instrumentation tests
-    - name: Android Emulator
-      uses: vgaidarji/android-github-actions-emulator@v1.0.1
+  test:
+    runs-on: macOS-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: Instrumentation Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          script: ./gradlew connectedCheck
 
     # Execute unit tests
     - name: Unit Test
