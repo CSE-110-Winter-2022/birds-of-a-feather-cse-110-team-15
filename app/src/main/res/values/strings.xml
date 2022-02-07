@@ -14,4 +14,12 @@
     <string name="course_number_invalid_err_str">Please enter a valid course number.\n(e.g. 100 or 15L)</string>
     <string name="duplicate_course_err_str">This course is already entered</string>
     <string name="no_course_entered_err_str">Please enter at least one course.</string>
+    <string name="title_activity_start_stop_search">StartStopSearch</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="confirm_name">Confirm name:</string>
+    <string name="name_input">Name</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="cont">CONTINUE</string>
+
 </resources>
