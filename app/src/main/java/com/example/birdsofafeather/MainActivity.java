@@ -17,7 +17,7 @@ public class MainActivity extends AppCompatActivity {
 
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
         db = AppDatabase.singleton(this);
-        enteredCourses = db.coursesDao().getForStudent(studentId);
+       // enteredCourses = db.coursesDao().getForStudent(studentId);
        // List<? extends IStudent> persons = db.StudentWithCoursesDao().getAll();
     }
 
