@@ -25,6 +25,10 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
+    # Execute UI tests
+    - name: Android Emulator
+      uses: vgaidarji/android-github-actions-emulator@v1.0.1
+
     # Execute unit tests
     - name: Unit Test
       run: ./gradlew testDebugUnitTest
@@ -33,3 +37,4 @@ jobs:
     - name: Android Test Report
       uses: asadmansr/android-test-report-action@v1.2.0
       if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
+
