@@ -23,8 +23,6 @@ public class UserNameActivity extends AppCompatActivity{
         TextView ConfirmName = (TextView) findViewById(R.id.name_view);
         ConfirmName.setVisibility(View.INVISIBLE);
 
-
-
     }
 
     @Override
@@ -35,24 +33,14 @@ public class UserNameActivity extends AppCompatActivity{
 
 
     public void onConfirmNameClick(View view) {
-        // load name;
-        int test_id = 3;
-        AppDatabase db = AppDatabase.singleton(getApplicationContext());
-
-        //TODO: Replace test_id with an intent from classmate list activity during linking task
-        StudentWithCourses student = db.studentWithCoursesDao().get(test_id);
-
-        // Set user name
-        TextView nameView = findViewById(R.id.name_view);
-        nameView.setText(student.getName());
-
-        // Set profile name
-        TextView userNameView = findViewById(R.id.name_view);
-        userNameView.setText(student.getName());
+        //get input name
+        TextView confirmName = findViewById(R.id.input_name_textview);
+        String getConfirmName = confirmName.getText().toString();
 
         //show name
         TextView showConfirmName = (TextView) findViewById(R.id.name_view);
         showConfirmName.setVisibility(View.VISIBLE);
+        showConfirmName.setText(getConfirmName);
 
     }
 

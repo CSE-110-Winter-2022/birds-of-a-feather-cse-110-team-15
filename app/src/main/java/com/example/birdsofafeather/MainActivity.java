@@ -15,10 +15,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        db = AppDatabase.singleton(this);
-       // enteredCourses = db.coursesDao().getForStudent(studentId);
-       // List<? extends IStudent> persons = db.StudentWithCoursesDao().getAll();
     }
 
     public void onLoginClick(View view) {
