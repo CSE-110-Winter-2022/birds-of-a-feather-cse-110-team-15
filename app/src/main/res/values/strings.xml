@@ -4,4 +4,9 @@
     <string name="student_profile_picture">Student profile picture</string>
     <string name="common_classes_prompt_string">Common classes with you:</string>
     <string name="class_data">Class data</string>
+    <string name="saveBtnString">Save</string>
+    <string name="continueBtnString">Continue</string>
+    <string name="user_entered_profile_pic">User Entered Profile Pic</string>
+    <string name="paste_your_url_here">Paste your URL here</string>
+    <string name="please_paste_your_url_below">Please paste your URL below</string>
 </resources>
