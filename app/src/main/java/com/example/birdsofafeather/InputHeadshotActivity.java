@@ -3,14 +3,11 @@ package com.example.birdsofafeather;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.birdsofafeather.R;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Student;
 import com.squareup.picasso.Picasso;
@@ -43,6 +40,7 @@ public class InputHeadshotActivity extends AppCompatActivity{
 
 
     public void onContinueClick(View view) {
+        //save student to database
         editURL = findViewById(R.id.editURL);
         String URL = editURL.getText().toString();
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
