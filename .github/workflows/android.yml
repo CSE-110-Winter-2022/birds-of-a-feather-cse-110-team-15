@@ -30,7 +30,7 @@ jobs:
         with:
           api-level: 29
           arch: x86
-          disable-animations: true
+          disable-animations: false
           script: ./gradlew connectedAndroidTest --stacktrace
 
       # Execute unit tests
