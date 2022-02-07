@@ -1,7 +1,5 @@
 package com.example.birdsofafeather.models.db;
 
-import android.widget.ImageView;
-
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
