@@ -26,9 +26,8 @@ jobs:
       run: ./gradlew build
 
     # Execute UI and instrumentation tests
-    - name: Android Emulator Test
-      uses: faruktoptas/android-github-actions-emulator@1.1.0
-
+    - name: Android Emulator
+      uses: vgaidarji/android-github-actions-emulator@v1.0.1
 
     # Execute unit tests
     - name: Unit Test
