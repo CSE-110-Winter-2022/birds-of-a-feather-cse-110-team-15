@@ -1,10 +1,12 @@
 package com.example.birdsofafeather;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,20 +17,20 @@ import com.squareup.picasso.Picasso;
 
 public class InputHeadshotActivity extends AppCompatActivity{
     EditText editURL;
-    Button saveBtn, continueBtn;
     ImageView profile;
+    private String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_input_headshot);
 
+        //find the URL
         editURL = findViewById(R.id.editURL);
-        saveBtn = findViewById(R.id.saveBtn);
-        continueBtn = findViewById(R.id.continueBtn);
 
-
-
+        //get the intent
+        Bundle extras = getIntent().getExtras();
+        name = extras.getString("student_name");
     }
 
     //https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library
@@ -44,7 +46,11 @@ public class InputHeadshotActivity extends AppCompatActivity{
         editURL = findViewById(R.id.editURL);
         String URL = editURL.getText().toString();
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        Student s1 = new Student(1,"placeholdername",URL);
+        Student s1 = new Student(1,name,URL);
         db.studentWithCoursesDao().add(s1);
+
+        //get the intent
+        Intent intent = new Intent(this, EnterCourseActivity.class);
+        startActivity(intent);
     }
 }
