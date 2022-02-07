@@ -45,7 +45,7 @@ jobs:
     # Report the results
   report:
     runs-on: ubuntu-latest
-    needs: test
+    needs: androidTest
     if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
     steps:
       - name: Android Test Report
