@@ -6,7 +6,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class StartStopSearch extends AppCompatActivity {
+public class StartStopSearchActivity extends AppCompatActivity {
     private Button StartStopButton;
 
     @Override
@@ -27,6 +27,10 @@ public class StartStopSearch extends AppCompatActivity {
         //change start to stop
         StartStopButton = (Button)findViewById(R.id.start_stop_button);
         StartStopButton.setText("STOP");
+
+        //change stop to start
+        StartStopButton = (Button)findViewById(R.id.start_stop_button);
+        StartStopButton.setText("START");
 
     }
 }

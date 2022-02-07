@@ -12,11 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
         <activity
-            android:name=".UserName"
-            android:exported="false" />
+            android:name=".UserNameActivity"
+            android:exported="true" />
         <activity
-            android:name=".StartStopSearch"
-            android:exported="false"
+            android:name=".StartStopSearchActivity"
+            android:exported="true"
             android:label="@string/title_activity_start_stop_search" />
         <activity
             android:name=".ViewProfileActivity"
