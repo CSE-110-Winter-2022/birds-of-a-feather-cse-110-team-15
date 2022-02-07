@@ -19,25 +19,22 @@ public class InputHeadshotActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_input_headshot);
 
         editURL = findViewById(R.id.editURL);
         saveBtn = findViewById(R.id.saveBtn);
         continueBtn = findViewById(R.id.continueBtn);
-        profile = findViewById(R.id.profile);
+
 
 
     }
 
     //https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library
-    private void loadImage(String URL) {
+    public void onSaveClick(View view) {
+        profile = findViewById(R.id.profile);
+        String URL = editURL.getText().toString();
         Picasso.get().load(URL)
                 .into(profile);
-    }
-
-    public void onSaveClick(View view) {
-        String URL = editURL.getText().toString();
-        loadImage(URL);
     }
 
 }
