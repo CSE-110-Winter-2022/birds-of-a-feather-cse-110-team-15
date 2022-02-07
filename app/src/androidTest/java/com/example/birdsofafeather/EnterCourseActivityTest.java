@@ -36,6 +36,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,8 +52,8 @@ public class EnterCourseActivityTest {
     @Rule
     public ActivityTestRule<EnterCourseActivity> mActivityTestRule = new ActivityTestRule<>(EnterCourseActivity.class);
 
-    @Before
-    public void clearCourses() {
+    @BeforeClass
+    static public void clearCoursesForTest() {
         AppDatabase db = AppDatabase.singleton(InstrumentationRegistry.getInstrumentation().getTargetContext());
         List<Course> courseList= db.coursesDao().getForStudent(1);
         for (ListIterator<Course> iter = courseList.listIterator(); iter.hasNext(); ) {
