@@ -8,11 +8,10 @@ on:
 
 jobs:
   build:
-
     runs-on: macos-latest
-
     steps:
     - uses: actions/checkout@v2
+      -
     - name: set up JDK 11
       uses: actions/setup-java@v2
       with:
@@ -27,10 +26,8 @@ jobs:
 
     # Execute UI and instrumentation tests
     - name: Instrumentation Tests
-      uses: reactivecircus/android-emulator-runner@v2
-      with:
-        api-level: 31
-        script: ./gradlew connectedCheck
+      uses: vgaidarji/android-github-actions-emulator@v1.0.1
+
 
     # Execute unit tests
     - name: Unit Test
