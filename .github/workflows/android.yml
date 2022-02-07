@@ -25,6 +25,10 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew build
 
+    # Execute UI and instrumentation tests
+    - name: "Run UI Tests"
+      uses: faruktoptas/android-github-actions-emulator@latest
+
     # Execute unit tests
     - name: Unit Test
       run: ./gradlew testDebugUnitTest
