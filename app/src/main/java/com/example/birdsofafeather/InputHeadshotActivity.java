@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.birdsofafeather.R;
+import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.Student;
 import com.squareup.picasso.Picasso;
 
 public class InputHeadshotActivity extends AppCompatActivity{
@@ -37,4 +39,12 @@ public class InputHeadshotActivity extends AppCompatActivity{
                 .into(profile);
     }
 
+
+    public void onContinueClick(View view) {
+        editURL = findViewById(R.id.editURL);
+        String URL = editURL.getText().toString();
+        AppDatabase db = AppDatabase.singleton(getApplicationContext());
+        Student s1 = new Student(1,"placeholdername",URL);
+        db.studentWithCoursesDao().add(s1);
+    }
 }
