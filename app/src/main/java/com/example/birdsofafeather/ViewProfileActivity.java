@@ -15,15 +15,22 @@ import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
     private static boolean picassoInit;
+    private static boolean dbInit;
+    private static AppDatabase db;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
         // Retrieve Student from database to put on ProfileView
-        int test_id = 2;
-        AppDatabase db = AppDatabase.singleton(getApplicationContext());
+        if (!dbInit) {
+            dbInit = true;
+            db = AppDatabase.singleton(getApplicationContext());
+        }
+
         //TODO: Replace test_id with an intent from classmate list activity during linking task
+        int test_id = 2;
         StudentWithCourses student = db.studentWithCoursesDao().get(test_id);
 
         // Set profile name
@@ -34,6 +41,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             picassoInit = true;
             Picasso.setSingletonInstance(new Picasso.Builder(this).build());
         }
+
         // Retrieve profile image from URL using Picasso
         ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);
         String url = student.getHeadshotURL();
