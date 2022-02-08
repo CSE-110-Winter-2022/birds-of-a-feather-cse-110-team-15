@@ -7,39 +7,22 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
-    runs-on: macos-latest
+  test:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v1
 
       - name: set up JDK 11
         uses: actions/setup-java@v2
         with:
+          distribution: 'zulu'
           java-version: '11'
-          distribution: 'temurin'
-          cache: gradle
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-      - name: Build with Gradle
-        run: ./gradlew build
-
-      # Execute instrumentation tests
-      - name: Instrumentation Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          profile: Nexus 6
-          script: ./gradlew connectedAndroidTest
       # Execute unit tests
       - name: Unit Test
         run: ./gradlew testDebugUnitTest
 
-    # Report the results
-  report:
-    runs-on: ubuntu-latest
-    needs: build
-    if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
-    steps:
+      # Report the results
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
+        if: ${{ always() }} # IMPORTANT: run Android Test Report regardless
