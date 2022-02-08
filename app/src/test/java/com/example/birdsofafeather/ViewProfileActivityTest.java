@@ -1,9 +1,13 @@
 package com.example.birdsofafeather;
 
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -28,13 +32,17 @@ public class ViewProfileActivityTest {
     public void testProfileLoad(){
         // Multiple assertions in one test to avoid launching too many activities
         ActivityScenario<ViewProfileActivity> scenario = rule.getScenario();
+
+        scenario.moveToState(Lifecycle.State.CREATED);
         scenario.onActivity(activity -> {
             TextView name = activity.findViewById(R.id.name_view);
             ImageView picture = activity.findViewById(R.id.profile_picture_view);
             // Test name is not empty
-            assert(!name.getText().equals(""));
+
+            String result = name.getText().toString();
+            assertNotEquals(result, "");
             // Test picture loaded
-            assert(picture.getTag() != null);
+            assertNotNull(picture.getTag());
         });
     }
 
@@ -45,7 +53,7 @@ public class ViewProfileActivityTest {
             TextView courses = activity.findViewById(R.id.common_classes_view);
             // Test course loaded and visibility
             assert(courses.getVisibility() == View.VISIBLE);
-            //assert(!(courses.getText().equals("")));
+            assertNotEquals(courses.getText(), "");
         });
     }
 }

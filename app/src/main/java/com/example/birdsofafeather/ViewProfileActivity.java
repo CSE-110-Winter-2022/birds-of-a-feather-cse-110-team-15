@@ -1,29 +1,20 @@
 package com.example.birdsofafeather;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.birdsofafeather.models.IStudent;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
-
+    private static boolean picassoInit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +30,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         TextView nameView = findViewById(R.id.name_view);
         nameView.setText(student.getName());
 
+        if (!picassoInit){
+            picassoInit = true;
+            Picasso.setSingletonInstance(new Picasso.Builder(this).build());
+        }
         // Retrieve profile image from URL using Picasso
         ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);
         String url = student.getHeadshotURL();
