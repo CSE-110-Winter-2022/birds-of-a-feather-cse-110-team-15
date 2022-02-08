@@ -44,11 +44,12 @@ public class InputHeadshotActivity extends AppCompatActivity{
         editURL = findViewById(R.id.editURL);
         String URL = editURL.getText().toString();
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        Student s1 = new Student(1,name,URL);
+        Student s1 = new Student(db.studentWithCoursesDao().count()+1, name, URL);
         db.studentWithCoursesDao().add(s1);
 
         //get the intent
         Intent intent = new Intent(this, EnterCourseActivity.class);
         startActivity(intent);
+        finish();
     }
 }

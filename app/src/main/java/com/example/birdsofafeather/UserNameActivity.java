@@ -41,6 +41,7 @@ public class UserNameActivity extends AppCompatActivity{
         //set extra
         intent.putExtra("student_name", getInputUserNameView);
         startActivity(intent);
+        finish();
     }
 }
 
