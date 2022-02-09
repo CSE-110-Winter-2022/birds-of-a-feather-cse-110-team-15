@@ -1,7 +1,9 @@
 package com.example.birdsofafeather.models.db;
 
 import androidx.room.Dao;
+import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
@@ -16,8 +18,11 @@ public interface StudentWithCoursesDao {
    @Query("SELECT * FROM students WHERE id=:id")
    StudentWithCourses get(int id);
 
-   @Insert
+   @Insert(onConflict = OnConflictStrategy.REPLACE)
    void add(Student student);
+
+   @Delete
+   void delete(Student student);
 
    @Query("SELECT COUNT(*) FROM students")
    int count();

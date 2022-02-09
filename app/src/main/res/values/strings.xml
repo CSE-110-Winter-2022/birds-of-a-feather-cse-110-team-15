@@ -1,3 +1,30 @@
 <resources>
     <string name="app_name">Birds of a Feather</string>
+    <string name="choose_your_classes_str">Choose your classes</string>
+    <string name="course_subject_hintStr">Subject</string>
+    <string name="course_number_hintStr">Number</string>
+    <string name="enter_button_str">Enter</string>
+    <string name="finish_button_str">Done</string>
+    <string name="name_string"></string>
+    <string name="student_profile_picture">Student profile picture</string>
+    <string name="common_classes_prompt_string">Common classes with you:</string>
+    <string name="saveBtnString">Save</string>
+    <string name="continueBtnString">Continue</string>
+    <string name="user_entered_profile_pic">User Entered Profile Pic</string>
+    <string name="paste_your_url_here">Paste your URL here</string>
+    <string name="please_paste_your_url_below">Please paste your URL below</string>
+    <string name="class_data"></string>
+    <string name="empty_field_err_str">Please fill in every field.</string>
+    <string name="course_name_invalid_err_str">Please enter a 2-4 letter subject name.\n(e.g. SE or COGS)</string>
+    <string name="course_number_invalid_err_str">Please enter a valid course number.\n(e.g. 100 or 15L)</string>
+    <string name="duplicate_course_err_str">This course is already entered</string>
+    <string name="no_course_entered_err_str">Please enter at least one course.</string>
+    <string name="title_activity_start_stop_search">StartStopSearch</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="confirm_name">Confirm name:</string>
+    <string name="name_input">Name</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="cont">CONTINUE</string>
+
 </resources>
