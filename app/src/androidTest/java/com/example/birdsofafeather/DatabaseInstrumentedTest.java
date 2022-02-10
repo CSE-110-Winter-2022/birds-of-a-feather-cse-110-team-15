@@ -1,13 +1,8 @@
 package com.example.birdsofafeather;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import android.content.Context;
 
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
@@ -19,6 +14,9 @@ import com.example.birdsofafeather.models.db.StudentWithCoursesDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import static org.junit.Assert.*;
 
 import java.util.Arrays;
 import java.util.List;
