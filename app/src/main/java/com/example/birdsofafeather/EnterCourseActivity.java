@@ -1,5 +1,6 @@
 package com.example.birdsofafeather;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
@@ -29,14 +30,14 @@ public class EnterCourseActivity extends AppCompatActivity {
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
 
-    // firstYear: Year UCSD was founded
+    // firstYear: 2016
     // maxYear: In a full release, could be replaced with call for current year.
-    List<String> yearsList = makeYearsList(1960, 2022);
+    List<String> yearsList = makeYearsList(2016, 2022);
 
     // Take beginning and end years we want to support, create list of all years in between them
     private List<String> makeYearsList(int firstYear, int maxYear) {
         List<String> yearsList = new ArrayList<>();
-        for (int i = maxYear + 1; i >= firstYear; i--) {
+        for (int i = maxYear; i >= firstYear; i--) {
             yearsList.add(String.valueOf(i));
         }
         return yearsList;
@@ -131,7 +132,9 @@ public class EnterCourseActivity extends AppCompatActivity {
             return;
         }
 
-        // go back to the main activity
+        // go to StartStopSearchActivity
+        Intent intent = new Intent(this, StartStopSearchActivity.class);
+        startActivity(intent);
         finish();
     }
 }
