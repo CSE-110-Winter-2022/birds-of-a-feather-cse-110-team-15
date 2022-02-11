@@ -1,10 +1,11 @@
 package com.example.birdsofafeather;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,14 +18,13 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapter.ViewHolder> {
-    private List<StudentWithCourses> students;
-    private StudentWithCourses me;  // me, the user of the app
+    // list of pair of StudentWithCourses object and the number of common courses
+    private List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs;
 
     // constructor
-    StudentsViewAdapter(List<StudentWithCourses> students, StudentWithCourses me) {
+    StudentsViewAdapter(List<Pair<StudentWithCourses, Integer>> students) {
         super();
-        this.students = students;
-        this.me = me;
+        this.studentAndCoursesCountPairs = students;
     }
 
     @NonNull
@@ -39,15 +39,18 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
 
     @Override
     public void onBindViewHolder(@NonNull StudentsViewAdapter.ViewHolder holder, int position){
-        StudentWithCourses student = students.get(position);
-
         // pass a student and the number of common courses with me
-        holder.setStudent(student, me.getCommonCourses(student).size());
+        holder.setStudent(studentAndCoursesCountPairs.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return this.students.size();
+        return this.studentAndCoursesCountPairs.size();
+    }
+
+    public void setStudentAndCoursesCountPairs(List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs) {
+        this.studentAndCoursesCountPairs = studentAndCoursesCountPairs;
+        this.notifyDataSetChanged();;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder
@@ -56,6 +59,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         private final TextView commonCourseCountView;
         private final ImageView studentImageView;
         private StudentWithCourses student;
+        private int commonCourseCount;
 
         ViewHolder (View view) {
             super(view);
@@ -65,14 +69,15 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             view.setOnClickListener(this);
         }
 
-        public void setStudent(StudentWithCourses student, int count) {
-            this.student = student;
+        public void setStudent(Pair<StudentWithCourses, Integer> studentAndCountPair) {
+            this.student = studentAndCountPair.first;
+            this.commonCourseCount = studentAndCountPair.second;
 
             // set the view for student's name
             this.studentNameView.setText(student.getName());
 
             // set the view the count of the common course with the user and this student
-            this.commonCourseCountView.setText(String.valueOf(count));
+            this.commonCourseCountView.setText(String.valueOf(commonCourseCount));
 
             // set the view student's profile
             String url = student.getHeadshotURL();
@@ -82,7 +87,11 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
 
         @Override
         public void onClick(View view){
-            // TODO: Go to this student's profile page
+            // Go to this student's profile page
+            Context context = view.getContext();
+            Intent intent = new Intent(context, ViewProfileActivity.class);
+            intent.putExtra("student)id", this.student.getId());
+            context.startActivity(intent);
         }
     }
 }
