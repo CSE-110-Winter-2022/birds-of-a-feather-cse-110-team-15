@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.util.ArrayList;
@@ -62,8 +63,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         StopButton = (Button) findViewById(R.id.stop_button);
         StopButton.setVisibility(View.VISIBLE);
 
-        //
         db = AppDatabase.singleton(this);
+
         List<StudentWithCourses> students = db.studentWithCoursesDao().getAll();
         StudentWithCourses me = db.studentWithCoursesDao().get(1);
         studentAndCountPairList = createStudentCountPairList(me, students);
