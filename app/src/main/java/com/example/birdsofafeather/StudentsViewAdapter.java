@@ -27,6 +27,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         this.studentAndCoursesCountPairs = students;
     }
 
+    // create a copy of the row layout and pass it to the ViewHolder
     @NonNull
     @Override
     public StudentsViewAdapter.ViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType){
@@ -37,22 +38,26 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         return new ViewHolder(view);
     }
 
+    // bind student data at the given position to the ViewHolder
     @Override
     public void onBindViewHolder(@NonNull StudentsViewAdapter.ViewHolder holder, int position){
-        // pass a student and the number of common courses with me
+        // pass a pair of student and the number of common courses with me
         holder.setStudent(studentAndCoursesCountPairs.get(position));
     }
 
+    // get the number of items in the list
     @Override
     public int getItemCount() {
         return this.studentAndCoursesCountPairs.size();
     }
 
-    public void setStudentAndCoursesCountPairs(List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs) {
+    // update the student list and notify the RecycleView of the update
+    public void updateStudentAndCoursesCountPairs(List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs) {
         this.studentAndCoursesCountPairs = studentAndCoursesCountPairs;
         this.notifyDataSetChanged();;
     }
 
+    // ViewHolder for the students RecycleView that handles onClick events and set data to the row
     public static class ViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener {
         private final TextView studentNameView;
@@ -61,6 +66,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         private StudentWithCourses student;
         private int commonCourseCount;
 
+        // constructor
         ViewHolder (View view) {
             super(view);
             this.studentNameView = view.findViewById(R.id.classmate_name_text);
@@ -69,6 +75,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             view.setOnClickListener(this);
         }
 
+        // set the student's data to name view, course count view, and image view
         public void setStudent(Pair<StudentWithCourses, Integer> studentAndCountPair) {
             this.student = studentAndCountPair.first;
             this.commonCourseCount = studentAndCountPair.second;
@@ -85,6 +92,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             studentImageView.setTag(url); // Tag the image with its URL
         }
 
+        // define the on click view
         @Override
         public void onClick(View view){
             // Go to this student's profile page
