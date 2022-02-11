@@ -75,9 +75,15 @@ public class DatabaseInstrumentedTest {
         // test delete student not in database
         studentDao.delete(s2);
 
+        studentDao.insert(s2);
         // delete student that exists
         studentDao.delete(s1);
+
+        // make sure id is being updated correctly
         assertNull(studentDao.get(s1.getStudentId()));
+        assertEquals(2, studentDao.lastIdCreated());
+        studentDao.insert(s3);
+        assertEquals(3, studentDao.lastIdCreated());
     }
 
 
@@ -87,11 +93,8 @@ public class DatabaseInstrumentedTest {
         assertEquals(0, studentDao.getAll().size());
 
         studentDao.insert(s1);
-        s1.setStudentId(studentDao.count());
         studentDao.insert(s2);
-        s2.setStudentId(studentDao.count());
         studentDao.insert(s3);
-        s3.setStudentId(studentDao.count());
 
         // check if all students retrieved
         List<StudentWithCourses> students = studentDao.getAll();
@@ -104,12 +107,9 @@ public class DatabaseInstrumentedTest {
     public void retrieveStudentObject() {
         // retrieve student that exists in database
         studentDao.insert(s1);
-        s1.setStudentId(studentDao.count());
         courseDao.insert(c1);
-        c1.setCourseId(courseDao.count());
         courseDao.insert(c2);
-        c2.setCourseId(courseDao.count());
-        StudentWithCourses student = studentDao.get(s1.getStudentId());
+        StudentWithCourses student = studentDao.get(1);
         assertEquals(1, student.getStudentId());
         assertEquals("John", student.getName());
         assertEquals("link.com", student.getHeadshotURL());
@@ -123,31 +123,20 @@ public class DatabaseInstrumentedTest {
     public void compareStudents() {
         // set up scenario
         studentDao.insert(s1);
-        s1.setStudentId(studentDao.count());
         studentDao.insert(s2);
-        s2.setStudentId(studentDao.count());
         studentDao.insert(s3);
-        s3.setStudentId(studentDao.count());
         courseDao.insert(c1);
-        c1.setCourseId(courseDao.count());
         courseDao.insert(c2);
-        c2.setCourseId(courseDao.count());
         courseDao.insert(c3);
-        c3.setCourseId(courseDao.count());
         courseDao.insert(c4);
-        c4.setCourseId(courseDao.count());
         courseDao.insert(c5);
-        c5.setCourseId(courseDao.count());
         courseDao.insert(c6);
-        c6.setCourseId(courseDao.count());
         courseDao.insert(c7);
-        c7.setCourseId(courseDao.count());
         courseDao.insert(c8);
-        c8.setCourseId(courseDao.count());
 
-        StudentWithCourses st1 = studentDao.get(s1.getStudentId());
-        StudentWithCourses st2 = studentDao.get(s2.getStudentId());
-        StudentWithCourses st3 = studentDao.get(s3.getStudentId());
+        StudentWithCourses st1 = studentDao.get(1);
+        StudentWithCourses st2 = studentDao.get(2);
+        StudentWithCourses st3 = studentDao.get(3);
         // test for NO common classes
         assertEquals(0, st1.getCommonCourses(st3).size());
 
@@ -163,13 +152,9 @@ public class DatabaseInstrumentedTest {
     public void getAllCoursesForStudent() {
         // set up scenario
         studentDao.insert(s1);
-        s1.setStudentId(studentDao.count());
         studentDao.insert(s2);
-        s2.setStudentId(studentDao.count());
         courseDao.insert(c1);
-        c1.setCourseId(courseDao.count());
         courseDao.insert(c2);
-        c2.setCourseId(courseDao.count());
 
         // retrieve for student with courses inputted already
         assertEquals(courseDao.getForStudent(1).size(), 2);
@@ -185,9 +170,7 @@ public class DatabaseInstrumentedTest {
     public void getSpecificCourse() {
         // set up scenario
         courseDao.insert(c1);
-        c1.setCourseId(courseDao.count());
         courseDao.insert(c2);
-        c2.setCourseId(courseDao.count());
 
         // get course that exists
         assertEquals(courseDao.get(1).getName(), "CSE 30 FA 2021");
@@ -205,6 +188,14 @@ public class DatabaseInstrumentedTest {
 
         // delete course that doesn't exist
         courseDao.delete(new Course(212, "idk"));
+
+        // check id generation is correct
+        courseDao.insert(c2);
+        courseDao.delete(c1);
+        assertEquals(2, courseDao.lastIdCreated());
+        courseDao.insert(c3);
+        assertEquals(3, courseDao.lastIdCreated());
+        assertEquals(3, courseDao.get(3).getCourseId());
     }
 
     @Test

@@ -26,4 +26,7 @@ public interface StudentWithCoursesDao {
 
    @Query("SELECT COUNT(*) FROM students")
    int count();
+
+   @Query("SELECT last_insert_rowid()")
+   int lastIdCreated();
 }

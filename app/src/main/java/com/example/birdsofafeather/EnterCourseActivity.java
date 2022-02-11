@@ -47,6 +47,9 @@ public class EnterCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
+        //get the intent for extra student_id
+        Bundle extras = getIntent().getExtras();
+        studentId = extras.getInt("student_id");
         db = AppDatabase.singleton(this);
         enteredCourses = db.coursesDao().getForStudent(studentId);
 
@@ -121,7 +124,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         // create a new course and update the list
         Course newCourse = new Course(studentId, courseEntry);
         db.coursesDao().insert(newCourse);
-        newCourse.setCourseId(db.coursesDao().count());
+        newCourse.setCourseId(db.coursesDao().lastIdCreated()); // set newly created id
         coursesViewAdapter.addCourse(newCourse);
     }
 
