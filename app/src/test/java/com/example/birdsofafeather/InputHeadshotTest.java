@@ -36,7 +36,7 @@ public class InputHeadshotTest {
     @Test
     /*
     Test loading a valid URL after first trying a bad one
-    Steps taken: Type bad URL -> Press Save -> Type good URL -> Press Save -> Check image
+    Steps: Type bad URL -> Press Save -> Type good URL -> Press Save -> Check image
     */
     public void testLoadValidURL() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), InputHeadshotActivity.class);
@@ -74,11 +74,10 @@ public class InputHeadshotTest {
                 scenario.moveToState(Lifecycle.State.CREATED);
 
                 ImageView profile = activity.findViewById(R.id.profile);
-                Button save_button = activity.findViewById(R.id.saveBtn);
                 Button continue_button = activity.findViewById(R.id.continueBtn);
 
-                // Save without entering URL
-                save_button.performClick();
+                // Continue without entering URL
+                continue_button.performClick();
 
                 // Robolectric function to return most recently created alert
                 AlertDialog alert = ShadowAlertDialog.getLatestAlertDialog();
