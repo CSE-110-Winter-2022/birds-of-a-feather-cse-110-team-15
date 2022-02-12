@@ -3,42 +3,32 @@ package com.example.birdsofafeather.models.db;
 import androidx.room.Embedded;
 import androidx.room.Relation;
 
-import com.example.birdsofafeather.models.IStudent;
-
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-public class StudentWithCourses implements IStudent {
+public class StudentWithCourses {
     @Embedded
     public Student student;
 
     @Relation(parentColumn = "id", entityColumn = "student_id", entity = Course.class, projection = {"name"})
     public List<String> courses;
 
-    @Override
-    public int getId() {
-        return this.student.studentId;
-    }
+    public int getStudentId() { return student.getStudentId(); }
 
-    @Override
-    public String getName() {
-        return this.student.name;
-    }
+    public void setStudentId(int studentId) { student.setStudentId(studentId); }
 
-    @Override
-    public String getHeadshotURL() {
-        return this.student.headshotURL;
-    }
+    public String getName() { return student.getName(); }
 
-    @Override
-    public List<String> getCourses() {
-        return this.courses;
-    }
+    public void setName(String name) { student.setName(name); }
+
+    public String getHeadshotURL() { return student.getHeadshotURL(); }
+
+    public void setHeadshotURL(String headshotURL) { student.setHeadshotURL(headshotURL); }
+
+    public List<String> getCourses() { return courses; }
 
     public List<String> getCommonCourses(StudentWithCourses otherStudent) {
-        List<String> commonCourses = new ArrayList<>(this.courses);
+        List<String> commonCourses = new ArrayList<>(courses);
         if (otherStudent == null) return new ArrayList<>();
         commonCourses.retainAll(otherStudent.getCourses());
         return commonCourses;
