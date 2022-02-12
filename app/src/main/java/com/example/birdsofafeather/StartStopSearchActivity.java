@@ -42,11 +42,11 @@ public class StartStopSearchActivity extends AppCompatActivity {
         //stop bluetooth
 
         //hide stop
-        StopButton = (Button)findViewById(R.id.start_button);
+        StopButton = (Button)findViewById(R.id.stop_button);
         StopButton.setVisibility(View.INVISIBLE);
 
         //show start
-        StartButton = (Button) findViewById(R.id.stop_button);
+        StartButton = (Button) findViewById(R.id.start_button);
         StartButton.setVisibility(View.VISIBLE);
 
     }
