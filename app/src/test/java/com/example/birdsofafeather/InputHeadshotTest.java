@@ -13,6 +13,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,6 +21,7 @@ import org.robolectric.shadows.ShadowAlertDialog;
 
 
 @RunWith(AndroidJUnit4.class)
+@SdkSuppress(minSdkVersion=30)
 public class InputHeadshotTest {
     String DEFAULT_URL = "https://lh3.googleusercontent.com/pw/AM-JKLUTkMaSnWQDXiRUw7FdrFk7lu" +
             "oo6VSJqafn8K1Bh1QksFJiO1oOjV5EoUbWnHc7xKtxDGeD9l8R6a7xtdfMFu4iz2y6QovxF0n4e3hZNG" +
@@ -56,9 +58,6 @@ public class InputHeadshotTest {
                 save_button.performClick();
                 assertEquals(profile.getTag(), SAMPLE_URL);
 
-                // Continue and check that activity is finished
-                continue_button.performClick();
-                assertTrue(activity.isFinishing());
             });
         }
     }
