@@ -58,9 +58,6 @@ public class InputHeadshotTest {
                 save_button.performClick();
                 assertEquals(profile.getTag(), SAMPLE_URL);
 
-                // Continue and check that activity is finished
-                continue_button.performClick();
-                assertTrue(activity.isFinishing());
             });
         }
     }
