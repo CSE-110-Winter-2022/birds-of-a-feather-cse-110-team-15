@@ -1,6 +1,11 @@
 package com.example.birdsofafeather;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -50,6 +55,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
         studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList);
         studentsRecycleView.setAdapter(studentsViewAdapter);
+
     }
 
     @Override
@@ -90,6 +96,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         students = db.studentWithCoursesDao().getAll();
         studentAndCountPairList = createStudentCountPairList(me, students);
         studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
+
+
     }
 
     public void onStopClick(View view) {
