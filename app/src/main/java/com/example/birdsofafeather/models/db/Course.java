@@ -6,19 +6,30 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "courses")
 public class Course {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    public int courseId;
+    private int courseId = 0;
 
     @ColumnInfo(name = "student_id")
-    public int studentId;
+    private int studentId;
 
     @ColumnInfo(name = "name")
-    public String name;
+    private String name;
 
-    public Course(int courseId, int studentId, String name) {
-        this.courseId = courseId;
+    public Course(int studentId, String name) {
         this.studentId = studentId;
         this.name = name;
     }
+
+    public int getCourseId() { return courseId; }
+
+    public void setCourseId(int courseId) { this.courseId = courseId; }
+
+    public int getStudentId() { return studentId; }
+
+    public void setStudentId(int studentId) { this.studentId = studentId; }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
 }

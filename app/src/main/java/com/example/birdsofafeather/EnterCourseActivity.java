@@ -47,6 +47,9 @@ public class EnterCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
+        //get the intent for extra student_id
+        Bundle extras = getIntent().getExtras();
+        studentId = extras.getInt("student_id");
         db = AppDatabase.singleton(this);
         enteredCourses = db.coursesDao().getForStudent(studentId);
 
@@ -112,16 +115,16 @@ public class EnterCourseActivity extends AppCompatActivity {
         // check if the course is already entered
         // if so, show an alert and return
         for (Course c : enteredCourses){
-            if (c.name.equals(courseEntry)){
+            if (c.getName().equals(courseEntry)){
                 Utilities.showAlert(this, getString(R.string.duplicate_course_err_str));
                 return;
             }
         }
 
         // create a new course and update the list
-        int newId = db.coursesDao().count() + 1;
-        Course newCourse = new Course(newId, studentId, courseEntry);
+        Course newCourse = new Course(studentId, courseEntry);
         db.coursesDao().insert(newCourse);
+        newCourse.setCourseId(db.coursesDao().lastIdCreated()); // set newly created id
         coursesViewAdapter.addCourse(newCourse);
     }
 

@@ -83,7 +83,7 @@ public class CoursesViewAdapter extends RecyclerView.Adapter<CoursesViewAdapter.
         // set the given course to this row
         public void setCourse(Course course){
             this.course = course;
-            this.courseView.setText(course.name);
+            this.courseView.setText(course.getName());
         }
     }
 
