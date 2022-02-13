@@ -84,6 +84,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         StopButton = (Button) findViewById(R.id.stop_button);
         StopButton.setVisibility(View.VISIBLE);
 
+        // update the recycler view based on the current student list
         updateRecyclerViewIfNonEmpty();
 
         // update students recycler view every 5 seconds based on the database change
@@ -120,9 +121,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
     public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
             (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
         List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
-        int count;
-        Pair<StudentWithCourses, Integer> newPair;
+        int count; // count of common courses
+        Pair<StudentWithCourses, Integer> newPair; // pair of a student and # of common courses
 
+        // create a list of pair of student and the number of common courses
         for (StudentWithCourses student : otherStudents) {
             count = me.getCommonCourses(student).size();
 
