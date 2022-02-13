@@ -66,24 +66,21 @@ public class MainActivity extends AppCompatActivity {
         Task<GoogleSignInAccount> task = mGoogleSignInClient.silentSignIn();
         if (!task.isSuccessful()) {
             // There's no immediate result ready, waits for the async callback.
-            task.addOnCompleteListener(new OnCompleteListener<GoogleSignInAccount>() {
-                @Override
-                public void onComplete(@NonNull Task<GoogleSignInAccount> task) {
-                    try {
-                        task.getResult(ApiException.class);
-                    } catch (ApiException apiException) {
-                        // You can get from apiException.getStatusCode() the detailed error code
-                        // e.g. GoogleSignInStatusCodes.SIGN_IN_REQUIRED means user needs to take
-                        // explicit action to finish sign-in;
-                        // Please refer to GoogleSignInStatusCodes Javadoc for details
-                        if (apiException.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_REQUIRED) {
-                            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-                            startActivityForResult(signInIntent, RC_SIGN_IN);
-                        } else {
-                            // The ApiException status code indicates the detailed failure reason.
-                            // Please refer to the GoogleSignInStatusCodes class reference for more information.
-                            Log.w(TAG, "signInResult:failed code=" + apiException.getStatusCode());
-                        }
+            task.addOnCompleteListener(task1 -> {
+                try {
+                    task1.getResult(ApiException.class);
+                } catch (ApiException apiException) {
+                    // You can get from apiException.getStatusCode() the detailed error code
+                    // e.g. GoogleSignInStatusCodes.SIGN_IN_REQUIRED means user needs to take
+                    // explicit action to finish sign-in;
+                    // Please refer to GoogleSignInStatusCodes Javadoc for details
+                    if (apiException.getStatusCode() == GoogleSignInStatusCodes.SIGN_IN_REQUIRED) {
+                        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                        startActivityForResult(signInIntent, RC_SIGN_IN);
+                    } else {
+                        // The ApiException status code indicates the detailed failure reason.
+                        // Please refer to the GoogleSignInStatusCodes class reference for more information.
+                        Log.w(TAG, "signInResult:failed code=" + apiException.getStatusCode());
                     }
                 }
             });
