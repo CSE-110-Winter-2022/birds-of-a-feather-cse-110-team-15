@@ -3,6 +3,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.shadows.ShadowAlertDialog;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
@@ -40,6 +42,14 @@ public class NameEntryTest {
 
                 Button confirmButton = activity.findViewById(R.id.confirm);
                 confirmButton.performClick(); //no input
+
+                // Robolectric function to return most recently created alert
+                AlertDialog alert = ShadowAlertDialog.getLatestAlertDialog();
+                assertTrue(alert.isShowing());
+
+                // Dismiss alert
+                Button alertButton = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                alertButton.performClick();
 
                 //get what's in textfield
                 TextView confirmName = activity.findViewById(R.id.name_view);
