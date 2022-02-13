@@ -17,8 +17,8 @@ import com.google.android.gms.tasks.Task;
 
 public class GoogleLoginHandler {
     private static final int RC_SIGN_IN = 9001;
-    private GoogleSignInClient mGoogleSignInClient;
-    private AppCompatActivity app;
+    private final GoogleSignInClient mGoogleSignInClient;
+    private final AppCompatActivity app;
 
     public GoogleLoginHandler(AppCompatActivity app) {
         this.app = app;
@@ -28,7 +28,6 @@ public class GoogleLoginHandler {
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestProfile()
-                .requestEmail()
                 .build();
         // [END configure_signin]
 
