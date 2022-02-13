@@ -4,10 +4,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-
-import org.w3c.dom.Text;
 
 public class GoogleNameGetter {
     GoogleSignInAccount account;
@@ -22,7 +19,8 @@ public class GoogleNameGetter {
         String getConfirmName = confirmName.getText().toString();
 
         if (account != null && getConfirmName.isEmpty()) {
-            confirmName.setText(account.getGivenName());
+            String toPutIn = account.getGivenName();
+            confirmName.setText(toPutIn);
         }
     }
 
