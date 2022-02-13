@@ -19,7 +19,7 @@ public interface StudentWithCoursesDao {
    StudentWithCourses get(int id);
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
-   void insert(Student student);
+   long insert(Student student);
 
    @Delete
    void delete(Student student);
