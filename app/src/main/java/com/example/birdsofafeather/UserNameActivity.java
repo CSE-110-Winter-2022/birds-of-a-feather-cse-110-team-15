@@ -21,9 +21,10 @@ public class UserNameActivity extends AppCompatActivity{
         ConfirmName.setVisibility(View.INVISIBLE);
 
         // If name has not been set, and user is signed in
-        if (isUserSignedIn() && nameString.isEmpty()) {
+        if (nameString.isEmpty()) {
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-            updateName(account);
+            GoogleNameGetter get = new GoogleNameGetter(account, findViewById(R.id.input_name_textview));
+
         }
     }
 
@@ -31,22 +32,6 @@ public class UserNameActivity extends AppCompatActivity{
     public void onStart() {
         super.onStart();
     }
-
-    // Check for Google Sign In
-    private boolean isUserSignedIn () {
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
-        return account != null;
-    }
-
-    private void updateName(@Nullable GoogleSignInAccount account) {
-        TextView confirmName = findViewById(R.id.input_name_textview);
-        String getConfirmName = confirmName.getText().toString();
-
-        if (account != null && getConfirmName.isEmpty()) {
-            confirmName.setText(account.getGivenName());
-        }
-    }
-
 
     @Override
     protected void onDestroy() {
