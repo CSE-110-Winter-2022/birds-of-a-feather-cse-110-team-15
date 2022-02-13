@@ -46,9 +46,9 @@ public class NearbyBackgroundService extends Service {
             int i = 0;
             for (String line : data.split(System.lineSeparator())) {
                 if (i == 0) {
-                    name = line.split(",").toString();
+                    name = line.split(",")[0];
                 } else if (i == 1) {
-                    headshotURL = line.split(",").toString();
+                    headshotURL = line.split(",")[0];
                 } else {
                     courses.add(line.replaceAll("\\,", " "));
                 }
@@ -57,8 +57,7 @@ public class NearbyBackgroundService extends Service {
 
             // create objects
             AppDatabase db = AppDatabase.singleton(getApplicationContext());
-            int student_id = db.studentWithCoursesDao().lastIdCreated() + 1;
-            db.studentWithCoursesDao().insert(new Student(name, headshotURL));
+            int student_id = (int) db.studentWithCoursesDao().insert(new Student(name, headshotURL));
             for (String course : courses) {
                 db.coursesDao().insert(new Course(student_id, course));
             }

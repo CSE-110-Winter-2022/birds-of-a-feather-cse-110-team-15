@@ -76,7 +76,7 @@ public class MockScreenActivity extends AppCompatActivity {
         // clear TextView to show processing
         inputDataTextView.setText("");
 
-        // send/publish message to message listener?
+        // send/publish message to service to relay to messageListener
         nearbyService.publish(inputString);
     }
 
