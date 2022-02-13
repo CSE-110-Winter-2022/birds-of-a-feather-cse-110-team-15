@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "679994439513",
+    "project_id": "birds-of-a-feath-1644548236265",
+    "storage_bucket": "birds-of-a-feath-1644548236265.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:679994439513:android:be1efbe76f94ce2d0ebe48",
+        "android_client_info": {
+          "package_name": "com.example.birdsofafeather"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "679994439513-t5f6slde790e9ve7iqn4ibr13c04md8b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.birdsofafeather",
+            "certificate_hash": "66a76c3ff47778a9634f253a70940a51b5bd465f"
+          }
+        },
+        {
+          "client_id": "679994439513-65p52no1p2mf4p675od76kfkonfveor0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCT37-icLb5ceOOOGWhAG74m_eLRaqJRPI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "679994439513-65p52no1p2mf4p675od76kfkonfveor0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
