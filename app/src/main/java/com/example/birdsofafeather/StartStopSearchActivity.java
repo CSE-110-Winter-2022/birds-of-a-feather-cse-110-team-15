@@ -1,5 +1,6 @@
 package com.example.birdsofafeather;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Pair;
@@ -71,6 +72,17 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // else, update the student list when the activity is resumed
         updateRecyclerViewIfNonEmpty();
+
+        // and start updating the list for every 5 second again
+        handler.postDelayed(runnable, updateListDelay);
+    }
+
+    @Override
+    protected void onPause(){
+        super.onPause();
+
+        // stop updating the recycler view when another activity comes to the front
+        handler.removeCallbacks(runnable);
     }
 
     public void onStartClick(View view) {
@@ -92,6 +104,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
             @Override
             public void run() {
                 updateRecyclerViewIfNonEmpty();
+                Utilities.showAlert(StartStopSearchActivity.this, "test");
                 handler.postDelayed(runnable, updateListDelay);
             }
         }, updateListDelay);
