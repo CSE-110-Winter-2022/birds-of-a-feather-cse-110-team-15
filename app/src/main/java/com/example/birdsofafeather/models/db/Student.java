@@ -6,19 +6,30 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "students")
 public class Student {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    public int studentId;
+    private int studentId = 0;
 
     @ColumnInfo(name = "name")
-    public String name;
+    private String name;
 
     @ColumnInfo(name = "headshot_url")
-    public String headshotURL;
+    private String headshotURL;
 
-    public Student(int studentId, String name, String headshotURL) {
-        this.studentId = studentId;
+    public Student(String name, String headshotURL) {
         this.name = name;
         this.headshotURL = headshotURL;
     }
+
+    public int getStudentId() { return studentId; }
+
+    public void setStudentId(int studentId) { this.studentId = studentId; }
+
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    public String getHeadshotURL() { return headshotURL; }
+
+    public void setHeadshotURL(String headshotURL) { this.headshotURL = headshotURL; }
 }
