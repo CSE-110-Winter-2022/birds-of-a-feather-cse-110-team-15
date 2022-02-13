@@ -26,5 +26,6 @@
     <string name="name_input">Name</string>
     <string name="confirm">CONFIRM</string>
     <string name="cont">CONTINUE</string>
+    <string name="go_back">Go Back</string>
 
 </resources>

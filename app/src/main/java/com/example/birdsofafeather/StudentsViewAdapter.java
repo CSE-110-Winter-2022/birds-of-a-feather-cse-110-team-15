@@ -98,7 +98,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             // Go to this student's profile page
             Context context = view.getContext();
             Intent intent = new Intent(context, ViewProfileActivity.class);
-            intent.putExtra("classmate_id", this.student.getId());
+            intent.putExtra("classmate_id", this.student.getStudentId());
             context.startActivity(intent);
         }
     }
