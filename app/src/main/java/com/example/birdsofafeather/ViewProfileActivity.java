@@ -1,11 +1,11 @@
 package com.example.birdsofafeather;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
@@ -21,10 +21,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_profile);
 
         // Retrieve Student from database to put on ProfileView
-        int test_id = 2;
+        Bundle extras = getIntent().getExtras();
+        int classmate_id = extras.getInt("classmate_id");
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        //TODO: Replace test_id with an intent from classmate list activity during linking task
-        StudentWithCourses student = db.studentWithCoursesDao().get(test_id);
+        StudentWithCourses student = db.studentWithCoursesDao().get(classmate_id);
 
         // Set profile name
         TextView nameView = findViewById(R.id.name_view);
