@@ -84,7 +84,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         StopButton = (Button) findViewById(R.id.stop_button);
         StopButton.setVisibility(View.VISIBLE);
 
-        updateRecyclerViewIfNonEmpty();
+        //updateRecyclerViewIfNonEmpty();
 
         // update students recycler view every 5 seconds based on the database change
         handler.postDelayed (runnable = new Runnable() {
