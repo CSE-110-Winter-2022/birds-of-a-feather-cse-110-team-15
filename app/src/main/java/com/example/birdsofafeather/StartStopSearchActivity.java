@@ -117,7 +117,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     // create a list of pairs of student and the number of common courses with me
     // from a StudentWithCourses object (me) and the list of StudentWithCourses
-    public List<Pair<StudentWithCourses, Integer>> createStudentCountPairList
+    public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
             (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
         List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
         int count;
@@ -150,7 +150,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     public void updateRecyclerViewIfNonEmpty() {
         List<StudentWithCourses> otherStudents = db.studentWithCoursesDao().getAll();
         otherStudents.remove(0); // remove myself
-        studentAndCountPairList = createStudentCountPairList(me, otherStudents);
+        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
         if (!otherStudents.isEmpty())
             studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
