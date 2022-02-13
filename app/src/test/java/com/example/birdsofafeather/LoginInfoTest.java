@@ -1,31 +1,60 @@
 package com.example.birdsofafeather;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import android.test.mock.MockContext;
+import android.content.Intent;
 import android.widget.TextView;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SdkSuppress;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 
-@RunWith(JUnit4.class)
+@RunWith(AndroidJUnit4.class)
+@SdkSuppress(minSdkVersion=30)
 public class LoginInfoTest {
-    @Mock
-    GoogleSignInAccount signInAccount;
+    final String EX_NAME = "Testee";
 
     @Test
     public void nameReturned () {
-        TextView view = Mockito.spy(new TextView(new MockContext()));
+        final GoogleSignInAccount signInAccount = mock(GoogleSignInAccount.class);
+        when(signInAccount.getGivenName()).thenReturn(EX_NAME);
 
-        when(signInAccount.getGivenName()).thenReturn("Testee");
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), UserNameActivity.class);
+        try(ActivityScenario<UserNameActivity> scenario = ActivityScenario.launch(intent)){
+            scenario.onActivity(activity -> {
+                scenario.moveToState(Lifecycle.State.CREATED);
+                TextView nameInput = activity.findViewById(R.id.input_name_textview);
 
-        GoogleNameGetter getter = new GoogleNameGetter(signInAccount, view);
+                new GoogleNameGetter(signInAccount, nameInput);
 
-        assert(view.toString().equals("Testee"));
+                // Now try to save a good URL
+                assertEquals(nameInput.getText().toString(), EX_NAME);
+            });
+        }
+    }
+
+    @Test
+    public void noName () {
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), UserNameActivity.class);
+        try(ActivityScenario<UserNameActivity> scenario = ActivityScenario.launch(intent)){
+            scenario.onActivity(activity -> {
+                scenario.moveToState(Lifecycle.State.CREATED);
+                TextView nameInput = activity.findViewById(R.id.input_name_textview);
+
+                new GoogleNameGetter(null, nameInput);
+
+                // Now try to save a good URL
+                assert(nameInput.getText().toString().isEmpty());
+            });
+        }
     }
 }
