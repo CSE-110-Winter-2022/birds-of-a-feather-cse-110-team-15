@@ -104,7 +104,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
             @Override
             public void run() {
                 updateRecyclerViewIfNonEmpty();
-                Utilities.showAlert(StartStopSearchActivity.this, "test");
                 handler.postDelayed(runnable, updateListDelay);
             }
         }, updateListDelay);
@@ -135,7 +134,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
             (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
         List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
         int count; // count of common courses
-        Pair<StudentWithCourses, Integer> newPair; // pair of a student and # of common courses
 
         // create a list of pair of student and the number of common courses
         for (StudentWithCourses student : otherStudents) {
@@ -143,18 +141,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
             // add a pair of this student and count if the student has at least one common course with me
             if (count > 0){
-                newPair = new Pair<StudentWithCourses, Integer>(student, count);
-                studentAndCountPairs.add(newPair);
+                studentAndCountPairs.add(new Pair<StudentWithCourses, Integer>(student, count));
             }
         }
 
         // sort the list by the number of common courses in descending order
-        Collections.sort(studentAndCountPairs, new Comparator<Pair<StudentWithCourses, Integer>>() {
-            @Override
-            public int compare(Pair<StudentWithCourses, Integer> studentWithCoursesIntegerPair, Pair<StudentWithCourses, Integer> t1) {
-                return t1.second - studentWithCoursesIntegerPair.second;
-            }
-        });
+        Collections.sort(studentAndCountPairs, (s1, s2) -> { return s2.second - s1.second; });
 
         return studentAndCountPairs;
     }
