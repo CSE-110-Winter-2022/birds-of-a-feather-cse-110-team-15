@@ -27,21 +27,22 @@ public class NameEntryTest {
     @Test
     /*
     Test no name
-    Steps: Input no name-> click confirm button -> input name -> click confirm
-    -> click continue -> activity finished
+    Steps: Input no name-> click confirm button -> error -> click continue -> error
+     -> input name -> click confirm
     */
-    public void name_after_no_name() {
+    public void test_name_after_no_name() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), UserNameActivity.class);
 
         try(ActivityScenario<UserNameActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 scenario.moveToState(Lifecycle.State.CREATED);
 
+                //set name in edit text to no name
                 EditText EditConfirm = activity.findViewById(R.id.input_name_textview);
-                EditConfirm.setText(""); //set editText to Nachelle
+                EditConfirm.setText("");
 
                 Button confirmButton = activity.findViewById(R.id.confirm);
-                confirmButton.performClick(); //no input
+                confirmButton.performClick();
 
                 // Robolectric function to return most recently created alert
                 AlertDialog alert = ShadowAlertDialog.getLatestAlertDialog();
@@ -56,10 +57,20 @@ public class NameEntryTest {
                 String getConfirmName = confirmName.getText().toString();
                 assertEquals("", getConfirmName);
 
-                //input name
-                EditConfirm.setText("Nachelle"); //set editText to Nachelle
-                confirmButton.performClick(); //click confirm
+                //check that continue with no name results in alert
+                Button continueButton = activity.findViewById(R.id.cont);
+                AlertDialog alertCont = ShadowAlertDialog.getLatestAlertDialog();
+                assertTrue(alertCont.isShowing());
 
+                // Dismiss alert
+                Button alertButtonCont = alert.getButton(AlertDialog.BUTTON_POSITIVE);
+                alertButtonCont.performClick();
+
+                //input new name and click confirm
+                EditConfirm.setText("Nachelle");
+                confirmButton.performClick();
+
+                //get name from text view and check
                 String getNewName = confirmName.getText().toString();
                 assertEquals("Nachelle", getNewName);
             });
@@ -79,14 +90,15 @@ public class NameEntryTest {
                 scenario.moveToState(Lifecycle.State.CREATED);
 
                 EditText confirmName = activity.findViewById(R.id.input_name_textview);
-                confirmName.setText("Nachelle"); //set name to Nachelle
+                confirmName.setText("Nachelle");
 
                 //click confirm button to confirm name
                 Button confirmButton = activity.findViewById(R.id.confirm);
                 confirmButton.performClick();
 
                 //get name in text field
-                String getConfirmName = confirmName.getText().toString();
+                TextView confirmed_name_view = activity.findViewById(R.id.name_view);
+                String getConfirmName = confirmed_name_view.getText().toString();
 
                 assertEquals("Nachelle", getConfirmName);
             });
@@ -105,15 +117,17 @@ public class NameEntryTest {
             scenario.onActivity(activity -> {
                 scenario.moveToState(Lifecycle.State.CREATED);
 
+                //set edit text
                 EditText confirmName = activity.findViewById(R.id.input_name_textview);
-                confirmName.setText("Nachelle Azhley"); //set name to Nachelle Azhley
+                confirmName.setText("Nachelle Azhley");
 
                 //click confirm button to confirm name
                 Button confirmButton = activity.findViewById(R.id.confirm);
-                confirmButton.performClick(); //no input
+                confirmButton.performClick();
 
                 //get name in text field
-                String getConfirmName = confirmName.getText().toString();
+                TextView confirmed_name_view = activity.findViewById(R.id.name_view);
+                String getConfirmName = confirmed_name_view.getText().toString();
 
                 assertEquals("Nachelle Azhley", getConfirmName);
             });
@@ -132,19 +146,20 @@ public class NameEntryTest {
             scenario.onActivity(activity -> {
                 scenario.moveToState(Lifecycle.State.CREATED);
 
+                //set edit text
                 EditText confirmName = activity.findViewById(R.id.input_name_textview);
-                confirmName.setText("X AE A-12"); //set name to X AE A-12
-
-                //get name in text field
-                String getConfirmName = confirmName.getText().toString();
+                confirmName.setText("X AE A-12");
 
                 //click confirm button to confirm name
                 Button confirmButton = activity.findViewById(R.id.confirm);
-                confirmButton.performClick(); //no input
+                confirmButton.performClick();
+
+                //get name in text field
+                TextView confirmed_name_view = activity.findViewById(R.id.name_view);
+                String getConfirmName = confirmed_name_view.getText().toString();
 
                 assertEquals("X AE A-12", getConfirmName);
             });
         }
     }
-
 }
