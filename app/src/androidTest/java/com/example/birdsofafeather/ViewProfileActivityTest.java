@@ -43,6 +43,12 @@ public class ViewProfileActivityTest {
         db.coursesDao().insert(c2);
     }
 
+    @After
+    public void tearDown() {
+        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+        db.close();
+    }
+
     @Test
     /* Tests common courses and other elements show up on profile page if they exist */
     public void testCommonCourses(){
