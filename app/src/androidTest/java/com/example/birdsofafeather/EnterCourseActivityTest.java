@@ -17,10 +17,13 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
@@ -50,12 +53,20 @@ import java.util.ListIterator;
 public class EnterCourseActivityTest {
 
     @Rule
-    public ActivityTestRule<EnterCourseActivity> mActivityTestRule = new ActivityTestRule<>(EnterCourseActivity.class);
+    public ActivityTestRule<EnterCourseActivity> mActivityTestRule = new ActivityTestRule<EnterCourseActivity>(EnterCourseActivity.class) {
+        @Override
+        protected Intent getActivityIntent () {
+            Intent intent = new Intent();
+            intent.putExtra("student_id", 1);
+            return intent;
+        }
+    };
 
     @BeforeClass
     static public void clearCoursesForTest() {
         AppDatabase db = AppDatabase.singleton(InstrumentationRegistry.getInstrumentation().getTargetContext());
         List<Course> courseList= db.coursesDao().getForStudent(1);
+
         for (ListIterator<Course> iter = courseList.listIterator(); iter.hasNext(); ) {
             db.coursesDao().delete(iter.next());
             iter.remove();
@@ -64,8 +75,35 @@ public class EnterCourseActivityTest {
 
     @Test
     public void enterCourseActivityTest() {
+        Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        String course_name_invalid_err_str = targetContext.getString(R.string.course_name_invalid_err_str);
+        String course_number_invalid_err_str = targetContext.getString(R.string.course_number_invalid_err_str);
+        String finish_button_str = targetContext.getString(R.string.finish_button_str);
+        String duplicate_course_err_str = targetContext.getString(R.string.duplicate_course_err_str);
+        String enter_button_str = targetContext.getString(R.string.enter_button_str);
+        String no_course_entered_err_str = targetContext.getString(R.string.no_course_entered_err_str);
+        String empty_field_err_str = targetContext.getString(R.string.empty_field_err_str);
+
+
+        ViewInteraction appCompatSpinner00 = onView(
+                allOf(withId(R.id.year_spinner),
+                        childAtPosition(
+                                childAtPosition(
+                                        withId(android.R.id.content),
+                                        0),
+                                4),
+                        isDisplayed()));
+        appCompatSpinner00.perform(click());
+
+        DataInteraction appCompatCheckedTextView00 = onData(anything())
+                .inAdapterView(childAtPosition(
+                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
+                        0))
+                .atPosition(0);
+        appCompatCheckedTextView00.perform(click());
+
         ViewInteraction materialButton = onView(
-                allOf(withId(R.id.finish_button), withText("Done"),
+                allOf(withId(R.id.finish_button), withText(finish_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -75,7 +113,7 @@ public class EnterCourseActivityTest {
         materialButton.perform(click());
 
         ViewInteraction textView = onView(
-                allOf(withId(android.R.id.message), withText("Please enter at least one course."),
+                allOf(withId(android.R.id.message), withText(no_course_entered_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.check(matches(isDisplayed()));
@@ -90,7 +128,7 @@ public class EnterCourseActivityTest {
         materialButton2.perform(scrollTo(), click());
 
         ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -100,7 +138,7 @@ public class EnterCourseActivityTest {
         materialButton3.perform(click());
 
         ViewInteraction textView2 = onView(
-                allOf(withId(android.R.id.message), withText("Please fill in every field."),
+                allOf(withId(android.R.id.message), withText(empty_field_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView2.check(matches(isDisplayed()));
@@ -125,7 +163,7 @@ public class EnterCourseActivityTest {
         appCompatEditText.perform(replaceText("CSE"), closeSoftKeyboard());
 
         ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -135,7 +173,7 @@ public class EnterCourseActivityTest {
         materialButton5.perform(click());
 
         ViewInteraction textView3 = onView(
-                allOf(withId(android.R.id.message), withText("Please fill in every field."),
+                allOf(withId(android.R.id.message), withText(empty_field_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView3.check(matches(isDisplayed()));
@@ -180,7 +218,7 @@ public class EnterCourseActivityTest {
         appCompatEditText4.perform(replaceText("110"), closeSoftKeyboard());
 
         ViewInteraction materialButton7 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -190,7 +228,7 @@ public class EnterCourseActivityTest {
         materialButton7.perform(click());
 
         ViewInteraction textView4 = onView(
-                allOf(withId(android.R.id.message), withText("Please fill in every field."),
+                allOf(withId(android.R.id.message), withText(empty_field_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView4.check(matches(isDisplayed()));
@@ -215,7 +253,7 @@ public class EnterCourseActivityTest {
         appCompatEditText5.perform(replaceText("C"), closeSoftKeyboard());
 
         ViewInteraction materialButton9 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -225,7 +263,7 @@ public class EnterCourseActivityTest {
         materialButton9.perform(click());
 
         ViewInteraction textView5 = onView(
-                allOf(withId(android.R.id.message), withText("Please enter a 2-4 letter subject name.\n(e.g. SE or COGS)"),
+                allOf(withId(android.R.id.message), withText(course_name_invalid_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView5.check(matches(isDisplayed()));
@@ -260,7 +298,7 @@ public class EnterCourseActivityTest {
         appCompatEditText7.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton11 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -270,7 +308,7 @@ public class EnterCourseActivityTest {
         materialButton11.perform(click());
 
         ViewInteraction textView6 = onView(
-                allOf(withId(android.R.id.message), withText("Please enter a 2-4 letter subject name.\n(e.g. SE or COGS)"),
+                allOf(withId(android.R.id.message), withText(course_name_invalid_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView6.check(matches(isDisplayed()));
@@ -305,7 +343,7 @@ public class EnterCourseActivityTest {
         appCompatEditText9.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton13 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -315,7 +353,7 @@ public class EnterCourseActivityTest {
         materialButton13.perform(click());
 
         ViewInteraction textView7 = onView(
-                allOf(withId(android.R.id.message), withText("Please enter a 2-4 letter subject name.\n(e.g. SE or COGS)"),
+                allOf(withId(android.R.id.message), withText(course_name_invalid_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView7.check(matches(isDisplayed()));
@@ -370,7 +408,7 @@ public class EnterCourseActivityTest {
         appCompatEditText13.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton15 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -380,7 +418,7 @@ public class EnterCourseActivityTest {
         materialButton15.perform(click());
 
         ViewInteraction textView8 = onView(
-                allOf(withId(android.R.id.message), withText("Please enter a valid course number.\n(e.g. 100 or 15L)"),
+                allOf(withId(android.R.id.message), withText(course_number_invalid_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView8.check(matches(isDisplayed()));
@@ -415,7 +453,7 @@ public class EnterCourseActivityTest {
         appCompatEditText15.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton17 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -425,7 +463,7 @@ public class EnterCourseActivityTest {
         materialButton17.perform(click());
 
         ViewInteraction textView9 = onView(
-                allOf(withId(android.R.id.message), withText("Please enter a valid course number.\n(e.g. 100 or 15L)"),
+                allOf(withId(android.R.id.message), withText(course_number_invalid_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView9.check(matches(isDisplayed()));
@@ -460,7 +498,7 @@ public class EnterCourseActivityTest {
         appCompatEditText17.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton19 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -507,7 +545,7 @@ public class EnterCourseActivityTest {
         appCompatEditText20.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton20 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -542,7 +580,7 @@ public class EnterCourseActivityTest {
         materialButton21.perform(click());
 
         ViewInteraction materialButton22 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -552,7 +590,7 @@ public class EnterCourseActivityTest {
         materialButton22.perform(click());
 
         ViewInteraction textView13 = onView(
-                allOf(withId(android.R.id.message), withText("This course is already entered"),
+                allOf(withId(android.R.id.message), withText(duplicate_course_err_str),
                         withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView13.check(matches(isDisplayed()));
@@ -587,7 +625,7 @@ public class EnterCourseActivityTest {
         appCompatEditText22.perform(closeSoftKeyboard());
 
         ViewInteraction materialButton24 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -685,7 +723,7 @@ public class EnterCourseActivityTest {
         appCompatCheckedTextView2.perform(click());
 
         ViewInteraction materialButton25 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
+                allOf(withId(R.id.enter_button), withText(enter_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -727,7 +765,7 @@ public class EnterCourseActivityTest {
         materialButton27.perform(click());
 
         ViewInteraction materialButton28 = onView(
-                allOf(withId(R.id.finish_button), withText("Done"),
+                allOf(withId(R.id.finish_button), withText(finish_button_str),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
