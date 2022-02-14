@@ -35,19 +35,19 @@ jobs:
       - name: Upload results
         uses: actions/upload-artifact@v2
         with:
-          name: instrumented-reports
-          path: ./**/build/reports/androidTests/connected/**
-
-      # Execute unit tests
-      - name: Unit Test
-        run: ./gradlew testDebugUnitTest
-
-      - name: Upload Test Reports Folder
-        uses: actions/upload-artifact@v2
-        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
-        with:
           name: reports
-          path: app/build/test-results # path to where the xml test results are stored
+          path: app/build/reports/androidTests/connected
+
+#      # Execute unit tests
+#      - name: Unit Test
+#        run: ./gradlew testDebugUnitTest
+#
+#      - name: Upload Test Reports Folder
+#        uses: actions/upload-artifact@v2
+#        if: ${{ always() }} # IMPORTANT: Upload reports regardless of status
+#        with:
+#          name: reports
+#          path: app/build/test-results # path to where the xml test results are stored
 
   report:
     runs-on: ubuntu-latest
@@ -62,10 +62,10 @@ jobs:
       - name: Android Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
 
-      - name: Download Instrumented Reports Folder
-        uses: actions/download-artifact@v2
-        with:
-          name: instrumented-reports
-
-      - name: Android Instrumented Test Report
-        uses: asadmansr/android-test-report-action@v1.2.0
+#      - name: Download Instrumented Reports Folder
+#        uses: actions/download-artifact@v2
+#        with:
+#          name: instrumented-reports
+#
+#      - name: Android Instrumented Test Report
+#        uses: asadmansr/android-test-report-action@v1.2.0
