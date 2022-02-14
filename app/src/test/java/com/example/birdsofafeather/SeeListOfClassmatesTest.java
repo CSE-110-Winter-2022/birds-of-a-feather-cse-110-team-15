@@ -3,8 +3,13 @@ package com.example.birdsofafeather;
 import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
+import android.content.Intent;
+import android.widget.Button;
+import android.widget.EditText;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.room.Room;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -25,56 +30,76 @@ public class SeeListOfClassmatesTest {
     private CourseDao coursesDao;
     private AppDatabase db;
 
-    String DEFAULT_URL = "https://lh3.googleusercontent.com/pw/AM-JKLUTkMaSnWQDXiRUw7FdrFk7lu" +
-            "oo6VSJqafn8K1Bh1QksFJiO1oOjV5EoUbWnHc7xKtxDGeD9l8R6a7xtdfMFu4iz2y6QovxF0n4e3hZNG" +
-            "cq1izg_XLtUlX-BStPmG1FnGj9VW0wwoOy5G-i4VaNPA9I=s800-no?authuser=0";
+    @Test
+    /*
+    Insert one student and no classes in common
+     */
+    public void insertOneStudent() throws Exception{
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), StartStopSearchActivity.class);
+        intent.putExtra("student_name", "");
 
-    String SAMPLE_URL = "https://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PS" +
-            "Urijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51" +
-            "nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0";
+        try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(intent)) {
+            scenario.onActivity(activity -> {
+                scenario.moveToState(Lifecycle.State.CREATED);
 
-    String BAD_URL = "bad-link.com";
+                //start mocking
+                Button startMock = activity.findViewById(R.id.finish_button);
+                startMock.performClick(); //no input
 
-    @Before
-    public void createDb(){
-        Context context = ApplicationProvider.getApplicationContext();
-        db.useTestSingleton(context);
-        db = AppDatabase.singleton(context);
-    }
+                //insert student with no classes in common
+                EditText inputStudentInfo = activity.findViewById(R.id.input_data_view);
+                inputStudentInfo.setText("Bill,,,\n" +
+                        "https://lh3.googleusercontent.com/pw/AM-JKLXQ2ix4dg-PzLrPOSMOOy6M3PSUrijov9jCLXs4IGSTwN73B4kr-F6Nti_4KsiUU8LzDSGPSWNKnFdKIPqCQ2dFTRbARsW76pevHPBzc51nceZDZrMPmDfAYyI4XNOnPrZarGlLLUZW9wal6j-z9uA6WQ=w854-h924-no?authuser=0,,,\n" +
+                        "CSE,210,FA,2021\n" +
+                        "CSE,110,WI,2022\n" +
+                        "CSE,110,SP,2022");
 
-    @After
-    public void closeDb() throws IOException{
-        db.close();
+                //click enter and go back to start_stop page
+                Button enterList = activity.findViewById(R.id.enter_button);
+                enterList.performClick();
+
+                //check one person is in db
+                assertEquals(1, db.studentWithCoursesDao().getAll().size());
+
+                Button goBack = activity.findViewById(R.id.button);
+
+                //click start and stop button which should show list
+                Button start_button = activity.findViewById(R.id.start_button);
+                Button stop_button = activity.findViewById(R.id.stop_button);
+
+                //
+                assertEquals("Bill", db.studentWithCoursesDao().getAll().get(0).getName());
+
+
+            });
+        }
     }
 
 //    @Test
 //    /*
-//    Insert one student, no related courses
+//    Insert one student and 1 related courses
 //     */
-//    public void insertOneStudent_noRelated() throws Exception{
+//    public void insertOneStudent() throws Exception{
+//        //create student and insert into db
+//        Student Bill = new Student ("Bill",SAMPLE_URL);
+//        db.studentWithCoursesDao().insert(Bill);
+//        Bill.setStudentId(db.studentWithCoursesDao().lastIdCreated());
 //
-//    }
+//        //create student courses and insert into db
+//        Course nCourse = new Course(11111111, "CSE 111");
+//        db.coursesDao().insert(nCourse);
+//        nCourse.setCourseId(db.coursesDao().lastIdCreated());
+//
+//        //check one person is in db
+//        assertEquals(1, db.studentWithCoursesDao().getAll().size());
+//
+//        //
 
-    @Test
-    /*
-    Insert one student and 1 related courses
-     */
-    public void insertOneStudent() throws Exception{
-        //create student and insert into db
-        Student Bill = new Student ("Bill",SAMPLE_URL);
-        db.studentWithCoursesDao().insert(Bill);
-        Bill.setStudentId(db.studentWithCoursesDao().lastIdCreated());
 
-        //create student courses and insert into db
-        Course nCourse = new Course(11111111, "CSE 111");
-        db.coursesDao().insert(nCourse);
-        nCourse.setCourseId(db.coursesDao().lastIdCreated());
+        //click mock test
+        //add list of people
+        //check if people are there
 
-        //check one person is in db
-        assertEquals(1, db.studentWithCoursesDao().getAll().size());
-
-        //
-    }
 
 //    @Test
 //    /*

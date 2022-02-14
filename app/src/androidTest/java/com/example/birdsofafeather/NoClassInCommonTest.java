@@ -25,6 +25,7 @@ import androidx.test.runner.AndroidJUnit4;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
+import com.example.birdsofafeather.models.db.Student;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -35,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
 @LargeTest
@@ -42,23 +44,23 @@ import java.util.List;
 public class NoClassInCommonTest {
 
     @Rule
-    public ActivityTestRule<StartStopSearchActivity> mActivityTestRule = new ActivityTestRule<StartStopSearchActivity>(StartStopSearchActivity.class) {
-        @Override
-        protected Intent getActivityIntent () {
-            Intent intent = new Intent();
-            intent.putExtra("student_id", 1);
-            return intent;
-        }
-    };
+    public ActivityTestRule<StartStopSearchActivity> mActivityTestRule = new ActivityTestRule<StartStopSearchActivity>(StartStopSearchActivity.class);
 
     @Before
-    static public void addUserCoursesForTest(){
+    public void addUserCoursesForTest(){
+        String DEFAULT_URL = "https://lh3.googleusercontent.com/pw/AM-JKLUTkMaSnWQDXiRUw7FdrFk7lu" +
+                "oo6VSJqafn8K1Bh1QksFJiO1oOjV5EoUbWnHc7xKtxDGeD9l8R6a7xtdfMFu4iz2y6QovxF0n4e3hZNG" +
+                "cq1izg_XLtUlX-BStPmG1FnGj9VW0wwoOy5G-i4VaNPA9I=s800-no?authuser=0";
+
         AppDatabase db = AppDatabase.singleton(InstrumentationRegistry.getInstrumentation().getTargetContext());
         Context context = getApplicationContext();
         AppDatabase.useTestSingleton(context);
         db = AppDatabase.singleton(context);
-        studentDao = db.studentWithCoursesDao();
-        courseDao = db.coursesDao();
+        Student Nachelle = new Student("Nachelle", DEFAULT_URL);
+        Course nCourse = new Course(Nachelle.getStudentId(), "CSE 210 FA 2021");
+
+        db.studentWithCoursesDao().insert(Nachelle);
+        db.coursesDao().insert(nCourse);
 
     }
 
@@ -113,16 +115,22 @@ public class NoClassInCommonTest {
                                 0),
                         isDisplayed()));
         materialButton4.perform(click());
+//
+//        try{
+//            Thread.sleep(1500);
+//        } catch(Exception e){
+//            return;
+//        }
 
-        ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.stop_button), withText("STOP"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        materialButton5.perform(click());
+//        ViewInteraction materialButton5 = onView(
+//                allOf(withId(R.id.stop_button), withText("STOP"),
+//                        childAtPosition(
+//                                childAtPosition(
+//                                        withId(android.R.id.content),
+//                                        0),
+//                                1),
+//                        isDisplayed()));
+//        materialButton5.perform(click());
     }
 
     private static Matcher<View> childAtPosition(
