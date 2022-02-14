@@ -1,11 +1,15 @@
 package com.example.birdsofafeather;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class UserNameActivity extends AppCompatActivity{
     @Override
@@ -13,7 +17,20 @@ public class UserNameActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_name);
         TextView ConfirmName = (TextView) findViewById(R.id.name_view);
+        String nameString = ConfirmName.getText().toString();
         ConfirmName.setVisibility(View.INVISIBLE);
+
+        // If name has not been set, and user is signed in
+        if (nameString.isEmpty()) {
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+            GoogleNameGetter get = new GoogleNameGetter(account, findViewById(R.id.input_name_textview));
+
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
     }
 
     @Override
