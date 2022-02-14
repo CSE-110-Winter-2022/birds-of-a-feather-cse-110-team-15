@@ -15,6 +15,7 @@ import androidx.test.filters.SdkSuppress;
 
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -22,22 +23,31 @@ import org.junit.runner.RunWith;
 @SdkSuppress(minSdkVersion=30)
 public class LoginInfoTest {
     final String EX_NAME = "Testee";
+    Intent intent;
+
+    @Before
+    public void testLoginSetup () {
+        intent = new Intent(ApplicationProvider.getApplicationContext(), UserNameActivity.class);
+    }
 
     @Test
     public void testNameReturned() {
         // Given a name by Google Account, name should be the same as the name given
+
+        // Mocks SignInAccount to simply return a string when queried
         final GoogleSignInAccount signInAccount = mock(GoogleSignInAccount.class);
         when(signInAccount.getGivenName()).thenReturn(EX_NAME);
 
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), UserNameActivity.class);
+        // Launches activity
         try(ActivityScenario<UserNameActivity> scenario = ActivityScenario.launch(intent)){
             scenario.onActivity(activity -> {
                 scenario.moveToState(Lifecycle.State.CREATED);
                 TextView nameInput = activity.findViewById(R.id.input_name_textview);
 
+                // Changes name with non-null signInAccount Google Account object
                 new GoogleNameGetter(signInAccount, nameInput);
 
-                // Now try to save a good URL
+                // Name on UI should match test that mock returned
                 assertEquals(nameInput.getText().toString(), EX_NAME);
             });
         }
@@ -46,15 +56,15 @@ public class LoginInfoTest {
     @Test
     public void testNoName() {
         // Given no name by Google Account, name should remain blank
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), UserNameActivity.class);
         try(ActivityScenario<UserNameActivity> scenario = ActivityScenario.launch(intent)){
             scenario.onActivity(activity -> {
                 scenario.moveToState(Lifecycle.State.CREATED);
                 TextView nameInput = activity.findViewById(R.id.input_name_textview);
 
+                // Changes name with null signInAccount Google Account object
                 new GoogleNameGetter(null, nameInput);
 
-                // Now try to save a good URL
+                // Name on UI should be empty
                 assert(nameInput.getText().toString().isEmpty());
             });
         }
