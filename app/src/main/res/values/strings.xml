@@ -26,6 +26,7 @@
     <string name="name_input">Name</string>
     <string name="confirm">CONFIRM</string>
     <string name="cont">CONTINUE</string>
+    <string name="go_back">Go Back</string>
     <string name="go_to_mock_page">Mock the arrival of nearby messages</string>
     <string name="input_name_prompt_str">Name</string>
     <string name="login_btn_str">Login</string>

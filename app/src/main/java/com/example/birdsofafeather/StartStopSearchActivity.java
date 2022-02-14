@@ -125,7 +125,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     }
 
     public void onMockClicked(View view) {
-        // TODO: link to the mock arrival of nearby messages
+        Intent intent = new Intent(this, MockScreenActivity.class);
+        startActivity(intent);
     }
 
     // create a list of pairs of student and the number of common courses with me
