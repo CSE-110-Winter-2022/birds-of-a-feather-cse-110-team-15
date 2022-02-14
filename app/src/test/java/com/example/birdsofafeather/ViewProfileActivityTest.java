@@ -49,17 +49,6 @@ public class ViewProfileActivityTest {
         db.coursesDao().insert(c3);
     }
 
-    @After
-    public void cleanup() {
-        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-        db.studentWithCoursesDao().delete(s1);
-        db.studentWithCoursesDao().delete(s2);
-        db.studentWithCoursesDao().delete(s3);
-        db.coursesDao().delete(c1);
-        db.coursesDao().delete(c2);
-        db.coursesDao().delete(c3);
-    }
-
     @Test
     /* Tests common courses and other elements show up on profile page if they exist */
     public void testCommonCourses(){
@@ -84,20 +73,4 @@ public class ViewProfileActivityTest {
             });
         }
     }
-
-    @Test
-    /* Tests no common courses show up on profile page when they don't exist*/
-    public void testNoCommonCourses(){
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
-        intent.putExtra("classmate_id", 3); // Bob is looking at Mary's profile
-        try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
-            scenario.onActivity(activity -> {
-                scenario.moveToState(Lifecycle.State.CREATED);
-                TextView courses = activity.findViewById(R.id.common_classes_view);
-                assertEquals(View.VISIBLE, courses.getVisibility());
-                assertEquals("", courses.getText());
-            });
-        }
-    }
-
 }
