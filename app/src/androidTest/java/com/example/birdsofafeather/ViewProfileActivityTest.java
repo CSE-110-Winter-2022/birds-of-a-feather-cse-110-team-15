@@ -24,10 +24,8 @@ import org.junit.runner.RunWith;
 public class ViewProfileActivityTest {
     Student s1;
     Student s2;
-    Student s3;
     Course c1;
     Course c2;
-    Course c3;
 
     @Before
     public void init() {
@@ -41,12 +39,6 @@ public class ViewProfileActivityTest {
         c2 = new Course(2, "CSE 20 FA 2021");
         db.coursesDao().insert(c1);
         db.coursesDao().insert(c2);
-    }
-
-    @After
-    public void tearDown() {
-        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-        db.close();
     }
 
     @Test
