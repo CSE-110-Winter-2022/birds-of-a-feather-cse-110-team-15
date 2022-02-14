@@ -26,7 +26,10 @@ public class MockScreenActivity extends AppCompatActivity {
     private boolean isBound;
     private NearbyBackgroundService nearbyService;
 
+    // used to help facilitate binding/unbinding the NearbyBackgroundService
+    // to the MockScreenActivity
     private final ServiceConnection serviceConnection = new ServiceConnection() {
+        // called when connection to NearbyBackgroundService has been established
         @Override
         public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
             NearbyBackgroundService.NearbyBinder nearbyBinder = (NearbyBackgroundService.NearbyBinder)iBinder;
@@ -34,6 +37,9 @@ public class MockScreenActivity extends AppCompatActivity {
             isBound = true;
         }
 
+        // - called when connection to NearbyBackgroundService has been lost
+        // - does not remove binding; can still receive call to onServiceConnected
+        //   when service is running
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
             isBound = false;
@@ -45,6 +51,7 @@ public class MockScreenActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mock_screen);
 
+        // bindService will initiate the bound service NearbyBackgroundService
         Intent intent = new Intent(this, NearbyBackgroundService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         isBound = true;
