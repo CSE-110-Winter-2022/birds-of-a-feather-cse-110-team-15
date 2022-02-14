@@ -24,7 +24,8 @@ public class LoginInfoTest {
     final String EX_NAME = "Testee";
 
     @Test
-    public void nameReturned () {
+    public void testNameReturned() {
+        // Given a name by Google Account, name should be the same as the name given
         final GoogleSignInAccount signInAccount = mock(GoogleSignInAccount.class);
         when(signInAccount.getGivenName()).thenReturn(EX_NAME);
 
@@ -43,7 +44,8 @@ public class LoginInfoTest {
     }
 
     @Test
-    public void noName () {
+    public void testNoName() {
+        // Given no name by Google Account, name should remain blank
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), UserNameActivity.class);
         try(ActivityScenario<UserNameActivity> scenario = ActivityScenario.launch(intent)){
             scenario.onActivity(activity -> {

@@ -8,13 +8,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class GoogleNameGetter {
     GoogleSignInAccount account;
-    TextView view;
+    TextView confirmName;
 
-    public GoogleNameGetter (GoogleSignInAccount account, TextView view) {
+    // On creation, saves account object passed, as well as TextView that will be changed with the name
+    public GoogleNameGetter (@Nullable GoogleSignInAccount account, TextView confirmName) {
         this.account = account;
-        updateName(account, view);
+        this.confirmName = confirmName;
+        updateName(account, confirmName);
     }
 
+    // If account object exists, get the given name from the profile and set name textview to it
     private void updateName(@Nullable GoogleSignInAccount account, TextView confirmName) {
         String getConfirmName = confirmName.getText().toString();
 
@@ -24,7 +27,8 @@ public class GoogleNameGetter {
         }
     }
 
+    // Returns string in TextView held by object
     public String getName() {
-        return view.getText().toString();
+        return confirmName.getText().toString();
     }
 }
