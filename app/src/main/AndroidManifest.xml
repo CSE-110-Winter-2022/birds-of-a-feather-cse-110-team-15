@@ -11,6 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BirdsOfAFeather">
+        <service
+            android:name=".NearbyBackgroundService"
+            android:enabled="true"
+            android:exported="true"></service>
+
+        <activity
+            android:name=".MockScreenActivity"
+            android:exported="true" />
+
+        <meta-data
+            android:name="com.google.android.nearby.messages.API_KEY"
+            android:value="AIzaSyCcT2-Y3rQ_atzoe77Rtr1-zxHuuex9-H8" />
+
         <activity
             android:name=".UserNameActivity"
             android:exported="true" />
@@ -33,7 +46,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EnterCourseActivity"
+        <activity
+            android:name=".EnterCourseActivity"
             android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.action.DEFAULT" />

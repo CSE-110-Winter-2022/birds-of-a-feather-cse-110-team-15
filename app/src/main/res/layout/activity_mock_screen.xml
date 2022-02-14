@@ -4,51 +4,58 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MockScreenActivity">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="#000000"
-        android:textSize="32sp"
-        android:textStyle="bold"
+        android:text="Mock Screen"
+        android:textSize="34sp"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.489"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.023" />
+        app:layout_constraintVertical_bias="0.138" />
 
-    <Button
-        android:id="@+id/Create_Profile_Button"
+    <EditText
+        android:id="@+id/input_data_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#A564E7"
-        android:onClick="onCreateProfile"
-        android:text="@string/create_profile_btn_str"
-        android:textColor="#000000"
-        android:textSize="11sp"
+        android:ems="10"
+        android:hint="Enter Data Here"
+        android:inputType="textPersonName"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.342" />
+
+    <Button
+        android:id="@+id/enter_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/enter_button_str"
+        android:onClick="onEnterDataClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.339" />
+        app:layout_constraintVertical_bias="0.513" />
 
     <Button
-        android:id="@+id/Login_Button"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="#A564E7"
-        android:onClick="onLoginClick"
-        android:text="@string/login_btn_str"
-        android:textColor="@color/black"
-        android:textSize="11sp"
+        android:text="@string/go_back"
+        android:onClick="onGoBackClicked"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.609" />
+        app:layout_constraintVertical_bias="0.737" />
 </androidx.constraintlayout.widget.ConstraintLayout>
