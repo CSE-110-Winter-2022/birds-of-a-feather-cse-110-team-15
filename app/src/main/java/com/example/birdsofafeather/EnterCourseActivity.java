@@ -2,6 +2,7 @@ package com.example.birdsofafeather;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
@@ -123,8 +124,9 @@ public class EnterCourseActivity extends AppCompatActivity {
 
         // create a new course and update the list
         Course newCourse = new Course(studentId, courseEntry);
-        db.coursesDao().insert(newCourse);
-        newCourse.setCourseId(db.coursesDao().lastIdCreated()); // set newly created id
+        int course_id = (int) db.coursesDao().insert(newCourse);
+        newCourse.setCourseId(course_id); // set newly created id
+        Log.d("", "" + newCourse.getCourseId());
         coursesViewAdapter.addCourse(newCourse);
     }
 

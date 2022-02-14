@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey;
 public class Student {
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    private int studentId = 0;
+    private int studentId;
 
     @ColumnInfo(name = "name")
     private String name;
