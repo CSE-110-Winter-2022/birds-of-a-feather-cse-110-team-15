@@ -35,7 +35,7 @@ jobs:
       - name: Upload results
         uses: actions/upload-artifact@v2
         with:
-          name: reports
+          name: instrumented-reports
           path: ./**/build/reports/androidTests/connected/**
 
       # Execute unit tests
@@ -60,4 +60,12 @@ jobs:
           name: reports
 
       - name: Android Test Report
+        uses: asadmansr/android-test-report-action@v1.2.0
+
+      - name: Download Instrumented Reports Folder
+        uses: actions/download-artifact@v2
+        with:
+          name: instrumented-reports
+
+      - name: Android Instrumented Test Report
         uses: asadmansr/android-test-report-action@v1.2.0
