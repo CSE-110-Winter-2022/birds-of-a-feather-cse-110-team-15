@@ -12,6 +12,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 public class UserNameActivity extends AppCompatActivity{
+    private boolean confirmButtonClick = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +41,8 @@ public class UserNameActivity extends AppCompatActivity{
     }
 
     public void onConfirmNameClick(View view) {
+        confirmButtonClick = true;
+
         //get input name
         TextView confirmName = findViewById(R.id.input_name_textview);
         String getConfirmName = confirmName.getText().toString();
@@ -54,24 +58,30 @@ public class UserNameActivity extends AppCompatActivity{
             showConfirmName.setVisibility(View.VISIBLE);
             showConfirmName.setText(getConfirmName);
         }
+
     }
 
     public void onContinueNameClick(View view){
         //get the intent
         Intent intent = new Intent(this, InputHeadshotActivity.class);
-        TextView InputUserNameView = findViewById(R.id.input_name_textview);
+        TextView InputUserNameView = findViewById(R.id.name_view);
         String getInputUserNameView = InputUserNameView.getText().toString();
 
         //check if user entered a name
         if(getInputUserNameView.equals("")){
             //pop up error message
             Utilities.showAlert(this, "Please enter a name.");
-        } else {
-            //set extra
-            intent.putExtra("student_name", getInputUserNameView);
-            startActivity(intent);
-            finish();
+            return;
+        } else if(confirmButtonClick == false) {
+            //pop up error message
+            Utilities.showAlert(this, "Please click confirm first.");
+            return;
         }
+
+        //set extra
+        intent.putExtra("student_name", getInputUserNameView);
+        startActivity(intent);
+        finish();
     }
 }
 
