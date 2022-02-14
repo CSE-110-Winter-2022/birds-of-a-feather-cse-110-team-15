@@ -30,6 +30,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         TextView nameView = findViewById(R.id.name_view);
         nameView.setText(student.getName());
 
+        Picasso picasso = new Picasso.Builder(this).build();
+        try {
+            Picasso.setSingletonInstance(picasso);
+        } catch (Exception e) {
+        }
+
         // Retrieve profile image from URL using Picasso
         ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);
         String url = student.getHeadshotURL();

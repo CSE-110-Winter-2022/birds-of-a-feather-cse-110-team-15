@@ -53,6 +53,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList);
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
+        // update the recycler view based on the current student list
+        updateRecyclerViewIfNonEmpty();
+
     }
 
     @Override
