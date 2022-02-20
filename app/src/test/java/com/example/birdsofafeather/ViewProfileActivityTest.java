@@ -26,26 +26,29 @@ public class ViewProfileActivityTest {
     Student s2;
     Course c1;
     Course c2;
+    Course c3;
 
     @Before
     public void init() {
-        // Initializing a database where Bob and Bill share one class, Bob and Mary share no classes
+        // Initializing a database where Bob and Bill share only one class
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         s1 = new Student("Bob", "bob.com");
         s2 = new Student("Bill", "bill.com");
         db.studentWithCoursesDao().insert(s1);
         db.studentWithCoursesDao().insert(s2);
         c1 = new Course(1, "CSE 20 FA 2021");
-        c2 = new Course(2, "CSE 20 FA 2021");
+        c2 = new Course(1, "CSE 100 FA 2021");
+        c3 = new Course(2, "CSE 20 FA 2021");
         db.coursesDao().insert(c1);
         db.coursesDao().insert(c2);
+        db.coursesDao().insert(c3);
     }
 
     @Test
     /* Tests common courses and other elements show up on profile page if they exist */
     public void testCommonCourses(){
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
-        intent.putExtra("classmate_id", 3);
+        intent.putExtra("classmate_id", 2);
         try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 // Multiple assertions in one test to avoid launching too many activities
@@ -60,7 +63,7 @@ public class ViewProfileActivityTest {
                 TextView courses = activity.findViewById(R.id.common_classes_view);
                 // Test course loaded and visibility
                 assertEquals(View.VISIBLE, courses.getVisibility());
-                assertEquals("", courses.getText());
+                assertEquals("CSE 20 FA 2021\n", courses.getText());
             });
         }
     }
