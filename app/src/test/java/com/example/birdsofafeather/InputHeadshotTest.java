@@ -57,14 +57,13 @@ public class InputHeadshotTest {
                 url_view.setText(SAMPLE_URL);
                 save_button.performClick();
                 assertEquals(profile.getTag(), SAMPLE_URL);
-
             });
         }
     }
 
     @Test
     /* Test continue without uploading an image URL.
-    Steps: Press Continue -> Check for alert -> Press Continue -> Check activity finished
+    Steps: Press Continue -> Check for alert and default image
     */
     public void testContinueEmptyURL() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), InputHeadshotActivity.class);
@@ -90,9 +89,6 @@ public class InputHeadshotTest {
                 // Check image is default URL
                 assertEquals(profile.getTag(), DEFAULT_URL);
 
-                // Continue and check that activity is finished
-                continue_button.performClick();
-                assertTrue(activity.isFinishing());
             });
         }
     }
