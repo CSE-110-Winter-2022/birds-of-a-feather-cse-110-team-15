@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
-public class DatabaseInstrumentedTest {
+public class DatabaseTest {
     private StudentWithCoursesDao studentDao;
     private CourseDao courseDao;
     private AppDatabase db;
