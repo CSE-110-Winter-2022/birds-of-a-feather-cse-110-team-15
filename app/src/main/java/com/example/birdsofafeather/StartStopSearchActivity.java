@@ -6,6 +6,8 @@ import android.os.Handler;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,6 +32,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private AppDatabase db;
     private Handler handler = new Handler();
     private Runnable runnable;
+    private CheckBox fav;
     private int updateListDelay = 5000; // update the list every 5 seconds
 
     //list of pairs, each of which has a student and the number of common courses with the user
@@ -45,6 +48,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         db = AppDatabase.singleton(this);
         me = db.studentWithCoursesDao().get(1); // get the student with id 1
 
+        fav = (CheckBox)findViewById(R.id.checkBox1);
+        fav.setOnClickListener(favoriteListener);
+
         // Set up the RecycleView for the list of students
         studentAndCountPairList = new ArrayList<>(); // on creation, it's an empty list
         studentsRecycleView = findViewById(R.id.students_recycler_view);
@@ -57,6 +63,17 @@ public class StartStopSearchActivity extends AppCompatActivity {
         updateRecyclerViewIfNonEmpty();
 
     }
+
+    View.OnClickListener favoriteListener = new View.OnClickListener(){
+        @Override
+        public void onClick(View view){
+            if(fav.isChecked()){
+                Toast.makeText(StartStopSearchActivity.this, "Saved to Favorites", Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(StartStopSearchActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
 
     @Override
     protected void onDestroy() {
