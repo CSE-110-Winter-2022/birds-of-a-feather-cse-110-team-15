@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,7 +19,6 @@ import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapter.ViewHolder> {
     // list of pair of StudentWithCourses object and the number of common courses
@@ -78,14 +78,19 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             this.studentImageView = view.findViewById(R.id.classmate_imageview);
             view.setOnClickListener(this);
 
-            fav = (CheckBox) view.findViewById(R.id.checkBox1);
-            fav.setOnClickListener((view) -> {
-                if(fav.isChecked()){
-                    //Toast.makeText(StudentsViewAdapter.this, "Added to Favorites", Toast.LENGTH_SHORT).show()
-                }else{
-                    //Toast.makeText(StudentsViewAdapter.this, "Removed from Favorites", Toast.LENGTH_SHORT).show()
-                }
-            });
+            fav = (CheckBox) view.findViewById(R.id.favorite);
+            fav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                   @Override
+                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                       if (buttonView.isChecked()) {
+                           Toast.makeText(view.getContext(), "Added to Favorites", Toast.LENGTH_SHORT).show();
+                           student.setFavorite(true);
+                       } else {
+                           Toast.makeText(view.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                       }
+                   }
+               }
+            );
         }
 
         // set the student's data to name view, course count view, and image view

@@ -25,6 +25,10 @@ public class StudentWithCourses {
 
     public void setHeadshotURL(String headshotURL) { student.setHeadshotURL(headshotURL); }
 
+    public boolean isFavorite() { return student.isFavorite(); }
+
+    public void setFavorite(boolean favorite) {student.setFavorite(favorite); }
+
     public List<String> getCourses() { return courses; }
 
     public List<String> getCommonCourses(StudentWithCourses otherStudent) {
