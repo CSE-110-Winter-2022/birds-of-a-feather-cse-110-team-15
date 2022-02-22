@@ -45,7 +45,7 @@ public class ViewProfileActivityTest {
     /* Tests common courses and other elements show up on profile page if they exist */
     public void testCommonCourses(){
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
-        intent.putExtra("classmate_id", 3);
+        intent.putExtra("classmate_id", 2);
         try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 // Multiple assertions in one test to avoid launching too many activities

@@ -59,7 +59,7 @@ public class SeeClassmateListTest {
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
                 final int studentCount = studentList.getChildCount();
 
-                // There are 3 other students in database, only two should appear in the view
+                // There are 3 other students in database, but only two should appear in the view
                 assertEquals(2, studentCount);
 
                 // Assert Mary and her information was rendered first because she shares more classes
