@@ -87,6 +87,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                            student.setFavorite(true);
                        } else {
                            Toast.makeText(view.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                           student.setFavorite(false);
                        }
                    }
                }
