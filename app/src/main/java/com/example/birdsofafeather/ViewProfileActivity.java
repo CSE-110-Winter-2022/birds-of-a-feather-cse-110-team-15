@@ -25,7 +25,10 @@ public class ViewProfileActivity extends AppCompatActivity {
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
         int classmate_id = extras.getInt("classmate_id");
+
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
+
+
         StudentWithCourses student = db.studentWithCoursesDao().get(classmate_id);
 
         // Set profile name

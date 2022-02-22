@@ -2,6 +2,7 @@ package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
 
+import android.content.Context;
 import android.content.Intent;
 import android.widget.TextView;
 
@@ -12,6 +13,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Student;
+import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,10 +24,13 @@ public class FavoriteProfileTest {
 
     @Before
     public void init() {
-        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+        Context context = ApplicationProvider.getApplicationContext();
+        AppDatabase.useTestSingleton(context);
+        AppDatabase db = AppDatabase.singleton(context);
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
         db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", true));
+        StudentWithCourses s1 = db.studentWithCoursesDao().get(3);
 
         // Bob's classes
         db.coursesDao().insert(new Course(1, "CSE 20 FA 2021"));
