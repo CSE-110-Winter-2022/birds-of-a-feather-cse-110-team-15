@@ -33,7 +33,7 @@ public class SeeClassmateListTest {
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", true));
         db.studentWithCoursesDao().insert(new Student("Toby", "toby.com"));
         // Bob's classes
         db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
@@ -71,6 +71,10 @@ public class SeeClassmateListTest {
                 assertEquals("mary.com", headshot.getTag());
                 assertEquals("2", classCount.getText());
 
+                // Test Favorites
+                CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertTrue(favoriteIcon.isChecked());
+
                 // Don't actually know if this is how the log messages should be printed or if
                 // it needs to be more elaborate
                 out.println("Expected: Mary        Actual: " + name.getText());
@@ -87,30 +91,12 @@ public class SeeClassmateListTest {
                 assertEquals("bill.com", headshot.getTag());
                 assertEquals("1", classCount.getText());
 
+                favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertFalse(favoriteIcon.isChecked());
+
                 out.println("Expected: Bill        Actual: " + name.getText());
                 out.println("Expected: bill.com    Actual: " + headshot.getTag());
                 out.println("Expected: 1           Actual: " + classCount.getText());
-            });
-        }
-    }
-
-    @Test
-    // Test to make sure the favorite icon works from the student search list
-    public void testFavoriteStudentsFromList(){
-        try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
-            scenario.onActivity(activity -> {
-
-                RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
-                // Getting a the first entry in the RecyclerView, which should be Mary
-                View studentEntry = studentList.getChildAt(0);
-                // Check that Mary is favorited
-                CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
-                assertTrue(favoriteIcon.isChecked());
-
-                // Check that Bill is not favorited
-                studentEntry = studentList.getChildAt(1);
-                favoriteIcon = studentEntry.findViewById(R.id.favorite);
-                assertFalse(favoriteIcon.isChecked());
             });
         }
     }
