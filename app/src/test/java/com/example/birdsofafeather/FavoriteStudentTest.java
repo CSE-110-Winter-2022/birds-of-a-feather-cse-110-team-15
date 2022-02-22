@@ -37,6 +37,8 @@ public class FavoriteStudentTest {
         db.studentWithCoursesDao().insert(s1);
         db.studentWithCoursesDao().insert(s2);
         db.studentWithCoursesDao().insert(s3);
+
+
         Course c1 = new Course(1, "CSE 20 FA 2021");
         Course c2 = new Course(1, "CSE 100 FA 2021");
         Course c3 = new Course(2, "CSE 20 FA 2021");
