@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapter.ViewHolder> {
-    // list of pair of StudentWithCourses object and the number of common courses
+    // List of pair of StudentWithCourses object and the number of common courses
     private List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs;
     private final Consumer<Student> onFavorite;
 
@@ -44,20 +44,20 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         return new ViewHolder(view, onFavorite);
     }
 
-    // bind student data at the given position to the ViewHolder
+    // Bind student data at the given position to the ViewHolder
     @Override
     public void onBindViewHolder(@NonNull StudentsViewAdapter.ViewHolder holder, int position){
-        // pass a pair of student and the number of common courses with me
+        // Pass a pair of student and the number of common courses with me
         holder.setStudent(studentAndCoursesCountPairs.get(position));
     }
 
-    // get the number of items in the list
+    // Get the number of items in the list
     @Override
     public int getItemCount() {
         return this.studentAndCoursesCountPairs.size();
     }
 
-    // update the student list and notify the RecycleView of the update
+    // Update the student list and notify the RecycleView of the update
     public void updateStudentAndCoursesCountPairs(List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs) {
         this.studentAndCoursesCountPairs = studentAndCoursesCountPairs;
         this.notifyDataSetChanged();
@@ -72,7 +72,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         private StudentWithCourses student;
         private final CheckBox fav;
 
-        // constructor
+        // Constructor
         ViewHolder (View view, Consumer<Student> onFavorite) {
             super(view);
             this.studentNameView = view.findViewById(R.id.classmate_name_text);
@@ -80,21 +80,6 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             this.studentImageView = view.findViewById(R.id.classmate_imageview);
             view.setOnClickListener(this);
 
-<<<<<<< HEAD
-            fav = (CheckBox) view.findViewById(R.id.favorite);
-            fav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                   @Override
-                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                       if (buttonView.isChecked()) {
-                           Toast.makeText(view.getContext(), "Added to Favorites", Toast.LENGTH_SHORT).show();
-                           student.setFavorite(true);
-                       } else {
-                           Toast.makeText(view.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
-                           student.setFavorite(false);
-                       }
-                   }
-               }
-=======
             fav = view.findViewById(R.id.favorite);
             fav.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (buttonView.isChecked()) {
@@ -105,9 +90,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                     student.setFavorite(false);
                 }
                 onFavorite.accept(student.getStudent());
-            }
->>>>>>> d0cac9b73871872d7a0a6c65f66ffca00b38c457
-            );
+            });
         }
 
         // Set the student's data to name view, course count view, and image view
@@ -122,14 +105,21 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             this.commonCourseCountView.setText(String.valueOf(commonCourseCount));
 
             // Set the view student's profile
+            Picasso picasso = new Picasso.Builder(fav.getContext()).build();
+            try {
+                Picasso.setSingletonInstance(picasso);
+            } catch (Exception e) {
+            }
+
             String url = student.getHeadshotURL();
             Picasso.get().load(url).into(studentImageView);
             studentImageView.setTag(url); // Tag the image with its URL
 
+            // Set favorite status
             fav.setChecked(student.isFavorite());
         }
 
-        // define the on click view
+        // Define the onClick behavior
         @Override
         public void onClick(View view){
             // Go to this student's profile page

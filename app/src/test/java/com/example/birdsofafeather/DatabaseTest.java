@@ -209,4 +209,17 @@ public class DatabaseTest {
         courseDao.insert(c2);
         assertEquals(courseDao.count(), 2);
     }
+
+    @Test
+    public void favoriteStudent(){
+        // Test student is initially not favorited
+        assertEquals(false, s1.isFavorite());
+
+        studentDao.insert(s1);
+        s1.setFavorite(true);
+        studentDao.updateStudent(s1);
+
+        // Test favorite is accurately updated
+        assertEquals(true, s1.isFavorite());
+    }
 }
