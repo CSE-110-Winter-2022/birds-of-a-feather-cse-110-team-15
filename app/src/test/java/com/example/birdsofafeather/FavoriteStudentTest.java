@@ -23,11 +23,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class FavoriteStudentTest {
+    AppDatabase db;
 
     @Before
     // Initialize a database where Bob is the user, Bill shares 1 class with him and Mary shares 2
     public void init(){
-        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+        db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         Student s1 = new Student("Bob", "bob.com");
         Student s2 = new Student("Bill", "bill.com");
         Student s3 = new Student("Mary", "mary.com");
@@ -57,7 +58,6 @@ public class FavoriteStudentTest {
     public void testFavoriteStudentsFromList(){
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
             scenario.onActivity(activity -> {
-                AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
                 // Mary is the student we will be favoriting/unfavoriting. She has ID 3 in our db
 
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
