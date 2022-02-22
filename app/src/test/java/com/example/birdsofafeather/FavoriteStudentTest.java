@@ -29,23 +29,21 @@ public class FavoriteStudentTest {
     // Initialize a database where Bob is the user, Bill shares 1 class with him and Mary shares 2
     public void init(){
         db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-        Student s1 = new Student("Bob", "bob.com");
-        Student s2 = new Student("Bill", "bill.com");
-        Student s3 = new Student("Mary", "mary.com");
-        db.studentWithCoursesDao().insert(s1);
-        db.studentWithCoursesDao().insert(s2);
-        db.studentWithCoursesDao().insert(s3);
+        db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
+        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
+        // Bob's classes
+        db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course(1, "CSE 100 FA 2021")) ;
 
-        Course c1 = new Course(1, "CSE 20 FA 2021");
-        Course c2 = new Course(1, "CSE 100 FA 2021");
-        Course c3 = new Course(2, "CSE 20 FA 2021");
-        Course c4 = new Course(3, "CSE 20 FA 2021");
-        Course c5 = new Course(3, "CSE 100 FA 2021");
-        db.coursesDao().insert(c1);
-        db.coursesDao().insert(c2);
-        db.coursesDao().insert(c3);
-        db.coursesDao().insert(c4);
-        db.coursesDao().insert(c5);
+        // Bill's class (Has 2, shares 1)
+        db.coursesDao().insert(new Course(2, "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course(2, "CSE 15L FA 2021")) ;
+
+        // Mary's classes (Has 2, shares 2)
+        db.coursesDao().insert(new Course(3, "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course(3, "CSE 100 FA 2021")) ;
+
     }
 //
 //    @After
