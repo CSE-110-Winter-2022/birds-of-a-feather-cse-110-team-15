@@ -1,13 +1,10 @@
 package com.example.birdsofafeather;
 
 
-import static android.content.Context.ACTIVITY_SERVICE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import android.app.ActivityManager;
-import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -23,7 +20,6 @@ import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,13 +48,12 @@ public class FavoriteStudentTest {
         db.coursesDao().insert(c4);
         db.coursesDao().insert(c5);
     }
-    @After
-    public void cleanup(){
-        Context context = ApplicationProvider.getApplicationContext();
-        ((ActivityManager) context.getSystemService(ACTIVITY_SERVICE))
-                .clearApplicationUserData();
-    }
-
+//
+//    @After
+//    public void cleanup() {
+//        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+//        db.clearAllTables();
+//    }
     @Test
     // Test to make sure the favorite icon works from the student search list
     public void testFavoriteStudentsFromList(){
@@ -73,7 +68,6 @@ public class FavoriteStudentTest {
                 // Get favorite icon (actually a checkbox) at that specific entry
                 CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
 
-                TextView name = studentEntry.findViewById(R.id.classmate_name_text);
                 StudentWithCourses mary = db.studentWithCoursesDao().get(3);
                 assertFalse(mary.isFavorite());
                 favoriteIcon.setChecked(true);          // We've favorited Mary.
@@ -112,9 +106,6 @@ public class FavoriteStudentTest {
                 mary = db.studentWithCoursesDao().get(3);
                 assertTrue(mary.isFavorite());
             });
-
         }
     }
-
-
 }
