@@ -80,6 +80,21 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             this.studentImageView = view.findViewById(R.id.classmate_imageview);
             view.setOnClickListener(this);
 
+<<<<<<< HEAD
+            fav = (CheckBox) view.findViewById(R.id.favorite);
+            fav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                   @Override
+                   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                       if (buttonView.isChecked()) {
+                           Toast.makeText(view.getContext(), "Added to Favorites", Toast.LENGTH_SHORT).show();
+                           student.setFavorite(true);
+                       } else {
+                           Toast.makeText(view.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                           student.setFavorite(false);
+                       }
+                   }
+               }
+=======
             fav = view.findViewById(R.id.favorite);
             fav.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (buttonView.isChecked()) {
@@ -91,6 +106,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                 }
                 onFavorite.accept(student.getStudent());
             }
+>>>>>>> d0cac9b73871872d7a0a6c65f66ffca00b38c457
             );
         }
 

@@ -22,7 +22,7 @@
         tools:srcCompat="@tools:sample/avatars" />
 
     <CheckBox
-        android:id="@+id/favorite"
+        android:id="@+id/favorite_1"
         style="?android:attr/starStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
