@@ -49,6 +49,7 @@ public class FavoriteStudentTest {
         db.coursesDao().insert(c5);
     }
 
+
     @Test
     // Test to make sure the favorite icon works from the student search list
     public void testFavoriteStudentsFromList(){
