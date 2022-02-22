@@ -1,14 +1,11 @@
 package com.example.birdsofafeather;
 
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import android.content.Intent;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
@@ -37,7 +34,6 @@ public class FavoriteStudentTest {
         db.studentWithCoursesDao().insert(s1);
         db.studentWithCoursesDao().insert(s2);
         db.studentWithCoursesDao().insert(s3);
-
 
         Course c1 = new Course(1, "CSE 20 FA 2021");
         Course c2 = new Course(1, "CSE 100 FA 2021");
@@ -86,28 +82,28 @@ public class FavoriteStudentTest {
         }
     }
 
-    @Test
-    // Test to make sure favorite icon works from the profile page (using same database)
-    public void testFavoriteStudentsFromProfile(){
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
-        intent.putExtra("classmate_id", 3);
-        try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
-            scenario.onActivity(activity -> {
-                AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-                TextView name = activity.findViewById(R.id.name_view);
-                CheckBox favoriteIcon = activity.findViewById(R.id.profile_favorite);
-
-                assertEquals("Mary", name.getText());
-
-                // Same steps as previous test
-                StudentWithCourses mary = db.studentWithCoursesDao().get(3);
-
-                assertFalse(mary.isFavorite());
-                favoriteIcon.setChecked(true);
-
-                mary = db.studentWithCoursesDao().get(3);
-                assertTrue(mary.isFavorite());
-            });
-        }
-    }
+//    @Test
+//    // Test to make sure favorite icon works from the profile page (using same database)
+//    public void testFavoriteStudentsFromProfile(){
+//        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
+//        intent.putExtra("classmate_id", 3);
+//        try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
+//            scenario.onActivity(activity -> {
+//                AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+//                TextView name = activity.findViewById(R.id.name_view);
+//                CheckBox favoriteIcon = activity.findViewById(R.id.profile_favorite);
+//
+//                assertEquals("Mary", name.getText());
+//
+//                // Same steps as previous test
+//                StudentWithCourses mary = db.studentWithCoursesDao().get(3);
+//
+//                assertFalse(mary.isFavorite());
+//                favoriteIcon.setChecked(true);
+//
+//                mary = db.studentWithCoursesDao().get(3);
+//                assertTrue(mary.isFavorite());
+//            });
+//        }
+//    }
 }
