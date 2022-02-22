@@ -15,7 +15,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Student;
-import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,15 +22,14 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class FavoriteStudentTest {
-    AppDatabase db;
 
     @Before
-    // Initialize a database where Bob is the user, Bill shares 1 class with him and Mary shares 2
+    // Initialize a database where Bob is the user, Mary is favorites and Bill is not
     public void init(){
-        db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", true));
         // Bob's classes
         db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course(1, "CSE 100 FA 2021")) ;
@@ -45,37 +43,25 @@ public class FavoriteStudentTest {
         db.coursesDao().insert(new Course(3, "CSE 100 FA 2021")) ;
 
     }
-//
-//    @After
-//    public void cleanup() {
-//        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-//        db.clearAllTables();
-//    }
+
     @Test
     // Test to make sure the favorite icon works from the student search list
     public void testFavoriteStudentsFromList(){
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
             scenario.onActivity(activity -> {
-                // Mary is the student we will be favoriting/unfavoriting. She has ID 3 in our db
 
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
                 // Getting a the first entry in the RecyclerView, which should be Mary
                 View studentEntry = studentList.getChildAt(0);
-                // Get favorite icon (actually a checkbox) at that specific entry
+                // Check that Mary is favorited
                 CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertTrue(favoriteIcon.isChecked());
 
-                StudentWithCourses mary = db.studentWithCoursesDao().get(3);
-                assertFalse(mary.isFavorite());
-                favoriteIcon.setChecked(true);          // We've favorited Mary.
+                // Check that Bill is not favorited
+                studentEntry = studentList.getChildAt(1);
+                favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertFalse(favoriteIcon.isChecked());
 
-                // Reload Mary from database and check she's favorited
-                mary = db.studentWithCoursesDao().get(3);
-                assertTrue(mary.isFavorite());
-
-                // Unfavorite Mary again
-                favoriteIcon.setChecked(false);
-                mary = db.studentWithCoursesDao().get(3);
-                assertFalse(mary.isFavorite());
             });
         }
     }
