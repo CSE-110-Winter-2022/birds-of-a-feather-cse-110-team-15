@@ -1,9 +1,12 @@
 package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static java.lang.System.out;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -87,6 +90,27 @@ public class SeeClassmateListTest {
                 out.println("Expected: Bill        Actual: " + name.getText());
                 out.println("Expected: bill.com    Actual: " + headshot.getTag());
                 out.println("Expected: 1           Actual: " + classCount.getText());
+            });
+        }
+    }
+
+    @Test
+    // Test to make sure the favorite icon works from the student search list
+    public void testFavoriteStudentsFromList(){
+        try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
+            scenario.onActivity(activity -> {
+
+                RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
+                // Getting a the first entry in the RecyclerView, which should be Mary
+                View studentEntry = studentList.getChildAt(0);
+                // Check that Mary is favorited
+                CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertTrue(favoriteIcon.isChecked());
+
+                // Check that Bill is not favorited
+                studentEntry = studentList.getChildAt(1);
+                favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertFalse(favoriteIcon.isChecked());
             });
         }
     }
