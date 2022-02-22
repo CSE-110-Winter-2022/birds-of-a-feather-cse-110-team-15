@@ -39,7 +39,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
 
 
-        CheckBox favoriteCheck =  findViewById(R.id.favorite);
+        CheckBox favoriteCheck =  findViewById(R.id.profile_favorite);
         // Set favorite icon
         if (student.isFavorite()){
             favoriteCheck.setChecked(true);

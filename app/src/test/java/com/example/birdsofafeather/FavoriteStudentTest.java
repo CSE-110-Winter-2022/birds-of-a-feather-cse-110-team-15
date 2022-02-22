@@ -2,11 +2,12 @@ package com.example.birdsofafeather;
 
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-import static java.lang.System.out;
-
+import android.content.Intent;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Student;
+import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -48,58 +50,61 @@ public class FavoriteStudentTest {
     }
 
     @Test
-    // Simple test to make sure a student's entry shows up correctly on the search page.
-    public void testViewingList(){
+    // Test to make sure the favorite icon works from the student search list
+    public void testFavoriteStudentsFromList(){
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
             scenario.onActivity(activity -> {
+                AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+                // Mary is the student we will be favoriting/unfavoriting. She has ID 3 in our db
+
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
-                final int studentCount = studentList.getChildCount();
-                // Only two other students in database, only two should appear in the view
-                assertEquals(2, studentCount);
-
-                // Assert Mary and her information was rendered first because she shares more classes
+                // Getting a the first entry in the RecyclerView, which should be Mary
                 View studentEntry = studentList.getChildAt(0);
+                // Get favorite icon (actually a checkbox) at that specific entry
+                CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
+
                 TextView name = studentEntry.findViewById(R.id.classmate_name_text);
-                ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-                assertEquals("Mary", name.getText());
-                assertEquals("mary.com", headshot.getTag());
-                assertEquals("2", classCount.getText());
+                StudentWithCourses mary = db.studentWithCoursesDao().get(3);
+                assertFalse(mary.isFavorite());
+                favoriteIcon.setChecked(true);          // We've favorited Mary.
 
-                // Don't actually know if this is how the log messages should be printed or if
-                // it needs to be more elaborate
-                out.println("Expected: Mary        Actual: " + name.getText());
-                out.println("Expected: mary.com    Actual: " + headshot.getTag());
-                out.println("Expected: 2           Actual: " + classCount.getText());
+                // Reload Mary from database and check she's favorited
+                mary = db.studentWithCoursesDao().get(3);
+                assertTrue(mary.isFavorite());
 
-
-                // Assert Bill's info was rendered next correctly
-                studentEntry = studentList.getChildAt(1);
-                name = studentEntry.findViewById(R.id.classmate_name_text);
-                headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-                assertEquals("Bill", name.getText());
-                assertEquals("bill.com", headshot.getTag());
-                assertEquals("1", classCount.getText());
-
-                out.println("Expected: Bill        Actual: " + name.getText());
-                out.println("Expected: bill.com    Actual: " + headshot.getTag());
-                out.println("Expected: 1           Actual: " + classCount.getText());
+                // Unfavorite Mary again
+                favoriteIcon.setChecked(false);
+                mary = db.studentWithCoursesDao().get(3);
+                assertFalse(mary.isFavorite());
             });
         }
     }
 
     @Test
-    public void testFavoriteStudentsFromList(){
-        try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
+    // Test to make sure favorite icon works from the profile page (using same database)
+    public void testFavoriteStudentsFromProfile(){
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
+        intent.putExtra("classmate_id", 3);
+        try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
-                RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
+                AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+                TextView name = activity.findViewById(R.id.name_view);
+                CheckBox favoriteIcon = activity.findViewById(R.id.profile_favorite);
 
-                // This is how we get the entry at a specific index in the RecyclerView
-                View studentEntry = studentList.getChildAt(0);
-                final int studentCount = studentList.getChildCount();
+                assertEquals("Mary", name.getText());
+
+                // Same steps as previous test
+                StudentWithCourses mary = db.studentWithCoursesDao().get(3);
+
+                assertFalse(mary.isFavorite());
+                favoriteIcon.setChecked(true);
+
+                mary = db.studentWithCoursesDao().get(3);
+                assertTrue(mary.isFavorite());
             });
+
         }
     }
+
 
 }
