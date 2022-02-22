@@ -26,7 +26,7 @@ public class Student {
         this.favorite = false;        // New students begin as unfavorited
     }
     @Ignore
-    // Overloaded constructor for setting a favorite student (just in case)
+    // Overloaded constructor for setting a favorite student (for testing)
     public Student(String name, String headshotURL, boolean favorite) {
         this.name = name;
         this.headshotURL = headshotURL;
