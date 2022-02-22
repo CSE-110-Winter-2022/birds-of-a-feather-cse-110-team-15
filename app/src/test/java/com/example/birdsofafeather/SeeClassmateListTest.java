@@ -80,7 +80,7 @@ public class SeeClassmateListTest {
                 out.println("Expected: Mary        Actual: " + name.getText());
                 out.println("Expected: mary.com    Actual: " + headshot.getTag());
                 out.println("Expected: 2           Actual: " + classCount.getText());
-
+                out.println("Expected: True        Actual: " + favoriteIcon.isChecked());
 
                 // Assert Bill's info was rendered next correctly
                 studentEntry = studentList.getChildAt(1);
@@ -97,6 +97,8 @@ public class SeeClassmateListTest {
                 out.println("Expected: Bill        Actual: " + name.getText());
                 out.println("Expected: bill.com    Actual: " + headshot.getTag());
                 out.println("Expected: 1           Actual: " + classCount.getText());
+                out.println("Expected: True        Actual: " + favoriteIcon.isChecked());
+
             });
         }
     }

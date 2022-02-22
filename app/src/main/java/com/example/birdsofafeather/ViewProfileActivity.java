@@ -25,10 +25,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
         int classmate_id = extras.getInt("classmate_id");
-
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-
-
         StudentWithCourses student = db.studentWithCoursesDao().get(classmate_id);
 
         // Set profile name
@@ -40,7 +37,6 @@ public class ViewProfileActivity extends AppCompatActivity {
             Picasso.setSingletonInstance(picasso);
         } catch (Exception e) {
         }
-
 
         CheckBox favoriteCheck =  findViewById(R.id.profile_favorite);
         // Set favorite icon
@@ -61,7 +57,6 @@ public class ViewProfileActivity extends AppCompatActivity {
                 db.studentWithCoursesDao().updateStudent(student.getStudent());
                 }
         );
-
 
         // Retrieve profile image from URL using Picasso
         ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);

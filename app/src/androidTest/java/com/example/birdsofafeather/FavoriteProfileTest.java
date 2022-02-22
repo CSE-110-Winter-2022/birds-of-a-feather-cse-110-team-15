@@ -27,6 +27,7 @@ public class FavoriteProfileTest {
         Context context = ApplicationProvider.getApplicationContext();
         AppDatabase.useTestSingleton(context);
         AppDatabase db = AppDatabase.singleton(context);
+
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
         db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", true));
