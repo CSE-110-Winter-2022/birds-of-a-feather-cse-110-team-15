@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,22 +14,26 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapter.ViewHolder> {
     // list of pair of StudentWithCourses object and the number of common courses
     private List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs;
+    private final Consumer<Student> onFavorite;
 
-    // constructor
-    StudentsViewAdapter(List<Pair<StudentWithCourses, Integer>> students) {
+    // Constructor for StudentsViewAdapter
+    StudentsViewAdapter(List<Pair<StudentWithCourses, Integer>> students, Consumer<Student> onFavorite) {
         super();
         this.studentAndCoursesCountPairs = students;
+        this.onFavorite = onFavorite;
     }
 
-    // create a copy of the row layout and pass it to the ViewHolder
+    // Create a copy of the row layout and pass it to the ViewHolder
     @NonNull
     @Override
     public StudentsViewAdapter.ViewHolder onCreateViewHolder (@NonNull ViewGroup parent, int viewType){
@@ -38,7 +41,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                 .from(parent.getContext())
                 .inflate(R.layout.classmate_row, parent, false);
 
-        return new ViewHolder(view);
+        return new ViewHolder(view, onFavorite);
     }
 
     // bind student data at the given position to the ViewHolder
@@ -57,7 +60,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
     // update the student list and notify the RecycleView of the update
     public void updateStudentAndCoursesCountPairs(List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs) {
         this.studentAndCoursesCountPairs = studentAndCoursesCountPairs;
-        this.notifyDataSetChanged();;
+        this.notifyDataSetChanged();
     }
 
     // ViewHolder for the students RecycleView that handles onClick events and set data to the row
@@ -67,17 +70,17 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         private final TextView commonCourseCountView;
         private final ImageView studentImageView;
         private StudentWithCourses student;
-        private int commonCourseCount;
-        private CheckBox fav;
+        private final CheckBox fav;
 
         // constructor
-        ViewHolder (View view) {
+        ViewHolder (View view, Consumer<Student> onFavorite) {
             super(view);
             this.studentNameView = view.findViewById(R.id.classmate_name_text);
             this.commonCourseCountView = view.findViewById(R.id.common_course_count_textview);
             this.studentImageView = view.findViewById(R.id.classmate_imageview);
             view.setOnClickListener(this);
 
+<<<<<<< HEAD
             fav = (CheckBox) view.findViewById(R.id.favorite);
             fav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                    @Override
@@ -91,24 +94,39 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                        }
                    }
                }
+=======
+            fav = view.findViewById(R.id.favorite);
+            fav.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (buttonView.isChecked()) {
+                    Toast.makeText(view.getContext(), "Added to Favorites", Toast.LENGTH_SHORT).show();
+                    student.setFavorite(true);
+                } else {
+                    Toast.makeText(view.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                    student.setFavorite(false);
+                }
+                onFavorite.accept(student.getStudent());
+            }
+>>>>>>> d0cac9b73871872d7a0a6c65f66ffca00b38c457
             );
         }
 
-        // set the student's data to name view, course count view, and image view
+        // Set the student's data to name view, course count view, and image view
         public void setStudent(Pair<StudentWithCourses, Integer> studentAndCountPair) {
             this.student = studentAndCountPair.first;
-            this.commonCourseCount = studentAndCountPair.second;
+            int commonCourseCount = studentAndCountPair.second;
 
-            // set the view for student's name
+            // Set the view for student's name
             this.studentNameView.setText(student.getName());
 
-            // set the view the count of the common course with the user and this student
+            // Set the view the count of the common course with the user and this student
             this.commonCourseCountView.setText(String.valueOf(commonCourseCount));
 
-            // set the view student's profile
+            // Set the view student's profile
             String url = student.getHeadshotURL();
             Picasso.get().load(url).into(studentImageView);
             studentImageView.setTag(url); // Tag the image with its URL
+
+            fav.setChecked(student.isFavorite());
         }
 
         // define the on click view

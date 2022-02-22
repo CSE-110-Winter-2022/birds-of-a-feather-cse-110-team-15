@@ -13,6 +13,8 @@ public class StudentWithCourses {
     @Relation(parentColumn = "id", entityColumn = "student_id", entity = Course.class, projection = {"name"})
     public List<String> courses;
 
+    public Student getStudent() { return student;}
+
     public int getStudentId() { return student.getStudentId(); }
 
     public void setStudentId(int studentId) { student.setStudentId(studentId); }
