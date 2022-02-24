@@ -97,7 +97,7 @@ public class SeeClassmateListTest {
                 out.println("Expected: Bill        Actual: " + name.getText());
                 out.println("Expected: bill.com    Actual: " + headshot.getTag());
                 out.println("Expected: 1           Actual: " + classCount.getText());
-                out.println("Expected: True        Actual: " + favoriteIcon.isChecked());
+                out.println("Expected: False        Actual: " + favoriteIcon.isChecked());
 
             });
         }
