@@ -4,13 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
-    android:layout_height="80sp"
+    android:layout_height="60sp"
     android:layout_marginLeft="16sp"
     android:layout_marginRight="16sp"
     android:gravity="center_vertical">
 
     <CheckBox
-        android:id="@+id/checkBox1"
+        android:id="@+id/favorite"
         style="?android:attr/starStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,24 +44,25 @@
         android:layout_marginBottom="4dp"
         android:gravity="center_vertical|center_horizontal"
         android:text=""
-        android:textColor="#00FF00"
+        android:textColor="@color/purple_500"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.909"
+        app:layout_constraintHorizontal_bias="0.906"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.714" />
+        app:layout_constraintVertical_bias="0.75" />
 
     <ImageView
         android:id="@+id/classmate_imageview"
         android:layout_width="57dp"
         android:layout_height="54dp"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="4dp"
         android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/classmate_name_text"
-        app:layout_constraintHorizontal_bias="0.837"
+        app:layout_constraintHorizontal_bias="0.825"
         app:layout_constraintStart_toStartOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 

@@ -7,7 +7,6 @@ import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,7 +18,6 @@ import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class StartStopSearchActivity extends AppCompatActivity {
@@ -48,15 +46,16 @@ public class StartStopSearchActivity extends AppCompatActivity {
         db = AppDatabase.singleton(this);
         me = db.studentWithCoursesDao().get(1); // get the student with id 1
 
-        fav = (CheckBox)findViewById(R.id.checkBox1);
-        fav.setOnClickListener(favoriteListener);
-
         // Set up the RecycleView for the list of students
         studentAndCountPairList = new ArrayList<>(); // on creation, it's an empty list
         studentsRecycleView = findViewById(R.id.students_recycler_view);
         studentsLayoutManager = new LinearLayoutManager(this);
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
-        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList);
+
+        // Pass in student list and function to update favorite status to the adapter
+        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student)->{
+            db.studentWithCoursesDao().updateStudent(student);
+        } );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
         // update the recycler view based on the current student list
@@ -64,21 +63,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     }
 
-    View.OnClickListener favoriteListener = new View.OnClickListener(){
-        @Override
-        public void onClick(View view){
-            if(fav.isChecked()){
-                Toast.makeText(StartStopSearchActivity.this, "Saved to Favorites", Toast.LENGTH_SHORT).show();
-            }else{
-                Toast.makeText(StartStopSearchActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
-            }
-        }
-    };
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override

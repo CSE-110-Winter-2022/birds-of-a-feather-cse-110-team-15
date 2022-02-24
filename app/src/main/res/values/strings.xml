@@ -5,7 +5,7 @@
     <string name="course_number_hintStr">Number</string>
     <string name="enter_button_str">Enter</string>
     <string name="finish_button_str">Done</string>
-    <string name="name_string" />
+    <string name="name_string"></string>
     <string name="student_profile_picture">Student profile picture</string>
     <string name="common_classes_prompt_string">Common classes with you:</string>
     <string name="saveBtnString">Save</string>
