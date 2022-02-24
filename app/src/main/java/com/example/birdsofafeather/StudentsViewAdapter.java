@@ -88,6 +88,14 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
 
             // set the view student's profile
             String url = student.getHeadshotURL();
+
+            // Catch Picasso singleton exceptions (only happens during testing)
+            Picasso picasso = new Picasso.Builder(studentNameView.getContext()).build();
+            try {
+                Picasso.setSingletonInstance(picasso);
+            } catch (Exception e) {
+            }
+
             Picasso.get().load(url).into(studentImageView);
             studentImageView.setTag(url); // Tag the image with its URL
         }
