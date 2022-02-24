@@ -71,6 +71,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         private final ImageView studentImageView;
         private StudentWithCourses student;
         private final CheckBox fav;
+        Picasso picasso;
 
         // Constructor
         ViewHolder (View view, Consumer<Student> onFavorite) {
@@ -107,7 +108,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             this.commonCourseCountView.setText(String.valueOf(commonCourseCount));
 
             // Set the view student's profile
-            Picasso picasso = new Picasso.Builder(fav.getContext()).build();
+            picasso = new Picasso.Builder(fav.getContext()).build();
             try {
                 Picasso.setSingletonInstance(picasso);
             } catch (Exception e) {
