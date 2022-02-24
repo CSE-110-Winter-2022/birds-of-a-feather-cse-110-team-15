@@ -80,6 +80,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             this.studentImageView = view.findViewById(R.id.classmate_imageview);
             view.setOnClickListener(this);
 
+            // Handle favoriting/unfavoriting with a Toast and update to Student object
             fav = view.findViewById(R.id.favorite);
             fav.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (buttonView.isChecked()) {
@@ -89,6 +90,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                     Toast.makeText(view.getContext(), "Removed from Favorites", Toast.LENGTH_SHORT).show();
                     student.setFavorite(false);
                 }
+                // onFavorite updates the student in the database
                 onFavorite.accept(student.getStudent());
             });
         }
