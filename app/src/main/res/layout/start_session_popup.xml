@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="#B8B8D1"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
-    android:background="#C5C1C1"
-    android:layout_gravity="center"
     tools:context=".StartStopSearchActivity">
 
     <TextView
@@ -18,36 +18,41 @@
         android:text="Create / Resume Session"
         android:textSize="20sp"
         android:textStyle="bold"
+        android:textColor="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Spinner
-        android:id="@+id/session_spinner"
-        android:layout_width="167dp"
-        android:layout_height="49dp"
-        android:spinnerMode="dropdown"
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.535" />
+        app:layout_constraintVertical_bias="0.535">
+
+        <Spinner
+            android:id="@+id/session_spinner"
+            android:layout_width="167dp"
+            android:layout_height="49dp"
+            android:dropDownSelector="#000000"
+            android:dropDownWidth="match_parent"
+            android:spinnerMode="dropdown" />
+    </FrameLayout>
 
     <Button
         android:id="@+id/start_session_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="228dp"
-        android:background="#673AB7"
+        android:layout_marginTop="220dp"
         android:text="START SESSION"
-        android:textColor="@color/white"
-        app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.418"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.0" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

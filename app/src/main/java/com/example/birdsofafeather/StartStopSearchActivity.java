@@ -1,5 +1,6 @@
 package com.example.birdsofafeather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -73,7 +75,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         updateRecyclerViewIfNonEmpty();
 
         // get startSessionPopupView
-        LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
     }
 
@@ -113,6 +115,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         List<String> sessions = new ArrayList<>();
         sessions.add("New Session");
         sessions.add("CSE 105");
+        // TODO: change to making a database call to get all sessions (db.sessionsWithStudentsDao.getAll())
         // add all the sessions found in shared preferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Set<String> storedSessions = preferences.getStringSet("sessions", new HashSet<>());
@@ -126,7 +129,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         startSessionSpinner.setSelection(0, true);
 
         // create popup
-        PopupWindow popupWindow = new PopupWindow(startSessionPopupView, 650, 800, true);
+        PopupWindow popupWindow = new PopupWindow(startSessionPopupView, ViewGroup.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
         popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.CENTER, 0, 0);
 
         // set onclick for button to start session
@@ -150,8 +153,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
            Date date = new Date();
            System.out.println(formatter.format(date));
            curSession = formatter.format(date);
+           // TODO: insert into database a new session (new Session("name"))
            // create key in shared preferences to start keeping track of students found
        } else {
+           // TODO: retrieve from database given name of session
            // open an existing session
            curSession = (String) startSessionSpinner.getSelectedItem();
 
