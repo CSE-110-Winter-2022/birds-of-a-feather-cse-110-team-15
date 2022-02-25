@@ -1,11 +1,20 @@
 package com.example.birdsofafeather;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Pair;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +24,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class StartStopSearchActivity extends AppCompatActivity {
     private Button StartButton;
@@ -31,6 +43,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Handler handler = new Handler();
     private Runnable runnable;
     private int updateListDelay = 5000; // update the list every 5 seconds
+    private View startSessionPopupView;
+    private Spinner startSessionSpinner;
+    private String curSession;
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
@@ -39,6 +54,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_stop_search);
+        setTitle(getString(R.string.app_name));
         StopButton = (Button) findViewById(R.id.stop_button);
         StopButton.setVisibility(View.INVISIBLE);
 
@@ -56,6 +72,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // update the recycler view based on the current student list
         updateRecyclerViewIfNonEmpty();
 
+        // get startSessionPopupView
+        LayoutInflater layoutInflater = (LayoutInflater) getApplicationContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+        startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
     }
 
     @Override
@@ -91,25 +110,74 @@ public class StartStopSearchActivity extends AppCompatActivity {
     public void onStartClick(View view) {
         //start bluetooth
 
-        //hide start
-        StartButton = (Button)findViewById(R.id.start_button);
-        StartButton.setVisibility(View.INVISIBLE);
+        List<String> sessions = new ArrayList<>();
+        sessions.add("New Session");
+        sessions.add("CSE 105");
+        // add all the sessions found in shared preferences
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        Set<String> storedSessions = preferences.getStringSet("sessions", new HashSet<>());
+        sessions.addAll(storedSessions);
 
-        //show stop
-        StopButton = (Button) findViewById(R.id.stop_button);
-        StopButton.setVisibility(View.VISIBLE);
+        // set content in spinner
+        startSessionSpinner = startSessionPopupView.findViewById(R.id.session_spinner);
+        ArrayAdapter<String> startSessionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sessions);
+        startSessionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        startSessionSpinner.setAdapter(startSessionAdapter);
+        startSessionSpinner.setSelection(0, true);
 
-        // update the recycler view based on the current student list
-        updateRecyclerViewIfNonEmpty();
+        // create popup
+        PopupWindow popupWindow = new PopupWindow(startSessionPopupView, 650, 800, true);
+        popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.CENTER, 0, 0);
 
-        // update students recycler view every 5 seconds based on the database change
-        handler.postDelayed (runnable = new Runnable() {
+        // set onclick for button to start session
+        Button startSessionBtn = startSessionPopupView.findViewById(R.id.start_session_button);
+        startSessionBtn.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void run() {
-                updateRecyclerViewIfNonEmpty();
-                handler.postDelayed(runnable, updateListDelay);
+            public void onClick(View v) {
+                onStartSessionClicked(v);
+                popupWindow.dismiss(); // close popup
             }
-        }, updateListDelay);
+        });
+    }
+
+    public void onStartSessionClicked(View view) {
+       String session = (String) startSessionSpinner.getSelectedItem();
+
+       // check if new session or existing session
+       if (session.equals("New Session")) {
+           // session title will be current date
+           SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+           Date date = new Date();
+           System.out.println(formatter.format(date));
+           curSession = formatter.format(date);
+           // create key in shared preferences to start keeping track of students found
+       } else {
+           // open an existing session
+           curSession = (String) startSessionSpinner.getSelectedItem();
+
+       }
+
+       TextView sessionTitle = findViewById(R.id.cur_session);
+       sessionTitle.setText(curSession);
+
+       // hide start button
+       StartButton = (Button)findViewById(R.id.start_button);
+       StartButton.setVisibility(View.INVISIBLE);
+
+       // show stop button
+       StopButton = (Button) findViewById(R.id.stop_button);
+       StopButton.setVisibility(View.VISIBLE);
+
+       // update the recycler view based on the current student list
+       updateRecyclerViewIfNonEmpty();
+
+//       handler.postDelayed (runnable = new Runnable() {
+//           @Override
+//           public void run() {
+//               updateRecyclerViewIfNonEmpty();
+//               handler.postDelayed(runnable, updateListDelay);
+//           }
+//       }, updateListDelay);
     }
 
     public void onStopClick(View view) {
