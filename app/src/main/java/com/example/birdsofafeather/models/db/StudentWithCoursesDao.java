@@ -33,4 +33,7 @@ public interface StudentWithCoursesDao {
 
    @Query("SELECT last_insert_rowid()")
    int lastIdCreated();
+
+   @Query("SELECT * FROM students WHERE favorite=1")
+   List<StudentWithCourses> getFavorites();
 }

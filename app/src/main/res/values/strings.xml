@@ -31,5 +31,7 @@
     <string name="input_name_prompt_str">Name</string>
     <string name="login_btn_str">Login</string>
     <string name="create_profile_btn_str">Create Profile</string>
+    <string name="view_favorites_string">View Favorites</string>
+    <string name="favorite_students_string">Favorite Students</string>
 
 </resources>

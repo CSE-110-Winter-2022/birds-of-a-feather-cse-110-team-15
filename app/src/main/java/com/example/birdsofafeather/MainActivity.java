@@ -69,4 +69,9 @@ public class MainActivity extends AppCompatActivity {
             createProfileButton.setVisibility((View.INVISIBLE));
         }
     }
+
+    public void onFavoriteListClick(View view) {
+        Intent intent = new Intent(this, FavoriteListActivity.class);
+        startActivity(intent);
+    }
 }
