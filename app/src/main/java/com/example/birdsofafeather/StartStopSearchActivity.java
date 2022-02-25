@@ -4,8 +4,16 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Pair;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
+import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,11 +21,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 public class StartStopSearchActivity extends AppCompatActivity {
@@ -125,6 +138,57 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // stop updating the recycler view
         handler.removeCallbacks(runnable);
+
+        // create up a popup window
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View savePopupView = inflater.inflate(R.layout.save_popup_window, null);
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        PopupWindow savePopupWindow = new PopupWindow(savePopupView, width, height, true);
+        savePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+
+        // set the current date and time as hint in the session name
+        DateFormat dateFormat2 = new SimpleDateFormat("MM/dd/yy hh:mm aa");
+        String currentTime = dateFormat2.format(new Date()).toString();
+        TextView sessionNameView = savePopupView.findViewById(R.id.session_name_view);
+        sessionNameView.setHint(currentTime);
+
+        // set up the current course dropdown
+        List<String> courses = db.studentWithCoursesDao().get(1).getCourses();
+        String defaultMessage = "(Current Course)";
+        courses.add(0,defaultMessage); // add the default message at the beginning
+        Spinner coursesSpinner = (Spinner) savePopupView.findViewById(R.id.current_courses_spinner);
+        ArrayAdapter<String> coursesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
+        coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        coursesSpinner.setAdapter(coursesAdapter);
+
+        // set up the save button and its onClick event
+        Button saveSessionButton = (Button) savePopupView.findViewById(R.id.save_session_button);
+        saveSessionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // get the selected item in the current course dropdown
+                String selectedCourse = coursesSpinner.getSelectedItem().toString();
+
+                // if the user actually selected a course, then save the session
+                // with the course name
+                if (selectedCourse != defaultMessage){
+                    // TODO: save session with the course name
+                }
+
+                // get the session name
+                String sessionName = sessionNameView.getText().toString();
+
+                // if no name is provided, save the session with the date and time
+                if (sessionName.isEmpty()){
+                    // TODO: save the session with the date and time
+                }
+
+                // TODO: save session with the provided name
+
+                savePopupWindow.dismiss();
+            }
+        });
     }
 
     public void onMockClicked(View view) {
