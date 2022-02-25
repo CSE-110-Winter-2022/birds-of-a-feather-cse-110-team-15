@@ -24,7 +24,7 @@ public class FavoriteViewAdapter extends RecyclerView.Adapter<FavoriteViewAdapte
         this.students = students;
     }
 
-    // Create a copy of the row layout and pass it to the ViewHolder
+    // Create a copy of the favorite_row layout and pass it to the ViewHolder
     @NonNull
     @Override
     public FaveViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -44,6 +44,7 @@ public class FavoriteViewAdapter extends RecyclerView.Adapter<FavoriteViewAdapte
         return students.size();
     }
 
+    // Very similar to ViewHolder from StudentViewAdapter, but without the elements we don't need
     public static class FaveViewHolder extends RecyclerView.ViewHolder {
         private final TextView studentNameView;
         private final ImageView studentImageView;
@@ -75,5 +76,4 @@ public class FavoriteViewAdapter extends RecyclerView.Adapter<FavoriteViewAdapte
             studentImageView.setTag(url); // Tag the image with its URL
         }
     }
-
 }

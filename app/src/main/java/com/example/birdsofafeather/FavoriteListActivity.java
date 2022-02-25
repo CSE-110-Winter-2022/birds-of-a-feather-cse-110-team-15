@@ -24,12 +24,12 @@ public class FavoriteListActivity extends AppCompatActivity {
 
         FavoriteViewAdapter studentsViewAdapter;
 
-        // Set up the RecycleView for the list of students
+        // Set up the RecycleView for the list of favorites
         RecyclerView studentsRecycleView = findViewById(R.id.favorites_recycler_view);
         RecyclerView.LayoutManager studentsLayoutManager = new LinearLayoutManager(this);
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
 
-        // Pass in student list and function to update favorite status to the adapter
+        // Pass in student list to the adapter for the RecycleView
         studentsViewAdapter = new FavoriteViewAdapter(favorites);
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
