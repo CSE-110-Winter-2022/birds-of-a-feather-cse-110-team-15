@@ -51,7 +51,11 @@ public class StartStopSearchActivity extends AppCompatActivity {
         studentsRecycleView = findViewById(R.id.students_recycler_view);
         studentsLayoutManager = new LinearLayoutManager(this);
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
-        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList);
+
+        // Pass in student list and function to update favorite status to the adapter
+        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student)->{
+            db.studentWithCoursesDao().updateStudent(student);
+        } );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
         // update the recycler view based on the current student list
@@ -62,7 +66,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override
