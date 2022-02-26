@@ -17,7 +17,6 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,15 +40,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Button StartButton;
     private Button StopButton;
     private StudentWithCourses me; // me, the user
-    private RecyclerView studentsRecycleView;
-    private RecyclerView.LayoutManager studentsLayoutManager;
     private StudentsViewAdapter studentsViewAdapter;
     private AppDatabase db;
     private SharedPreferences preferences;
     private Handler handler = new Handler();
     private Runnable runnable;
-    private CheckBox fav;
-    private int updateListDelay = 5000; // update the list every 5 seconds
+    private final int updateListDelay = 5000; // update the list every 5 seconds
     private View startSessionPopupView;
     private Spinner startSessionSpinner;
     private int sessionId;
@@ -73,14 +69,14 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // Set up the RecycleView for the list of students
         studentAndCountPairList = new ArrayList<>(); // on creation, it's an empty list
-        studentsRecycleView = findViewById(R.id.students_recycler_view);
-        studentsLayoutManager = new LinearLayoutManager(this);
+        RecyclerView studentsRecycleView = findViewById(R.id.students_recycler_view);
+        RecyclerView.LayoutManager studentsLayoutManager = new LinearLayoutManager(this);
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
 
         // Pass in student list and function to update favorite status to the adapter
-        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student)->{
-            db.studentWithCoursesDao().updateStudent(student);
-        } );
+        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student) ->
+            db.studentWithCoursesDao().updateStudent(student)
+        );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
         // get startSessionPopupView
@@ -189,12 +185,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
        // update the recycler view based on the current student list
        updateRecyclerView();
 
-       handler.postDelayed (runnable = new Runnable() {
-           @Override
-           public void run() {
+       handler.postDelayed (runnable = () -> {
                updateRecyclerView();
                handler.postDelayed(runnable, updateListDelay);
-           }
        }, updateListDelay);
     }
 
