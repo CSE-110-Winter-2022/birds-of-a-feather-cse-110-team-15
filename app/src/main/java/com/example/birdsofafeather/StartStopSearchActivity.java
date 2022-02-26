@@ -1,8 +1,10 @@
 package com.example.birdsofafeather;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -23,6 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
+import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.text.DateFormat;
@@ -33,6 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.prefs.Preferences;
 
 public class StartStopSearchActivity extends AppCompatActivity {
     private Button StartButton;
@@ -167,33 +171,50 @@ public class StartStopSearchActivity extends AppCompatActivity {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coursesSpinner.setAdapter(coursesAdapter);
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // TODO: remove these later
+        int sessionId = (int) db.sessionWithStudentsDao().insert(new Session(currentTime));
+        preferences.edit().putInt("sessionId", sessionId).apply();
+
         // set up the save button and its onClick event
         Button saveSessionButton = (Button) savePopupView.findViewById(R.id.save_session_button);
         saveSessionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String sessionName;
+
                 // get the selected item in the current course dropdown
                 String selectedCourse = coursesSpinner.getSelectedItem().toString();
 
-                // if the user actually selected a course, then save the session
-                // with the course name
+                // if the user actually selected a course, then use that name
                 if (selectedCourse != defaultMessage){
-                    // TODO: save session with the course name
+                    sessionName = selectedCourse;
+                }
+                // else check the user input
+                else {
+                    // get the session name
+                    String sessionNameByUser = sessionNameView.getText().toString();
+
+                    // if no name is provided, save the session with the date and time
+                    if (sessionNameByUser.isEmpty()) {
+                        sessionName = currentTime;
+                    }
+
+                    // else use the provided name
+                    sessionName = sessionNameByUser;
                 }
 
-                // get the session name
-                String sessionName = sessionNameView.getText().toString();
-
-                // if no name is provided, save the session with the date and time
-                if (sessionName.isEmpty()){
-                    // TODO: save the session with the date and time
-                }
-
-                // TODO: save session with the provided name
+                int sessionId = preferences.getInt("sessionId", 0);
+                Session curSession = db.sessionWithStudentsDao().get(sessionId).getSession();
+                curSession.setName(sessionName);
+                db.sessionWithStudentsDao().updateSession(curSession);
 
                 savePopupWindow.dismiss();
             }
         });
+
+        preferences.edit().clear().apply();
     }
 
     public void onMockClicked(View view) {
