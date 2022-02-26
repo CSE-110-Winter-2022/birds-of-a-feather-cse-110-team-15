@@ -27,6 +27,7 @@ public class SeeClassmateListTest {
     // Initialize the database where Bob is the user, Bill shares 1 class with him, Mary shares 2,
     // and Toby shares none.
     public void init(){
+        AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));

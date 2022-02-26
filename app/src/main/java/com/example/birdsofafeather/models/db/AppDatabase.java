@@ -13,7 +13,6 @@ public abstract class AppDatabase extends RoomDatabase {
     public static AppDatabase singleton(Context context) {
         if (singletonInstance == null) {
             singletonInstance = Room.databaseBuilder(context, AppDatabase.class, "students.db")
-                    .createFromAsset("starter-students.db")
                     .allowMainThreadQueries()
                     .build();
         }
