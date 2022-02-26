@@ -2,6 +2,7 @@ package com.example.birdsofafeather.models.db;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 @Entity(tableName = "students")
@@ -16,9 +17,20 @@ public class Student {
     @ColumnInfo(name = "headshot_url")
     private String headshotURL;
 
+    @ColumnInfo(name="favorite")
+    private boolean favorite;
+
     public Student(String name, String headshotURL) {
         this.name = name;
         this.headshotURL = headshotURL;
+        this.favorite = false;        // New students begin as unfavorited
+    }
+    @Ignore
+    // Overloaded constructor for setting a favorite student (for testing)
+    public Student(String name, String headshotURL, boolean favorite) {
+        this.name = name;
+        this.headshotURL = headshotURL;
+        this.favorite = favorite;
     }
 
     public int getStudentId() { return studentId; }
@@ -32,4 +44,9 @@ public class Student {
     public String getHeadshotURL() { return headshotURL; }
 
     public void setHeadshotURL(String headshotURL) { this.headshotURL = headshotURL; }
+
+    public boolean isFavorite() { return favorite; }
+
+    public void setFavorite(boolean favorite) { this.favorite = favorite; }
+
 }

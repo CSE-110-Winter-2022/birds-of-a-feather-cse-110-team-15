@@ -4,25 +4,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
-    android:layout_height="120sp"
+    android:layout_height="60sp"
     android:layout_marginLeft="16sp"
     android:layout_marginRight="16sp"
     android:gravity="center_vertical">
 
+    <CheckBox
+        android:id="@+id/favorite"
+        style="?android:attr/starStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:theme="@style/checkBoxStyle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/classmate_imageview"
+        app:layout_constraintHorizontal_bias="0.673"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.562" />
+
     <TextView
         android:id="@+id/classmate_name_text"
-        android:layout_width="189dp"
-        android:layout_height="68dp"
-        android:layout_marginBottom="24dp"
+        android:layout_width="150dp"
+        android:layout_height="37dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="16dp"
         android:height="24sp"
         android:gravity="center_vertical"
         android:lineHeight="20sp"
         android:textSize="28sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.715"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/common_course_count_textview"
         tools:text="@tools:sample/lorem" />
 
     <TextView
@@ -32,24 +44,25 @@
         android:layout_marginBottom="4dp"
         android:gravity="center_vertical|center_horizontal"
         android:text=""
-        android:textColor="#00FF00"
+        android:textColor="@color/purple_500"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="0.996"
+        app:layout_constraintHorizontal_bias="0.906"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.545" />
+        app:layout_constraintVertical_bias="0.75" />
 
     <ImageView
         android:id="@+id/classmate_imageview"
+        android:layout_width="57dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="4dp"
         android:scaleType="centerInside"
-        android:layout_width="108dp"
-        android:layout_height="108dp"
-        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.024"
+        app:layout_constraintEnd_toStartOf="@+id/classmate_name_text"
+        app:layout_constraintHorizontal_bias="0.825"
         app:layout_constraintStart_toStartOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 

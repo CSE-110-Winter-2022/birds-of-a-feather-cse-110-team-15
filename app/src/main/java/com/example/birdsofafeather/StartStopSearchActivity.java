@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,7 +18,6 @@ import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class StartStopSearchActivity extends AppCompatActivity {
@@ -30,6 +30,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private AppDatabase db;
     private Handler handler = new Handler();
     private Runnable runnable;
+    private CheckBox fav;
     private int updateListDelay = 5000; // update the list every 5 seconds
 
     //list of pairs, each of which has a student and the number of common courses with the user
@@ -50,7 +51,11 @@ public class StartStopSearchActivity extends AppCompatActivity {
         studentsRecycleView = findViewById(R.id.students_recycler_view);
         studentsLayoutManager = new LinearLayoutManager(this);
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
-        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList);
+
+        // Pass in student list and function to update favorite status to the adapter
+        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student)->{
+            db.studentWithCoursesDao().updateStudent(student);
+        } );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
         // update the recycler view based on the current student list
@@ -61,7 +66,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
     }
 
     @Override

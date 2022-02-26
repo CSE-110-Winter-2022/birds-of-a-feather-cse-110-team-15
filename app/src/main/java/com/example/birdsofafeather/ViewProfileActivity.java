@@ -2,8 +2,10 @@ package com.example.birdsofafeather;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -35,6 +37,26 @@ public class ViewProfileActivity extends AppCompatActivity {
             Picasso.setSingletonInstance(picasso);
         } catch (Exception e) {
         }
+
+        CheckBox favoriteCheck =  findViewById(R.id.profile_favorite);
+        // Set favorite icon
+        if (student.isFavorite()){
+            favoriteCheck.setChecked(true);
+        } else {
+            favoriteCheck.setChecked(false);
+        }
+        favoriteCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (buttonView.isChecked()) {
+                        Toast.makeText(ViewProfileActivity.this, "Added to Favorites", Toast.LENGTH_SHORT).show();
+                        student.setFavorite(true);
+                    } else {
+                        Toast.makeText(ViewProfileActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
+                        student.setFavorite(false);
+                    }
+                // Have to use getStudent() to extract Student from StudentWithCourses
+                db.studentWithCoursesDao().updateStudent(student.getStudent());
+                }
+        );
 
         // Retrieve profile image from URL using Picasso
         ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);
