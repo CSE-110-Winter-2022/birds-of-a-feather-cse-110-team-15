@@ -6,6 +6,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import java.util.List;
 
@@ -24,9 +25,15 @@ public interface StudentWithCoursesDao {
    @Delete
    void delete(Student student);
 
+   @Update
+   void updateStudent(Student student);
+
    @Query("SELECT COUNT(*) FROM students")
    int count();
 
    @Query("SELECT last_insert_rowid()")
    int lastIdCreated();
+
+   @Query("SELECT * FROM students WHERE favorite=1")
+   List<StudentWithCourses> getFavorites();
 }

@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity {
     AppDatabase db;
     Button loginButton;
     Button createProfileButton;
+    Button favoriteListButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
         loginButton = (Button) findViewById(R.id.Login_Button);
         createProfileButton = (Button) findViewById(R.id.Create_Profile_Button);
-
+        favoriteListButton = (Button) findViewById(R.id.Favorites_Button);
         db = AppDatabase.singleton(this);
         setButtonVisibilities();
     }
@@ -58,15 +59,23 @@ public class MainActivity extends AppCompatActivity {
     // set the visibility of buttons
     public void setButtonVisibilities() {
         // if the database has no data, show create profile button and
-        // hide the login button
+        // hide other buttons
         if (db.studentWithCoursesDao().count() == 0){
             loginButton.setVisibility(View.INVISIBLE);
             createProfileButton.setVisibility((View.VISIBLE));
+            favoriteListButton.setVisibility((View.INVISIBLE));
+
         }
-        // else show login button and hind the create profile button
+        // else show login button and other buttons
         else {
             loginButton.setVisibility(View.VISIBLE);
             createProfileButton.setVisibility((View.INVISIBLE));
+            favoriteListButton.setVisibility((View.VISIBLE));
         }
+    }
+
+    public void onFavoriteListClick(View view) {
+        Intent intent = new Intent(this, FavoriteListActivity.class);
+        startActivity(intent);
     }
 }

@@ -13,9 +13,15 @@ public class StudentWithCourses {
     @Relation(parentColumn = "id", entityColumn = "student_id", entity = Course.class, projection = {"name"})
     public List<String> courses;
 
+    public Student getStudent() { return student;}
+
     public int getStudentId() { return student.getStudentId(); }
 
     public void setStudentId(int studentId) { student.setStudentId(studentId); }
+
+    public int getSessionId() { return student.getSessionId(); }
+
+    public void setSessionId(int sessionId) { student.setSessionId(sessionId); }
 
     public String getName() { return student.getName(); }
 
@@ -24,6 +30,10 @@ public class StudentWithCourses {
     public String getHeadshotURL() { return student.getHeadshotURL(); }
 
     public void setHeadshotURL(String headshotURL) { student.setHeadshotURL(headshotURL); }
+
+    public boolean isFavorite() { return student.isFavorite(); }
+
+    public void setFavorite(boolean favorite) {student.setFavorite(favorite); }
 
     public List<String> getCourses() { return courses; }
 
