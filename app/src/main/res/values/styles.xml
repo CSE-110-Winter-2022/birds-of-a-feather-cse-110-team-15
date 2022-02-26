@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="checkBoxStyle" parent="Base.Theme.AppCompat">
+        <item name="colorAccent">#ffc800</item>
+        <item name="android:textColorSecondary">#969696</item>
+    </style>
+</resources>
