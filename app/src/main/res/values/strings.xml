@@ -33,5 +33,8 @@
     <string name="create_profile_btn_str">Create Profile</string>
     <string name="view_favorites_string">View Favorites</string>
     <string name="favorite_students_string">Favorite Students</string>
+    <string name="current_session_title">Current Session:</string>
+    <string name="start_session_popup_title">Create / Resume Session</string>
+    <string name="start_session_btn_str">START SESSION</string>
 
 </resources>
