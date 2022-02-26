@@ -4,6 +4,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 @Entity(tableName = "sessions")
 public class Session {
     @PrimaryKey(autoGenerate = true)
@@ -12,6 +15,12 @@ public class Session {
 
     @ColumnInfo(name = "name")
     private String name;
+
+    public Session() {
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        Date date = new Date();
+        name = formatter.format(date);
+    }
 
     public Session(String name) {
         this.name = name;

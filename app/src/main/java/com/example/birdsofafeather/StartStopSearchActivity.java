@@ -25,15 +25,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.Session;
+import com.example.birdsofafeather.models.db.SessionWithStudents;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class StartStopSearchActivity extends AppCompatActivity {
     private Button StartButton;
@@ -43,13 +45,16 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private RecyclerView.LayoutManager studentsLayoutManager;
     private StudentsViewAdapter studentsViewAdapter;
     private AppDatabase db;
+    private SharedPreferences preferences;
     private Handler handler = new Handler();
     private Runnable runnable;
     private CheckBox fav;
     private int updateListDelay = 5000; // update the list every 5 seconds
     private View startSessionPopupView;
     private Spinner startSessionSpinner;
-    private String curSession;
+    private int sessionId;
+
+    private Map<String, Integer> sessionIdMap;
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
@@ -59,9 +64,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_stop_search);
         setTitle(getString(R.string.app_name));
-        StopButton = (Button) findViewById(R.id.stop_button);
+        StopButton = findViewById(R.id.stop_button);
         StopButton.setVisibility(View.INVISIBLE);
 
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
         db = AppDatabase.singleton(this);
         me = db.studentWithCoursesDao().get(1); // get the student with id 1
 
@@ -76,9 +82,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
             db.studentWithCoursesDao().updateStudent(student);
         } );
         studentsRecycleView.setAdapter(studentsViewAdapter);
-
-        // update the recycler view based on the current student list
-        updateRecyclerViewIfNonEmpty();
 
         // get startSessionPopupView
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -100,7 +103,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         }
 
         // else, update the student list when the activity is resumed
-        updateRecyclerViewIfNonEmpty();
+        updateRecyclerView();
 
         // and start updating the list for every 5 second again
         handler.postDelayed(runnable, updateListDelay);
@@ -117,14 +120,15 @@ public class StartStopSearchActivity extends AppCompatActivity {
     public void onStartClick(View view) {
         //start bluetooth
 
+        // add all the sessions found in database to sessions list
         List<String> sessions = new ArrayList<>();
         sessions.add("New Session");
-        sessions.add("CSE 105");
-        // TODO: change to making a database call to get all sessions (db.sessionsWithStudentsDao.getAll())
-        // add all the sessions found in shared preferences
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        Set<String> storedSessions = preferences.getStringSet("sessions", new HashSet<>());
-        sessions.addAll(storedSessions);
+        sessionIdMap = new HashMap<>();
+        List<SessionWithStudents> storedSessions = db.sessionWithStudentsDao().getAll();
+        for (SessionWithStudents session : storedSessions) {
+            sessions.add(session.getName());
+            sessionIdMap.put(session.getName(), session.getSessionId());
+        }
 
         // set content in spinner
         startSessionSpinner = startSessionPopupView.findViewById(R.id.session_spinner);
@@ -139,18 +143,16 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // set onclick for button to start session
         Button startSessionBtn = startSessionPopupView.findViewById(R.id.start_session_button);
-        startSessionBtn.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onStartSessionClicked(v);
-                popupWindow.dismiss(); // close popup
-            }
+        startSessionBtn.setOnClickListener((View v) -> {
+            onStartSessionClicked(v);
+            popupWindow.dismiss(); // close popup
         });
     }
 
     public void onStartSessionClicked(View view) {
        String session = (String) startSessionSpinner.getSelectedItem();
 
+       String curSession;
        // check if new session or existing session
        if (session.equals("New Session")) {
            // session title will be current date
@@ -158,51 +160,58 @@ public class StartStopSearchActivity extends AppCompatActivity {
            Date date = new Date();
            System.out.println(formatter.format(date));
            curSession = formatter.format(date);
-           // TODO: insert into database a new session (new Session("name"))
-           // create key in shared preferences to start keeping track of students found
+           // insert a new session into database
+           sessionId = (int) db.sessionWithStudentsDao().insert(new Session(curSession));
        } else {
-           // TODO: retrieve from database given name of session
-           // open an existing session
+           // set id based on selected session name
            curSession = (String) startSessionSpinner.getSelectedItem();
-
+           sessionId = sessionIdMap.get(curSession);
        }
 
+       // put sessionId into shared preferences
+       preferences = PreferenceManager.getDefaultSharedPreferences(this);
+       preferences.edit()
+               .putInt("sessionId", sessionId)
+               .apply();
+
+       // set title of session
        TextView sessionTitle = findViewById(R.id.cur_session);
        sessionTitle.setText(curSession);
 
        // hide start button
-       StartButton = (Button)findViewById(R.id.start_button);
+       StartButton = findViewById(R.id.start_button);
        StartButton.setVisibility(View.INVISIBLE);
 
        // show stop button
-       StopButton = (Button) findViewById(R.id.stop_button);
+       StopButton = findViewById(R.id.stop_button);
        StopButton.setVisibility(View.VISIBLE);
 
        // update the recycler view based on the current student list
-       updateRecyclerViewIfNonEmpty();
+       updateRecyclerView();
 
-//       handler.postDelayed (runnable = new Runnable() {
-//           @Override
-//           public void run() {
-//               updateRecyclerViewIfNonEmpty();
-//               handler.postDelayed(runnable, updateListDelay);
-//           }
-//       }, updateListDelay);
+       handler.postDelayed (runnable = new Runnable() {
+           @Override
+           public void run() {
+               updateRecyclerView();
+               handler.postDelayed(runnable, updateListDelay);
+           }
+       }, updateListDelay);
     }
 
     public void onStopClick(View view) {
         //stop bluetooth
 
         //hide stop
-        StopButton = (Button)findViewById(R.id.stop_button);
+        StopButton = findViewById(R.id.stop_button);
         StopButton.setVisibility(View.INVISIBLE);
 
         //show start
-        StartButton = (Button) findViewById(R.id.start_button);
+        StartButton = findViewById(R.id.start_button);
         StartButton.setVisibility(View.VISIBLE);
 
         // stop updating the recycler view
         handler.removeCallbacks(runnable);
+        preferences.edit().clear().apply();
     }
 
     public void onMockClicked(View view) {
@@ -223,24 +232,23 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
             // add a pair of this student and count if the student has at least one common course with me
             if (count > 0){
-                studentAndCountPairs.add(new Pair<StudentWithCourses, Integer>(student, count));
+                studentAndCountPairs.add(new Pair<>(student, count));
             }
         }
 
         // sort the list by the number of common courses in descending order
-        Collections.sort(studentAndCountPairs, (s1, s2) -> { return s2.second - s1.second; });
+        Collections.sort(studentAndCountPairs, (s1, s2) -> s2.second - s1.second);
 
         return studentAndCountPairs;
     }
 
-    // update the recycler view based on the current data in the database.
-    // but if the student list is empty for some reason (i.e. when there is bluetooth issue),
-    // don't make any change on the recycler view, so the previous information is retained
-    public void updateRecyclerViewIfNonEmpty() {
-        List<StudentWithCourses> otherStudents = db.studentWithCoursesDao().getAll();
-        otherStudents.remove(0); // remove myself
+    // update the recycler view based on the current session in the database.
+    public void updateRecyclerView() {
+        // get students of current session
+        List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
+
         studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
-        if (!otherStudents.isEmpty())
-            studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
+        // update recycler based on student list obtained from sessions
+        studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
 }

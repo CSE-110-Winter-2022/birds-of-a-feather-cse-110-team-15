@@ -38,7 +38,7 @@
             android:layout_width="167dp"
             android:layout_height="49dp"
             android:dropDownSelector="#000000"
-            android:dropDownWidth="match_parent"
+            android:dropDownWidth="150dp"
             android:spinnerMode="dropdown" />
     </FrameLayout>
 
