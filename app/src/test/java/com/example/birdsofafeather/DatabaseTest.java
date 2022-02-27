@@ -47,17 +47,17 @@ public class DatabaseTest {
         db = AppDatabase.singleton(context);
         studentDao = db.studentWithCoursesDao();
         courseDao = db.coursesDao();
-        s1 = new Student("John", "link.com");
-        s2 = new Student("Mary", "link.com");
-        s3 = new Student("Nancy", "link.com");
-        c1 = new Course(1, "CSE 30 FA 2021");
-        c2 = new Course(1, "CSE 101 WI 2021");
-        c3 = new Course(1, "CSE 21 SP 2021");
-        c4 = new Course(2, "CSE 30 FA 2021");
-        c5 = new Course(2, "CSE 101 WI 2021");
-        c6 = new Course(2, "CSE 105 FA 2021");
-        c7 = new Course(3, "CSE 11 FA 2020");
-        c8 = new Course(3, "CSE 110 WI 2021");
+        s1 = new Student("s1ID", "John", "link.com");
+        s2 = new Student("s2ID", "Mary", "link.com");
+        s3 = new Student("s3ID" , "Nancy", "link.com");
+        c1 = new Course("s1ID", "CSE 30 FA 2021");
+        c2 = new Course("s1ID", "CSE 101 WI 2021");
+        c3 = new Course("s1ID", "CSE 21 SP 2021");
+        c4 = new Course("s2ID", "CSE 30 FA 2021");
+        c5 = new Course("s2ID", "CSE 101 WI 2021");
+        c6 = new Course("s2ID", "CSE 105 FA 2021");
+        c7 = new Course("s3ID", "CSE 11 FA 2020");
+        c8 = new Course("s3ID", "CSE 110 WI 2021");
     }
 
     @Test
@@ -66,7 +66,7 @@ public class DatabaseTest {
         studentDao.insert(s1);
         // have to set studentId after generated, so kind of extra step
         s1.setStudentId(studentDao.count());
-        StudentWithCourses retrievedStudent = studentDao.get(s1.getStudentId());
+        StudentWithCourses retrievedStudent = studentDao.get(s1.getUuid());
 
         assertEquals(1, retrievedStudent.getStudentId());
         assertEquals("John", retrievedStudent.getName());
@@ -81,7 +81,7 @@ public class DatabaseTest {
         studentDao.delete(s1);
 
         // make sure id is being updated correctly
-        assertNull(studentDao.get(s1.getStudentId()));
+        assertNull(studentDao.get(s1.getUuid()));
         assertEquals(2, studentDao.lastIdCreated());
         studentDao.insert(s3);
         assertEquals(3, studentDao.lastIdCreated());
@@ -99,9 +99,9 @@ public class DatabaseTest {
 
         // check if all students retrieved
         List<StudentWithCourses> students = studentDao.getAll();
-        assertEquals(students.get(0).getStudentId(), 1);
-        assertEquals(students.get(1).getStudentId(), 2);
-        assertEquals(students.get(2).getStudentId(), 3);
+        assert(students.get(0).getUUID().equals("s1ID"));
+        assert(students.get(1).getUUID().equals("s2ID"));
+        assert(students.get(2).getUUID().equals("s3ID"));
     }
 
     @Test
@@ -110,14 +110,16 @@ public class DatabaseTest {
         studentDao.insert(s1);
         courseDao.insert(c1);
         courseDao.insert(c2);
-        StudentWithCourses student = studentDao.get(1);
-        assertEquals(1, student.getStudentId());
+
+        StudentWithCourses student = studentDao.get("s1ID");
+
+        assertEquals("s1ID", student.getUUID());
         assertEquals("John", student.getName());
         assertEquals("link.com", student.getHeadshotURL());
         assertEquals(Arrays.asList("CSE 30 FA 2021", "CSE 101 WI 2021"), student.getCourses());
 
         // get student that doesn't exist
-        assertNull(studentDao.get(111));
+        assertNull(studentDao.get("nonId"));
     }
 
     @Test
@@ -135,9 +137,9 @@ public class DatabaseTest {
         courseDao.insert(c7);
         courseDao.insert(c8);
 
-        StudentWithCourses st1 = studentDao.get(1);
-        StudentWithCourses st2 = studentDao.get(2);
-        StudentWithCourses st3 = studentDao.get(3);
+        StudentWithCourses st1 = studentDao.get("s1ID");
+        StudentWithCourses st2 = studentDao.get("s2ID");
+        StudentWithCourses st3 = studentDao.get("s3ID");
         // test for NO common classes
         assertEquals(0, st1.getCommonCourses(st3).size());
 
@@ -145,7 +147,7 @@ public class DatabaseTest {
         assertEquals(Arrays.asList("CSE 30 FA 2021", "CSE 101 WI 2021"), st1.getCommonCourses(st2));
 
         // test comparing with a student not in database
-        StudentWithCourses s4 = studentDao.get(10);
+        StudentWithCourses s4 = studentDao.get("notID");
         assertEquals(0, st1.getCommonCourses(s4).size());
     }
 
@@ -158,13 +160,13 @@ public class DatabaseTest {
         courseDao.insert(c2);
 
         // retrieve for student with courses inputted already
-        assertEquals(courseDao.getForStudent(1).size(), 2);
+        assertEquals(courseDao.getForStudent("s1ID").size(), 2);
 
         // retrieve for student with no courses inputted yet
-        assertEquals(courseDao.getForStudent(2).size(), 0);
+        assertEquals(courseDao.getForStudent("s2ID").size(), 0);
 
         // retrieve for student that doesn't exist
-        assertEquals(courseDao.getForStudent(10).size(), 0);
+        assertEquals(courseDao.getForStudent("notID").size(), 0);
     }
 
     @Test
@@ -185,10 +187,10 @@ public class DatabaseTest {
         studentDao.insert(s1);
         courseDao.insert(c1);
         assertEquals(courseDao.get(courseDao.count()).getName(), "CSE 30 FA 2021");
-        assertTrue(studentDao.get(1).getCourses().contains("CSE 30 FA 2021"));
+        assertTrue(studentDao.get("s1ID").getCourses().contains("CSE 30 FA 2021"));
 
         // delete course that doesn't exist
-        courseDao.delete(new Course(212, "idk"));
+        courseDao.delete(new Course("idk", "idk"));
 
         // check id generation is correct
         courseDao.insert(c2);

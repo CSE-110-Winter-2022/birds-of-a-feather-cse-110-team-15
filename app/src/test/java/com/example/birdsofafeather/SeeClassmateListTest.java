@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
@@ -29,24 +30,25 @@ public class SeeClassmateListTest {
     public void init(){
         AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-        db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
-        db.studentWithCoursesDao().insert(new Student("Toby", "toby.com"));
+        String uuid = new UUIDManager(InstrumentationRegistry.getInstrumentation().getTargetContext()).getUserUUID();
+        db.studentWithCoursesDao().insert(new Student(uuid,"Bob", "bob.com"));
+        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com"));
+        db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com"));
         // Bob's classes
-        db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course(1, "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course(uuid, "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course(uuid, "CSE 100 FA 2021")) ;
 
         // Bill's class (Has 2, shares 1)
-        db.coursesDao().insert(new Course(2, "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course(2, "CSE 15L FA 2021")) ;
+        db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course("s2ID", "CSE 15L FA 2021")) ;
 
         // Mary's classes (Has 2, shares 2)
-        db.coursesDao().insert(new Course(3, "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course(3, "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021")) ;
 
         // Toby's class (Has 1, shares none)
-        db.coursesDao().insert(new Course(4, "CSE 8B FA 2021")) ;
+        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
     }
 
     @Test

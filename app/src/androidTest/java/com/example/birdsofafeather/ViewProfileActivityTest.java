@@ -31,12 +31,12 @@ public class ViewProfileActivityTest {
     public void init() {
         // Initializing a database where Bob and Bill share one class, Bob and Mary share no classes
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-        s1 = new Student("Bob", "bob.com");
-        s2 = new Student("Bill", "bill.com");
+        s1 = new Student("s1ID", "Bob", "bob.com");
+        s2 = new Student("s2ID", "bill.com");
         db.studentWithCoursesDao().insert(s1);
         db.studentWithCoursesDao().insert(s2);
-        c1 = new Course(1, "CSE 20 FA 2021");
-        c2 = new Course(2, "CSE 20 FA 2021");
+        c1 = new Course("s1ID", "CSE 20 FA 2021");
+        c2 = new Course("s2ID", "CSE 20 FA 2021");
         db.coursesDao().insert(c1);
         db.coursesDao().insert(c2);
     }
@@ -45,7 +45,7 @@ public class ViewProfileActivityTest {
     /* Tests common courses and other elements show up on profile page if they exist */
     public void testCommonCourses(){
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
-        intent.putExtra("classmate_id", 3);
+        intent.putExtra("classmate_id", "s3ID");
         try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 // Multiple assertions in one test to avoid launching too many activities

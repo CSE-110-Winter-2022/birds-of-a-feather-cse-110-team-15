@@ -32,6 +32,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Runnable runnable;
     private CheckBox fav;
     private int updateListDelay = 5000; // update the list every 5 seconds
+    private String currentUUID;
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
@@ -42,9 +43,13 @@ public class StartStopSearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_start_stop_search);
         StopButton = (Button) findViewById(R.id.stop_button);
         StopButton.setVisibility(View.INVISIBLE);
+        UUIDManager uuidManager = new UUIDManager(getApplicationContext());
+        currentUUID = uuidManager.getUserUUID();
 
         db = AppDatabase.singleton(this);
-        me = db.studentWithCoursesDao().get(1); // get the student with id 1
+
+        // get the student by looking up based on the current user's UUID
+        me = db.studentWithCoursesDao().get(currentUUID);
 
         // Set up the RecycleView for the list of students
         studentAndCountPairList = new ArrayList<>(); // on creation, it's an empty list

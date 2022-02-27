@@ -23,7 +23,7 @@ public class EnterCourseActivity extends AppCompatActivity {
     Spinner quarterSpinner, yearSpinner;
     List<Course> enteredCourses;
     AppDatabase db;
-    int studentId = 1; // User's ID always set to 1
+    String studentId; // User's obtained from UUIDManager
 
     private RecyclerView coursesRecyclerView;
     private RecyclerView.LayoutManager coursesLayoutManager;
@@ -50,7 +50,8 @@ public class EnterCourseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_enter_class);
         //get the intent for extra student_id
         Bundle extras = getIntent().getExtras();
-        studentId = extras.getInt("student_id");
+        studentId = new UUIDManager(getApplicationContext()).getUserUUID();
+
         db = AppDatabase.singleton(this);
         enteredCourses = db.coursesDao().getForStudent(studentId);
 

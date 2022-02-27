@@ -65,7 +65,8 @@ public class EnterCourseActivityTest {
     @BeforeClass
     static public void clearCoursesForTest() {
         AppDatabase db = AppDatabase.singleton(InstrumentationRegistry.getInstrumentation().getTargetContext());
-        List<Course> courseList= db.coursesDao().getForStudent(1);
+        String uuid = new UUIDManager(InstrumentationRegistry.getInstrumentation().getTargetContext()).getUserUUID();
+        List<Course> courseList= db.coursesDao().getForStudent(uuid);
 
         for (ListIterator<Course> iter = courseList.listIterator(); iter.hasNext(); ) {
             db.coursesDao().delete(iter.next());
@@ -763,16 +764,6 @@ public class EnterCourseActivityTest {
                                 1),
                         isDisplayed()));
         materialButton27.perform(click());
-
-        ViewInteraction materialButton28 = onView(
-                allOf(withId(R.id.finish_button), withText(finish_button_str),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        materialButton28.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

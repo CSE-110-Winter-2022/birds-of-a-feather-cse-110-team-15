@@ -16,8 +16,8 @@ public interface StudentWithCoursesDao {
    @Query("SELECT * FROM students")
    List<StudentWithCourses> getAll();
 
-   @Query("SELECT * FROM students WHERE id=:id")
-   StudentWithCourses get(int id);
+   @Query("SELECT * FROM students WHERE uuid=:uuid")
+   StudentWithCourses get(String uuid);
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    long insert(Student student);

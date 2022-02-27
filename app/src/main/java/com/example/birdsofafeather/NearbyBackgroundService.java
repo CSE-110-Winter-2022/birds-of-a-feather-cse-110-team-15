@@ -8,6 +8,7 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.room.util.StringUtil;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
@@ -23,6 +24,8 @@ public class NearbyBackgroundService extends Service {
     private String TAG = "NearbyBackground";
     private final NearbyBinder binder = new NearbyBinder();
     private final MessageListener realListener = new MessageListener() {
+    private final UUIDManager uuidManager = new UUIDManager(getApplicationContext());
+
         @Override
         public void onFound(@NonNull Message message) {
             String data = new String(message.getContent());
@@ -37,29 +40,46 @@ public class NearbyBackgroundService extends Service {
         }
 
         public void processData(String data) {
-            // first line has to be name
+            // first line has to be the uuid
+            String uuid = "";
+            // second line has to be name
             String name = "";
-            // second line has to be headshot URL
+            // third line has to be headshot URL
             String headshotURL = "";
-            // third line onwards are courses
+            // fourth line onwards are courses or wave messages
             List<String> courses = new ArrayList<>();
+            boolean wavedAtCurrentUser = false;
+
             int i = 0;
             for (String line : data.split(System.lineSeparator())) {
                 if (i == 0) {
-                    name = line.split(",")[0];
+                    uuid = line.split(",")[0];
                 } else if (i == 1) {
+                    name = line.split(",")[0];
+                } else if (i == 2) {
                     headshotURL = line.split(",")[0];
                 } else {
-                    courses.add(line.replaceAll("\\,", " "));
+                    String[] courseOrWave = line.split(",");
+                    if (courseOrWave[1].equals("wave")) {
+                        String receiverUUID = courseOrWave[0];
+
+                        // Method that takes the ID of the person the wave is for, and returns true
+                        // if the wave was at the current user
+                        if (uuidManager.match(uuid))
+                            wavedAtCurrentUser = true;
+
+                    } else {
+                        courses.add(String.join(" ", courseOrWave));
+                    }
                 }
                 i++;
             }
 
             // create objects
             AppDatabase db = AppDatabase.singleton(getApplicationContext());
-            int student_id = (int) db.studentWithCoursesDao().insert(new Student(name, headshotURL));
+            db.studentWithCoursesDao().insert(new Student(uuid, name, headshotURL, wavedAtCurrentUser));
             for (String course : courses) {
-                db.coursesDao().insert(new Course(student_id, course));
+                db.coursesDao().insert(new Course(uuid, course));
             }
         }
     };

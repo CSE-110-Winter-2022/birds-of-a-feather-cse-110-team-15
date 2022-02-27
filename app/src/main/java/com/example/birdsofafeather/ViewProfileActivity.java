@@ -24,7 +24,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
-        int classmate_id = extras.getInt("classmate_id");
+        String classmate_id = extras.getString("classmate_id");
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
         StudentWithCourses student = db.studentWithCoursesDao().get(classmate_id);
 
@@ -67,7 +67,9 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Compare other student with user's classes
         // The user is always the first entry in the database, so we use id 1
-        StudentWithCourses me = db.studentWithCoursesDao().get(1);
+        String currentUserID = new UUIDManager(getApplicationContext()).getUserUUID();
+
+        StudentWithCourses me = db.studentWithCoursesDao().get(currentUserID);
         List<String> cc = student.getCommonCourses(me);
         String displayList = "";
         for (String course : cc){
