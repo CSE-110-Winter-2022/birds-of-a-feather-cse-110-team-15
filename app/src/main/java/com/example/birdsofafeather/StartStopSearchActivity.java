@@ -53,6 +53,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Spinner startSessionSpinner;
     private int sessionId;
     private View savePopupView;
+    private boolean isActiveSession;
 
     private Map<String, Integer> sessionIdMap;
 
@@ -166,10 +167,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
            curSession = formatter.format(date);
            // insert a new session into database
            sessionId = (int) db.sessionWithStudentsDao().insert(new Session(curSession));
+           isActiveSession = true;
        } else {
            // set id based on selected session name
            curSession = (String) startSessionSpinner.getSelectedItem();
            sessionId = sessionIdMap.get(curSession);
+           isActiveSession = false;
        }
 
        // put sessionId into shared preferences
@@ -213,6 +216,16 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // stop updating the recycler view
         handler.removeCallbacks(runnable);
 
+        // get the session id that is passed from onStartSessionClicked
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int sessionId = preferences.getInt("sessionId",0);
+
+        // if this is not an active session, then clear the preference and return here
+        if (!isActiveSession){
+            preferences.edit().clear().apply();
+            return;
+        }
+
         // create up a popup window
         PopupWindow savePopupWindow = new PopupWindow(savePopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         savePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -232,10 +245,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coursesSpinner.setAdapter(coursesAdapter);
 
-        // get the session id that is passed from onStartSessionClicked
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int sessionId = preferences.getInt("sessionId",0);
-
         // set up the save button and its onClick event
         Button saveSessionButton = (Button) savePopupView.findViewById(R.id.save_session_button);
         saveSessionButton.setOnClickListener(new View.OnClickListener() {
@@ -252,23 +261,23 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 }
                 // else check the user input
                 else {
-                    // get the session name
-                    String sessionNameByUser = sessionNameView.getText().toString();
+                    // get the user input for session name
+                    String userInput = sessionNameView.getText().toString();
 
                     // if no name is provided, save the session with the date and time
-                    if (sessionNameByUser.isEmpty()) {
+                    if (userInput.isEmpty()) {
                         sessionName = currentTime;
                     }
                     // else use the name provided by the user
                     else {
-                        sessionName = sessionNameByUser;
+                        sessionName = userInput;
                     }
                 }
 
                 // update the name of the current session
-                Session curSession = db.sessionWithStudentsDao().get(sessionId).getSession();
-                curSession.setName(sessionName);
-                db.sessionWithStudentsDao().updateSession(curSession);
+                Session currentSession = db.sessionWithStudentsDao().get(sessionId).getSession();
+                currentSession.setName(sessionName);
+                db.sessionWithStudentsDao().updateSession(currentSession);
 
                 savePopupWindow.dismiss();
             }
