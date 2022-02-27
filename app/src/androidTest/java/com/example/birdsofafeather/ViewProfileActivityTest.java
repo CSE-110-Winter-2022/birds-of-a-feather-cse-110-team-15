@@ -2,8 +2,13 @@ package com.example.birdsofafeather;
 
 import static junit.framework.TestCase.assertEquals;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static java.lang.System.out;
+
 import android.content.Intent;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +20,7 @@ import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Student;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -62,6 +68,54 @@ public class ViewProfileActivityTest {
                 assertEquals(View.VISIBLE, courses.getVisibility());
                 assertEquals("", courses.getText());
             });
+        }
+    }
+
+    @Test
+    /* Tests favorite checkbox and other elements show up on profile page if they exist */
+    public void testFavoriteChecked() {
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
+        intent.putExtra("classmate_id", 3);
+        try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
+            scenario.onActivity(activity -> {
+                        // Multiple assertions in one test to avoid launching too many activities
+                        TextView name = activity.findViewById(R.id.name_view);
+                        CheckBox fav = activity.findViewById(R.id.profile_favorite);
+
+                        // Test if the name is correct
+                        Assert.assertEquals("Mary", name.getText());
+
+                        // Test if the Favorite CheckBox is checked
+                        assertTrue(fav.isChecked());
+
+                        out.println("Expected: Mary    Actual:" + name.getText());
+                        out.println("Expected: True    Actual:" + fav.isChecked());
+                    }
+            );
+        }
+    }
+
+    @Test
+    /* Tests favorite checkbox and other elements show up on profile page if they exist */
+    public void testFavoriteUnchecked() {
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
+        intent.putExtra("classmate_id", 2);
+        try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
+            scenario.onActivity(activity -> {
+                        // Multiple assertions in one test to avoid launching too many activities
+                        TextView name = activity.findViewById(R.id.name_view);
+                        CheckBox fav = activity.findViewById(R.id.profile_favorite);
+
+                        // Test if the name is correct
+                        Assert.assertEquals("Bill", name.getText());
+
+                        // Test if the Favorite CheckBox is checked
+                        assertFalse(fav.isChecked());
+
+                        out.println("Expected: Bill    Actual:" + name.getText());
+                        out.println("Expected: False   Actual:" + fav.isChecked());
+                    }
+            );
         }
     }
 }
