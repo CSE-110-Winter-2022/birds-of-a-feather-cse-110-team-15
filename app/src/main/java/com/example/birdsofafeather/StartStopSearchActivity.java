@@ -52,6 +52,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private View startSessionPopupView;
     private Spinner startSessionSpinner;
     private int sessionId;
+    private View savePopupView;
 
     private Map<String, Integer> sessionIdMap;
 
@@ -85,6 +86,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // get startSessionPopupView
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
+
+        // set savePopupView
+        LayoutInflater savePopupInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        savePopupView = savePopupInflater.inflate(R.layout.save_popup_window, null);
     }
 
     @Override
@@ -209,11 +214,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         handler.removeCallbacks(runnable);
 
         // create up a popup window
-        LayoutInflater savePopupInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View savePopupView = savePopupInflater.inflate(R.layout.save_popup_window, null);
-        int width = LinearLayout.LayoutParams.MATCH_PARENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        PopupWindow savePopupWindow = new PopupWindow(savePopupView, width, height, true);
+        PopupWindow savePopupWindow = new PopupWindow(savePopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         savePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
         // set the current date and time as hint in the session name
@@ -223,7 +224,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         sessionNameView.setHint(currentTime);
 
         // set up the current course dropdown
-        List<String> courses = db.studentWithCoursesDao().get(1).getCourses();
+        List<String> courses = db.studentWithCoursesDao().get(1).getCourses(); // list of the courses of the user
         String defaultMessage = "(Current Course)";
         courses.add(0,defaultMessage); // add the default message at the beginning
         Spinner coursesSpinner = (Spinner) savePopupView.findViewById(R.id.current_courses_spinner);
@@ -231,6 +232,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coursesSpinner.setAdapter(coursesAdapter);
 
+        // get the session id that is passed from onStartSessionClicked
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int sessionId = preferences.getInt("sessionId",0);
 
@@ -257,11 +259,13 @@ public class StartStopSearchActivity extends AppCompatActivity {
                     if (sessionNameByUser.isEmpty()) {
                         sessionName = currentTime;
                     }
-
-                    // else use the provided name
-                    sessionName = sessionNameByUser;
+                    // else use the name provided by the user
+                    else {
+                        sessionName = sessionNameByUser;
+                    }
                 }
 
+                // update the name of the current session
                 Session curSession = db.sessionWithStudentsDao().get(sessionId).getSession();
                 curSession.setName(sessionName);
                 db.sessionWithStudentsDao().updateSession(curSession);
