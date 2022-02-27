@@ -209,8 +209,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         handler.removeCallbacks(runnable);
 
         // create up a popup window
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View savePopupView = inflater.inflate(R.layout.save_popup_window, null);
+        LayoutInflater savePopupInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View savePopupView = savePopupInflater.inflate(R.layout.save_popup_window, null);
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
         PopupWindow savePopupWindow = new PopupWindow(savePopupView, width, height, true);
@@ -231,11 +231,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coursesSpinner.setAdapter(coursesAdapter);
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-
-        // TODO: remove these later
-        int sessionId = (int) db.sessionWithStudentsDao().insert(new Session(currentTime));
-        preferences.edit().putInt("sessionId", sessionId).apply();
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int sessionId = preferences.getInt("sessionId",0);
 
         // set up the save button and its onClick event
         Button saveSessionButton = (Button) savePopupView.findViewById(R.id.save_session_button);
@@ -265,7 +262,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
                     sessionName = sessionNameByUser;
                 }
 
-                int sessionId = preferences.getInt("sessionId", 0);
                 Session curSession = db.sessionWithStudentsDao().get(sessionId).getSession();
                 curSession.setName(sessionName);
                 db.sessionWithStudentsDao().updateSession(curSession);
