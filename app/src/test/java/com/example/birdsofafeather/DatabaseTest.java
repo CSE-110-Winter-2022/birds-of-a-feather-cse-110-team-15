@@ -68,7 +68,7 @@ public class DatabaseTest {
         s1.setStudentId(studentDao.count());
         StudentWithCourses retrievedStudent = studentDao.get(s1.getUuid());
 
-        assertEquals(1, retrievedStudent.getStudentId());
+        assertEquals("s1ID", retrievedStudent.getUUID());
         assertEquals("John", retrievedStudent.getName());
         assertEquals("link.com", retrievedStudent.getHeadshotURL());
         assertEquals(0, retrievedStudent.getCourses().size());

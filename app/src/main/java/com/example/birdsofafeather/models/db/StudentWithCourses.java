@@ -10,7 +10,7 @@ public class StudentWithCourses {
     @Embedded
     public Student student;
 
-    @Relation(parentColumn = "id", entityColumn = "student_id", entity = Course.class, projection = {"name"})
+    @Relation(parentColumn = "uuid", entityColumn = "student_id", entity = Course.class, projection = {"name"})
     public List<String> courses;
 
     public Student getStudent() { return student;}
