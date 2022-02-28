@@ -284,6 +284,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     // create a popup for saving a new session and also renaming session
     public void createSavePopup(View view){
+        sessionId = preferences.getInt("sessionId",0); // session id
         // create up a popup window
         PopupWindow savePopupWindow = new PopupWindow(savePopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         savePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -315,8 +316,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
         ArrayAdapter<String> coursesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currentCourses);
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coursesSpinner.setAdapter(coursesAdapter);
-
-        int sessionId = preferences.getInt("sessionId",0); // session id
 
         // set up the save button and its onClick event
         Button saveSessionButton = (Button) savePopupView.findViewById(R.id.save_session_button);
