@@ -24,14 +24,13 @@ import org.junit.runner.RunWith;
 public class SeeFavoriteListTest {
     @Before
     // Initialize the database where Bob is the user, Bill shares 1 class with him, Mary shares 2,
-    // and Toby shares none.
     public void init(){
         AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com", true));
         db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
-        db.studentWithCoursesDao().insert(new Student("Toby", "toby.com"));
+
         // Bob's classes
         db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course(1, "CSE 100 FA 2021")) ;
@@ -43,15 +42,10 @@ public class SeeFavoriteListTest {
         // Mary's classes (Has 2, shares 2)
         db.coursesDao().insert(new Course(3, "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course(3, "CSE 100 FA 2021")) ;
-
-        // Toby's class (Has 1, shares none)
-        db.coursesDao().insert(new Course(4, "CSE 8B FA 2021")) ;
-
-
     }
 
     @Test
-    // Test to make sure a students' entries shows up correctly on the search page.
+    // Test to make sure a students' entries shows up correctly on the favorite list page.
     public void testViewingFavoriteList(){
         try(ActivityScenario<FavoriteListActivity> scenario = ActivityScenario.launch(FavoriteListActivity.class)){
             scenario.onActivity(activity -> {

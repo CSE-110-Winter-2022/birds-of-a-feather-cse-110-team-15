@@ -1,9 +1,6 @@
 package com.example.birdsofafeather;
 
-import static junit.framework.TestCase.assertEquals;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static java.lang.System.out;
 
 import android.content.Intent;
@@ -78,20 +75,19 @@ public class ViewProfileActivityTest {
         intent.putExtra("classmate_id", 3);
         try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
-                        // Multiple assertions in one test to avoid launching too many activities
-                        TextView name = activity.findViewById(R.id.name_view);
-                        CheckBox fav = activity.findViewById(R.id.profile_favorite);
+                // Multiple assertions in one test to avoid launching too many activities
+                TextView name = activity.findViewById(R.id.name_view);
+                CheckBox fav = activity.findViewById(R.id.profile_favorite);
 
-                        // Test if the name is correct
-                        Assert.assertEquals("Mary", name.getText());
+                // Test if the name is correct
+                assertEquals("Mary", name.getText());
 
-                        // Test if the Favorite CheckBox is checked
-                        assertTrue(fav.isChecked());
+                // Test if the Favorite CheckBox is checked
+                assertTrue(fav.isChecked());
 
-                        out.println("Expected: Mary    Actual:" + name.getText());
-                        out.println("Expected: True    Actual:" + fav.isChecked());
-                    }
-            );
+                out.println("Expected: Mary    Actual:" + name.getText());
+                out.println("Expected: True    Actual:" + fav.isChecked());
+            });
         }
     }
 
@@ -102,20 +98,19 @@ public class ViewProfileActivityTest {
         intent.putExtra("classmate_id", 2);
         try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
-                        // Multiple assertions in one test to avoid launching too many activities
-                        TextView name = activity.findViewById(R.id.name_view);
-                        CheckBox fav = activity.findViewById(R.id.profile_favorite);
+                // Multiple assertions in one test to avoid launching too many activities
+                TextView name = activity.findViewById(R.id.name_view);
+                CheckBox fav = activity.findViewById(R.id.profile_favorite);
 
-                        // Test if the name is correct
-                        Assert.assertEquals("Bill", name.getText());
+                // Test if the name is correct
+                Assert.assertEquals("Bill", name.getText());
 
-                        // Test if the Favorite CheckBox is checked
-                        assertFalse(fav.isChecked());
+                // Test if the Favorite CheckBox is checked
+                assertFalse(fav.isChecked());
 
-                        out.println("Expected: Bill    Actual:" + name.getText());
-                        out.println("Expected: False   Actual:" + fav.isChecked());
-                    }
-            );
+                out.println("Expected: Bill    Actual:" + name.getText());
+                out.println("Expected: False   Actual:" + fav.isChecked());
+            });
         }
     }
 }
