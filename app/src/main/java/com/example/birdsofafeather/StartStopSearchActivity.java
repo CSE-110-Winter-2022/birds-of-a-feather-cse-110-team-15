@@ -89,8 +89,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
 
         // set savePopupView
-        LayoutInflater savePopupInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        savePopupView = savePopupInflater.inflate(R.layout.save_popup_window, null);
+        savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
     }
 
     @Override
