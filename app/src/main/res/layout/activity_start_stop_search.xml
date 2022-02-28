@@ -116,6 +116,8 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textSize="20sp"
+        android:clickable="true"
+        android:onClick="onLabelClicked"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.741"
         app:layout_constraintLeft_toLeftOf="parent"
