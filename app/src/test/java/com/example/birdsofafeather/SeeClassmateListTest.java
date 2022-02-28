@@ -3,10 +3,15 @@ package com.example.birdsofafeather;
 import static org.junit.Assert.assertEquals;
 import static java.lang.System.out;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -14,6 +19,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
+import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.Student;
 
 import org.junit.Before;
@@ -29,10 +35,13 @@ public class SeeClassmateListTest {
     public void init(){
         AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+        // add dummy session
+        db.sessionWithStudentsDao().insert(new Session("dummy"));
+
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
-        db.studentWithCoursesDao().insert(new Student("Toby", "toby.com"));
+        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com", 1));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", 1));
+        db.studentWithCoursesDao().insert(new Student("Toby", "toby.com", 1));
         // Bob's classes
         db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course(1, "CSE 100 FA 2021")) ;
@@ -47,6 +56,8 @@ public class SeeClassmateListTest {
 
         // Toby's class (Has 1, shares none)
         db.coursesDao().insert(new Course(4, "CSE 8B FA 2021")) ;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
+        preferences.edit().putInt("sessionId", 1).commit();
     }
 
     @Test
