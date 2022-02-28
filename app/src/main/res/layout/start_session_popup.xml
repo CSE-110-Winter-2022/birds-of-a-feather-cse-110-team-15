@@ -8,6 +8,7 @@
     android:background="#B8B8D1"
     android:paddingLeft="10dp"
     android:paddingRight="10dp"
+    android:paddingBottom="20dp"
     tools:context=".StartStopSearchActivity">
 
     <TextView
