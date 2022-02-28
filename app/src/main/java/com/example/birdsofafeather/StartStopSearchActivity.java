@@ -225,9 +225,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
             createSavePopup(view);
         }
 
-        // clear preference and current session title
+        // clear preference
         preferences.edit().clear().apply();
-        sessionTitle.setText("");
     }
 
     public void onMockClicked(View view) {
@@ -236,8 +235,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     }
 
     public void onLabelClicked(View view) {
-        // if this is a non active session, return
-        if (sessionTitle.getText().toString().isEmpty())
+        // if session is currently stopped, then return
+        if (StopButton.getVisibility() == View.INVISIBLE)
             return;
 
         // else show popup to name session
@@ -353,7 +352,5 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 savePopupWindow.dismiss();
             }
         });
-
-        preferences.edit().clear().apply();
     }
 }

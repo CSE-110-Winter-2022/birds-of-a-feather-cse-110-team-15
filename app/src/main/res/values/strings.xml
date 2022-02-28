@@ -36,5 +36,7 @@
     <string name="current_session_title">Current Session:</string>
     <string name="start_session_popup_title">Create / Resume Session</string>
     <string name="start_session_btn_str">START SESSION</string>
+    <string name="save_popup_text">Enter A Name For Your Session Or Choose a Current Course:</string>
+    <string name="save_popup_button">SAVE</string>
 
 </resources>
