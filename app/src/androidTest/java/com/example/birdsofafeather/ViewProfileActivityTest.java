@@ -3,6 +3,7 @@ package com.example.birdsofafeather;
 import static org.junit.Assert.*;
 import static java.lang.System.out;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.CheckBox;
@@ -25,30 +26,36 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class ViewProfileActivityTest {
-    Student s1;
-    Student s2;
-    Course c1;
-    Course c2;
 
     @Before
     public void init() {
-        // Initializing a database where Bob and Bill share one class, Bob and Mary share no classes
-        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-        s1 = new Student("Bob", "bob.com");
-        s2 = new Student("Bill", "bill.com");
-        db.studentWithCoursesDao().insert(s1);
-        db.studentWithCoursesDao().insert(s2);
-        c1 = new Course(1, "CSE 20 FA 2021");
-        c2 = new Course(2, "CSE 20 FA 2021");
-        db.coursesDao().insert(c1);
-        db.coursesDao().insert(c2);
+        Context context = ApplicationProvider.getApplicationContext();
+        AppDatabase.useTestSingleton(context);
+        AppDatabase db = AppDatabase.singleton(context);
+
+        db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
+        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", true));
+
+        // Bob's classes
+        db.coursesDao().insert(new Course(1, "CSE 20 FA 2021"));
+        db.coursesDao().insert(new Course(1, "CSE 100 FA 2021"));
+
+        // Bill's class (Has 2, shares 1)
+        db.coursesDao().insert(new Course(2, "CSE 20 FA 2021"));
+        db.coursesDao().insert(new Course(2, "CSE 15L FA 2021"));
+
+        // Mary's classes (Has 2, shares 2)
+        db.coursesDao().insert(new Course(3, "CSE 20 FA 2021"));
+        db.coursesDao().insert(new Course(3, "CSE 100 FA 2021"));
     }
 
     @Test
     /* Tests common courses and other elements show up on profile page if they exist */
     public void testCommonCourses(){
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
-        intent.putExtra("classmate_id", 3);
+        // Pass Bill to intent
+        intent.putExtra("classmate_id", 2);
         try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 // Multiple assertions in one test to avoid launching too many activities
@@ -63,7 +70,7 @@ public class ViewProfileActivityTest {
                 TextView courses = activity.findViewById(R.id.common_classes_view);
                 // Test course loaded and visibility
                 assertEquals(View.VISIBLE, courses.getVisibility());
-                assertEquals("", courses.getText());
+                assertEquals("CSE 20 FA 2021\n", courses.getText());
             });
         }
     }
@@ -72,6 +79,7 @@ public class ViewProfileActivityTest {
     /* Tests favorite checkbox and other elements show up on profile page if they exist */
     public void testFavoriteChecked() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
+        // Pass Mary to intent
         intent.putExtra("classmate_id", 3);
         try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
@@ -95,6 +103,7 @@ public class ViewProfileActivityTest {
     /* Tests favorite checkbox and other elements show up on profile page if they exist */
     public void testFavoriteUnchecked() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
+        // Pass Bill to intent
         intent.putExtra("classmate_id", 2);
         try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
