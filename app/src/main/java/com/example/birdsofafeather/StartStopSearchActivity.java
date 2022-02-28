@@ -11,14 +11,12 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +31,6 @@ import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -54,7 +51,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Spinner startSessionSpinner;
     private int sessionId;
     private View savePopupView;
-    private boolean isActiveSession;
+    private boolean isNewSession;
+    private TextView sessionTitle;
 
     private Map<String, Integer> sessionIdMap;
 
@@ -170,12 +168,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
            curSession = formatter.format(new Date());
            // insert a new session into database
            sessionId = (int) db.sessionWithStudentsDao().insert(new Session(curSession));
-           isActiveSession = true;
+           isNewSession = true;
        } else {
            // set id based on selected session name
            curSession = (String) startSessionSpinner.getSelectedItem();
            sessionId = sessionIdMap.get(curSession);
-           isActiveSession = false;
+           isNewSession = false;
        }
 
        // put sessionId into shared preferences
@@ -185,7 +183,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
                .apply();
 
        // set title of session
-       TextView sessionTitle = findViewById(R.id.cur_session);
+       sessionTitle = findViewById(R.id.cur_session);
        sessionTitle.setText(curSession);
 
        // hide start button
@@ -221,14 +219,72 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // get the session id that is passed from onStartSessionClicked
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        int sessionId = preferences.getInt("sessionId",0);
 
-        // if this is not an active session, then just clear the preference and return from here
-        if (!isActiveSession){
-            preferences.edit().clear().apply();
-            return;
+        // if this is a new session, then show popup to name it
+        if (isNewSession){
+            createSavePopup(view);
         }
 
+        // clear preference
+        preferences.edit().clear().apply();
+    }
+
+    public void onMockClicked(View view) {
+        Intent intent = new Intent(this, MockScreenActivity.class);
+        startActivity(intent);
+    }
+
+    public void onLabelClicked(View view) {
+        // if session is currently stopped, then return
+        if (StopButton.getVisibility() == View.INVISIBLE)
+            return;
+
+        // else show popup to name session
+        createSavePopup(view);
+    }
+
+    // create a list of pairs of student and the number of common courses with me
+    // from a StudentWithCourses object (me) and the list of StudentWithCourses
+    public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
+            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
+        List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
+        int count; // count of common courses
+
+        // create a list of pair of student and the number of common courses
+        for (StudentWithCourses student : otherStudents) {
+            count = me.getCommonCourses(student).size();
+
+            // add a pair of this student and count if the student has at least one common course with me
+            if (count > 0){
+                studentAndCountPairs.add(new Pair<>(student, count));
+            }
+        }
+
+        // sort the list by the number of common courses in descending order
+        Collections.sort(studentAndCountPairs, (s1, s2) -> s2.second - s1.second);
+
+        return studentAndCountPairs;
+    }
+
+    // update the recycler view based on the current session in the database.
+    public void updateRecyclerView() {
+        sessionId = PreferenceManager.getDefaultSharedPreferences(this).getInt("sessionId", 0);
+        // if no session id in shared preferences, don't update recycler view
+        if (sessionId == 0) {
+            Log.d("StartStopSearchActivity", "Not currently in a session!");
+            return;
+        }
+        // get students of current session
+        List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
+
+        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
+        // update recycler based on student list obtained from sessions
+        studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
+    }
+
+    // create a popup for saving a new session and also renaming session
+    public void createSavePopup(View view){
+        sessionId = preferences.getInt("sessionId",0); // session id
         // create up a popup window
         PopupWindow savePopupWindow = new PopupWindow(savePopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         savePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
@@ -289,54 +345,11 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 currentSession.setName(sessionName);
                 db.sessionWithStudentsDao().updateSession(currentSession);
 
+                sessionNameView.setText("");  // clear input field
+                sessionTitle.setText(sessionName); // update session title view
+
                 savePopupWindow.dismiss();
             }
         });
-
-        preferences.edit().clear().apply();
-    }
-
-    public void onMockClicked(View view) {
-        Intent intent = new Intent(this, MockScreenActivity.class);
-        startActivity(intent);
-    }
-
-    // create a list of pairs of student and the number of common courses with me
-    // from a StudentWithCourses object (me) and the list of StudentWithCourses
-    public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
-            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
-        List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
-        int count; // count of common courses
-
-        // create a list of pair of student and the number of common courses
-        for (StudentWithCourses student : otherStudents) {
-            count = me.getCommonCourses(student).size();
-
-            // add a pair of this student and count if the student has at least one common course with me
-            if (count > 0){
-                studentAndCountPairs.add(new Pair<>(student, count));
-            }
-        }
-
-        // sort the list by the number of common courses in descending order
-        Collections.sort(studentAndCountPairs, (s1, s2) -> s2.second - s1.second);
-
-        return studentAndCountPairs;
-    }
-
-    // update the recycler view based on the current session in the database.
-    public void updateRecyclerView() {
-        sessionId = PreferenceManager.getDefaultSharedPreferences(this).getInt("sessionId", 0);
-        // if no session id in shared preferences, don't update recycler view
-        if (sessionId == 0) {
-            Log.d("StartStopSearchActivity", "Not currently in a session!");
-            return;
-        }
-        // get students of current session
-        List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
-
-        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
-        // update recycler based on student list obtained from sessions
-        studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
 }
