@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -68,6 +69,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         StopButton = findViewById(R.id.stop_button);
         StopButton.setVisibility(View.INVISIBLE);
 
+        StartButton = findViewById(R.id.start_button);
+        StartButton.setOnClickListener((View view) -> onStartClick(view));
+
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         db = AppDatabase.singleton(this);
         me = db.studentWithCoursesDao().get(1); // get the student with id 1
@@ -87,9 +91,11 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // get startSessionPopupView
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
-
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
+        // for testing purposes, but also won't affect code because of error catching
+        // for this function
+        updateRecyclerView();
     }
 
     @Override
@@ -142,7 +148,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         startSessionSpinner.setSelection(0, true);
 
         // create popup
-        PopupWindow popupWindow = new PopupWindow(startSessionPopupView, ViewGroup.LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, true);
+        PopupWindow popupWindow = new PopupWindow(startSessionPopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         popupWindow.showAtLocation(findViewById(android.R.id.content).getRootView(), Gravity.CENTER, 0, 0);
 
         // set onclick for button to start session
@@ -160,10 +166,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
        // check if new session or existing session
        if (session.equals("New Session")) {
            // session title will be current date
-           SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
-           Date date = new Date();
-           System.out.println(formatter.format(date));
-           curSession = formatter.format(date);
+           SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+           curSession = formatter.format(new Date());
            // insert a new session into database
            sessionId = (int) db.sessionWithStudentsDao().insert(new Session(curSession));
            isActiveSession = true;
@@ -229,9 +233,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         PopupWindow savePopupWindow = new PopupWindow(savePopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         savePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
-        // set the current date and time as hint in the session name
-        SimpleDateFormat dateFormat2 = new SimpleDateFormat("MM/dd/yy hh:mm aa");
-        String currentTime = dateFormat2.format(new Date()).toString();
+        // set date and time session has started as hint in the session name
+        String currentTime = db.sessionWithStudentsDao().get(sessionId).getName();
         TextView sessionNameView = savePopupView.findViewById(R.id.session_name_view);
         sessionNameView.setHint(currentTime);
 
@@ -276,15 +279,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 else {
                     // get the user input for session name
                     String userInput = sessionNameView.getText().toString();
-
+                    // set session name to user input
                     // if no name is provided, save the session with the date and time
-                    if (userInput.isEmpty()) {
-                        sessionName = currentTime;
-                    }
-                    // else use the name provided by the user
-                    else {
-                        sessionName = userInput;
-                    }
+                    sessionName = userInput.isEmpty() ? currentTime : userInput;
                 }
 
                 // update the name of the current session
@@ -329,6 +326,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     // update the recycler view based on the current session in the database.
     public void updateRecyclerView() {
+        sessionId = PreferenceManager.getDefaultSharedPreferences(this).getInt("sessionId", 0);
+        // if no session id in shared preferences, don't update recycler view
+        if (sessionId == 0) {
+            Log.d("StartStopSearchActivity", "Not currently in a session!");
+            return;
+        }
         // get students of current session
         List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
 

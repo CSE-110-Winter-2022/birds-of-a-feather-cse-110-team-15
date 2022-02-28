@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="400dp"
-    android:background="#D3D3D3">
+    android:background="#B8B8D1">
 
 
     <EditText
@@ -29,29 +29,36 @@
         android:text="Enter A Name For Your Session Or Choose a Current Course: "
         android:textSize="24sp"
         android:textStyle="bold"
+        android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.627"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <Spinner
-        android:id="@+id/current_courses_spinner"
-        android:layout_width="226dp"
-        android:layout_height="58dp"
-        android:spinnerMode="dropdown"
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/spinner_background"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.354" />
+        app:layout_constraintVertical_bias="0.354" >
+
+        <Spinner
+            android:id="@+id/current_courses_spinner"
+            android:layout_width="225dp"
+            android:layout_height="50dp"
+            android:dropDownWidth="225dp"
+            android:spinnerMode="dropdown" />
+    </FrameLayout>
 
     <Button
         android:id="@+id/save_session_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="SAVE"
-        android:textSize="24sp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
