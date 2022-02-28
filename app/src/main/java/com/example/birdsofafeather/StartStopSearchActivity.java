@@ -220,7 +220,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         int sessionId = preferences.getInt("sessionId",0);
 
-        // if this is not an active session, then clear the preference and return here
+        // if this is not an active session, then just clear the preference and return from here
         if (!isActiveSession){
             preferences.edit().clear().apply();
             return;
@@ -236,12 +236,26 @@ public class StartStopSearchActivity extends AppCompatActivity {
         TextView sessionNameView = savePopupView.findViewById(R.id.session_name_view);
         sessionNameView.setHint(currentTime);
 
-        // set up the current course dropdown
-        List<String> courses = db.studentWithCoursesDao().get(1).getCourses(); // list of the courses of the user
+        // create a list of current courses
+        List<String> allCourses = db.studentWithCoursesDao().get(1).getCourses(); // list of the courses of the user
+        List<String> currentCourses = new ArrayList<>();
         String defaultMessage = "(Current Course)";
-        courses.add(0,defaultMessage); // add the default message at the beginning
+        currentCourses.add(defaultMessage);
+
+        // add course to currentCourse if it is from winter 2022
+        for (String course: allCourses){
+            // parse the course string. an example of current course string is "CSE 110 WI 2022"
+            String[] tokens = course.split(" ");
+
+            // check if the course is in winter 2022
+            if (tokens[2].equals("WI") && tokens[3].equals("2022")) {
+                currentCourses.add(course);
+            }
+        }
+
+        // set up the current course dropdown
         Spinner coursesSpinner = (Spinner) savePopupView.findViewById(R.id.current_courses_spinner);
-        ArrayAdapter<String> coursesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, courses);
+        ArrayAdapter<String> coursesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, currentCourses);
         coursesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         coursesSpinner.setAdapter(coursesAdapter);
 
