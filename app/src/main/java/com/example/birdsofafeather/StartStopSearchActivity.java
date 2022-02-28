@@ -54,6 +54,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private int sessionId;
     private View savePopupView;
     private boolean isActiveSession;
+    String curSession;
 
     private Map<String, Integer> sessionIdMap;
 
@@ -156,7 +157,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
     public void onStartSessionClicked(View view) {
        String session = (String) startSessionSpinner.getSelectedItem();
 
-       String curSession;
        // check if new session or existing session
        if (session.equals("New Session")) {
            // session title will be current date
@@ -225,15 +225,66 @@ public class StartStopSearchActivity extends AppCompatActivity {
             return;
         }
 
+        createSavePopup(view);
+
+        preferences.edit().clear().apply();
+    }
+
+    public void onMockClicked(View view) {
+        Intent intent = new Intent(this, MockScreenActivity.class);
+        startActivity(intent);
+    }
+
+    // create a list of pairs of student and the number of common courses with me
+    // from a StudentWithCourses object (me) and the list of StudentWithCourses
+    public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
+            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
+        List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
+        int count; // count of common courses
+
+        // create a list of pair of student and the number of common courses
+        for (StudentWithCourses student : otherStudents) {
+            count = me.getCommonCourses(student).size();
+
+            // add a pair of this student and count if the student has at least one common course with me
+            if (count > 0){
+                studentAndCountPairs.add(new Pair<>(student, count));
+            }
+        }
+
+        // sort the list by the number of common courses in descending order
+        Collections.sort(studentAndCountPairs, (s1, s2) -> s2.second - s1.second);
+
+        return studentAndCountPairs;
+    }
+
+    // update the recycler view based on the current session in the database.
+    public void updateRecyclerView() {
+        // get students of current session
+        List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
+
+        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
+        // update recycler based on student list obtained from sessions
+        studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
+    }
+
+    public void onLabelClicked(View view) {
+        // if this is active session, then return (renaming is for saved session)
+        if (isActiveSession)
+            return;
+
+        // else show popup to name session
+        createSavePopup(view);
+    }
+
+    public void createSavePopup(View view){
         // create up a popup window
         PopupWindow savePopupWindow = new PopupWindow(savePopupView, LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT, true);
         savePopupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
 
         // set the current date and time as hint in the session name
-        SimpleDateFormat dateFormat2 = new SimpleDateFormat("MM/dd/yy hh:mm aa");
-        String currentTime = dateFormat2.format(new Date()).toString();
         TextView sessionNameView = savePopupView.findViewById(R.id.session_name_view);
-        sessionNameView.setHint(currentTime);
+        sessionNameView.setHint(curSession);
 
         // create a list of current courses
         List<String> allCourses = db.studentWithCoursesDao().get(1).getCourses(); // list of the courses of the user
@@ -279,7 +330,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
                     // if no name is provided, save the session with the date and time
                     if (userInput.isEmpty()) {
-                        sessionName = currentTime;
+                        sessionName = curSession;
                     }
                     // else use the name provided by the user
                     else {
@@ -292,48 +343,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 currentSession.setName(sessionName);
                 db.sessionWithStudentsDao().updateSession(currentSession);
 
+                // set text view for the current session label
+                TextView currentSessionView = findViewById(R.id.cur_session);
+                currentSessionView.setText(sessionName);
+
                 savePopupWindow.dismiss();
             }
         });
-
-        preferences.edit().clear().apply();
-    }
-
-    public void onMockClicked(View view) {
-        Intent intent = new Intent(this, MockScreenActivity.class);
-        startActivity(intent);
-    }
-
-    // create a list of pairs of student and the number of common courses with me
-    // from a StudentWithCourses object (me) and the list of StudentWithCourses
-    public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
-            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
-        List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
-        int count; // count of common courses
-
-        // create a list of pair of student and the number of common courses
-        for (StudentWithCourses student : otherStudents) {
-            count = me.getCommonCourses(student).size();
-
-            // add a pair of this student and count if the student has at least one common course with me
-            if (count > 0){
-                studentAndCountPairs.add(new Pair<>(student, count));
-            }
-        }
-
-        // sort the list by the number of common courses in descending order
-        Collections.sort(studentAndCountPairs, (s1, s2) -> s2.second - s1.second);
-
-        return studentAndCountPairs;
-    }
-
-    // update the recycler view based on the current session in the database.
-    public void updateRecyclerView() {
-        // get students of current session
-        List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
-
-        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
-        // update recycler based on student list obtained from sessions
-        studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
 }
