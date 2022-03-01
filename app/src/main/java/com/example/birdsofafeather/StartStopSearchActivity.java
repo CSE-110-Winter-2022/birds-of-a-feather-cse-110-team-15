@@ -1,5 +1,5 @@
 package com.example.birdsofafeather;
-
+import static java.lang.System.out;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -160,6 +160,26 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // sort the list by the number of common courses in descending order
         Collections.sort(studentAndCountPairs, (s1, s2) -> { return s2.second - s1.second; });
+
+        //create new list to modify and return
+        List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
+
+        //if classmate waved, place at top of list
+        for (Pair<StudentWithCourses, Integer> student : studentAndCountPairs) {
+            out.println("student: " + student.first.getName());
+            //store
+            Pair<StudentWithCourses, Integer> tempStudent = student;
+            if(student.first.getWavedToUser()){
+                //add to top of waved list
+                wavedStudentAndCountPairs.add(0,tempStudent);
+                out.println("add student");
+            }
+            wavedStudentAndCountPairs.add(tempStudent);
+        }
+
+        for(Pair<StudentWithCourses, Integer> student : studentAndCountPairs){ //print out list?
+            out.println(student.first.getName());
+        }
 
         return studentAndCountPairs;
     }

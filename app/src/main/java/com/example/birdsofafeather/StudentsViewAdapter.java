@@ -1,5 +1,6 @@
 package com.example.birdsofafeather;
 
+import static java.lang.System.out;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Pair;
@@ -41,6 +42,10 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                 .from(parent.getContext())
                 .inflate(R.layout.classmate_row, parent, false);
 
+        //initial: no wave-> wave is invisible
+        ImageView wavedToUser = (ImageView) view.findViewById(R.id.classmate_waved);
+        wavedToUser.setVisibility(View.INVISIBLE);
+
         return new ViewHolder(view, onFavorite);
     }
 
@@ -69,6 +74,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         private final TextView studentNameView;
         private final TextView commonCourseCountView;
         private final ImageView studentImageView;
+        private final ImageView waveView;
         private StudentWithCourses student;
         private final CheckBox fav;
         Picasso picasso;
@@ -79,6 +85,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             this.studentNameView = view.findViewById(R.id.classmate_name_text);
             this.commonCourseCountView = view.findViewById(R.id.common_course_count_textview);
             this.studentImageView = view.findViewById(R.id.classmate_imageview);
+            this.waveView = view.findViewById(R.id.classmate_waved);
             view.setOnClickListener(this);
 
             // Handle favoriting/unfavoriting with a Toast and update to Student object
@@ -128,6 +135,11 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
 
             // Set favorite status
             fav.setChecked(student.isFavorite());
+
+            //if student waved to user, wave is visible
+            if(student.getWavedToUser()==true){
+                waveView.setVisibility(View.VISIBLE);
+            }
         }
 
         // Define the onClick behavior
