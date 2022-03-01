@@ -81,7 +81,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // Pass in student list and function to update favorite status to the adapter
         studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student) ->
-                db.studentWithCoursesDao().updateStudent(student)
+            db.studentWithCoursesDao().updateStudent(student)
         );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
@@ -155,49 +155,49 @@ public class StartStopSearchActivity extends AppCompatActivity {
     }
 
     public void onStartSessionClicked(View view) {
-        String session = (String) startSessionSpinner.getSelectedItem();
+       String session = (String) startSessionSpinner.getSelectedItem();
 
-        String curSession;
-        // check if new session or existing session
-        if (session.equals("New Session")) {
-            // session title will be current date
-            SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
-            curSession = formatter.format(new Date());
-            // insert a new session into database
-            sessionId = (int) db.sessionWithStudentsDao().insert(new Session(curSession));
-            isNewSession = true;
-        } else {
-            // set id based on selected session name
-            curSession = (String) startSessionSpinner.getSelectedItem();
-            sessionId = sessionIdMap.get(curSession);
-            isNewSession = false;
-        }
+       String curSession;
+       // check if new session or existing session
+       if (session.equals("New Session")) {
+           // session title will be current date
+           SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
+           curSession = formatter.format(new Date());
+           // insert a new session into database
+           sessionId = (int) db.sessionWithStudentsDao().insert(new Session(curSession));
+           isNewSession = true;
+       } else {
+           // set id based on selected session name
+           curSession = (String) startSessionSpinner.getSelectedItem();
+           sessionId = sessionIdMap.get(curSession);
+           isNewSession = false;
+       }
 
-        // put sessionId into shared preferences
-        preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        preferences.edit()
-                .putInt("sessionId", sessionId)
-                .apply();
+       // put sessionId into shared preferences
+       preferences = PreferenceManager.getDefaultSharedPreferences(this);
+       preferences.edit()
+               .putInt("sessionId", sessionId)
+               .apply();
 
-        // set title of session
-        sessionTitle = findViewById(R.id.cur_session);
-        sessionTitle.setText(curSession);
+       // set title of session
+       sessionTitle = findViewById(R.id.cur_session);
+       sessionTitle.setText(curSession);
 
-        // hide start button
-        StartButton = findViewById(R.id.start_button);
-        StartButton.setVisibility(View.INVISIBLE);
+       // hide start button
+       StartButton = findViewById(R.id.start_button);
+       StartButton.setVisibility(View.INVISIBLE);
 
-        // show stop button
-        StopButton = findViewById(R.id.stop_button);
-        StopButton.setVisibility(View.VISIBLE);
+       // show stop button
+       StopButton = findViewById(R.id.stop_button);
+       StopButton.setVisibility(View.VISIBLE);
 
-        // update the recycler view based on the current student list
-        updateRecyclerView();
+       // update the recycler view based on the current student list
+       updateRecyclerView();
 
-        handler.postDelayed (runnable = () -> {
-            updateRecyclerView();
-            handler.postDelayed(runnable, updateListDelay);
-        }, updateListDelay);
+       handler.postDelayed (runnable = () -> {
+               updateRecyclerView();
+               handler.postDelayed(runnable, updateListDelay);
+       }, updateListDelay);
     }
 
     public void onStopClick(View view) {
@@ -243,7 +243,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     // create a list of pairs of student and the number of common courses with me
     // from a StudentWithCourses object (me) and the list of StudentWithCourses
     public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
-    (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
+            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
         List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
         int count; // count of common courses
 
