@@ -2,8 +2,6 @@ package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
 
-import static java.lang.System.out;
-
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -12,10 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
@@ -35,7 +31,6 @@ import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 @RunWith(AndroidJUnit4.class)
 public class StartSessionTest {

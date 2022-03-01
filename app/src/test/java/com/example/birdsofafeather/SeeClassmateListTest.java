@@ -44,7 +44,7 @@ public class SeeClassmateListTest {
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
 
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com", 1));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", 1));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", 1, true));
         db.studentWithCoursesDao().insert(new Student("Toby", "toby.com", 1));
       
         // Bob's classes
