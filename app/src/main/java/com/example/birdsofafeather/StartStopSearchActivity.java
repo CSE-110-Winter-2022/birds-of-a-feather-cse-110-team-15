@@ -31,7 +31,6 @@ import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -86,8 +85,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
-        // get startSessionPopupView
+        // layout inflater to create a View object from an xml file
         LayoutInflater layoutInflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        // get startSessionPopupView
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
@@ -258,7 +258,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         }
 
         // sort the list by the number of common courses in descending order
-        Collections.sort(studentAndCountPairs, (s1, s2) -> s2.second - s1.second);
+        studentAndCountPairs.sort((s1, s2) -> s2.second - s1.second);
 
         return studentAndCountPairs;
     }
@@ -325,7 +325,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 String selectedCourse = coursesSpinner.getSelectedItem().toString();
 
                 // if the user actually selected a course, then use that name
-                if (selectedCourse != defaultMessage){
+                if (selectedCourse.equals(defaultMessage)){
                     sessionName = selectedCourse;
                 }
                 // else check the user input
