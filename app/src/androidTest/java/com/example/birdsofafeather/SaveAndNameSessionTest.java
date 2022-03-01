@@ -17,6 +17,7 @@ import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -399,6 +400,8 @@ public class SaveAndNameSessionTest {
                         isDisplayed()));
         materialButton15.perform(click());
 
+        SystemClock.sleep(3000); // wait for 3 seconds for student list to show up
+
         ViewInteraction materialButton16 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
                         childAtPosition(
@@ -505,6 +508,8 @@ public class SaveAndNameSessionTest {
                         isDisplayed()));
         materialButton22.perform(click());
 
+        SystemClock.sleep(3000); // wait for 3 seconds for student list to show up
+
         ViewInteraction materialButton23 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
                         childAtPosition(
@@ -610,6 +615,8 @@ public class SaveAndNameSessionTest {
                         isDisplayed()));
         materialButton29.perform(click());
 
+        SystemClock.sleep(3000); // wait for 3 seconds for student list to show up
+
         ViewInteraction materialButton30 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
                         childAtPosition(
@@ -708,14 +715,27 @@ public class SaveAndNameSessionTest {
 
         // get session data from database and check if session is properly saved
         List<SessionWithStudents> sessions = db.sessionWithStudentsDao().getAll();
+        List<StudentWithCourses> students;  // student list in session
         // session 1
-        assertEquals(sessions.get(0).getName(), "CSE 110 WI 2022");
+        students = sessions.get(0).getStudents();
+        assertEquals("CSE 110 WI 2022", sessions.get(0).getName());
+        assertEquals("Bob", students.get(0).getName());
+        System.out.println("Expected: CSE 110 WI 2022   Actual: " + sessions.get(0).getName());
+        System.out.println("Expected: Bob               Actual: " + students.get(0).getName());
 
         // session 2
-        assertEquals(sessions.get(1).getName(), "CSE 105");
+        students = sessions.get(1).getStudents();
+        assertEquals("CSE 105", sessions.get(1).getName());
+        assertEquals("Toby", students.get(0).getName());
+        System.out.println("Expected: CSE 105           Actual: " + sessions.get(1).getName());
+        System.out.println("Expected: Toby              Actual: " + students.get(0).getName());
 
         // session 3 (after renaming)
-        assertEquals(sessions.get(2).getName(), "CSE 30");
+        students = sessions.get(2).getStudents();
+        assertEquals("CSE 30", sessions.get(2).getName());
+        assertEquals("Mary", students.get(0).getName());
+        System.out.println("Expected: CSE 30            Actual: " + sessions.get(2).getName());
+        System.out.println("Expected: Mary              Actual: " + students.get(0).getName());
     }
 
     private static Matcher<View> childAtPosition(
