@@ -64,7 +64,10 @@ public class EnterCourseActivityTest {
 
     @BeforeClass
     static public void clearCoursesForTest() {
-        AppDatabase db = AppDatabase.singleton(InstrumentationRegistry.getInstrumentation().getTargetContext());
+        AppDatabase db = null;//testing db
+        Context context = ApplicationProvider.getApplicationContext();
+        db.useTestSingleton(context);
+        db = AppDatabase.singleton(context);
         String uuid = new UUIDManager(InstrumentationRegistry.getInstrumentation().getTargetContext()).getUserUUID();
         List<Course> courseList= db.coursesDao().getForStudent(uuid);
 

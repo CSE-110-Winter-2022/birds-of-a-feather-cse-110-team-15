@@ -2,6 +2,7 @@ package com.example.birdsofafeather;
 
 import static junit.framework.TestCase.assertEquals;
 
+import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
@@ -30,7 +31,11 @@ public class ViewProfileActivityTest {
     @Before
     public void init() {
         // Initializing a database where Bob and Bill share one class, Bob and Mary share no classes
-        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+        AppDatabase db = null;//testing db
+        Context context = ApplicationProvider.getApplicationContext();
+        db.useTestSingleton(context);
+        db = AppDatabase.singleton(context);
+
         s1 = new Student("s1ID", "Bob", "bob.com");
         s2 = new Student("s2ID", "bill.com");
         db.studentWithCoursesDao().insert(s1);
