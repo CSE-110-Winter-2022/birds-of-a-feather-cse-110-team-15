@@ -59,16 +59,20 @@ public class ViewProfileActivity extends AppCompatActivity {
                 }
         );
 
-        CheckBox waveCheck =  findViewById(R.id.profile_wave);
-        //if student waved at user, checkbox is visible.
-        if(student.getWavedToUser()){
-            //wave is light gray
-            // TO DO: provide option to wave back to student -> wave turns black
-        } else {
-            //no wave to user wave is invisible
-            CheckBox waveToClassmate = (CheckBox) findViewById(R.id.profile_wave);
-            waveToClassmate.setVisibility(View.INVISIBLE);
-        }
+//        CheckBox waveCheck =  findViewById(R.id.profile_wave);
+//        //if student waved at user, checkbox is visible.
+//        //handle receiving wave from other student
+//        waveCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
+//            if(buttonView.isChecked()) {
+//                student.setWavedToUser(true);
+//            } else {
+//                //no wave -> invisible hand
+//                waveCheck.setVisibility(View.INVISIBLE);
+//            }
+//            //update student in database
+//            onWave.accept(student.getStudent());
+//        });
+
 
         // Retrieve profile image from URL using Picasso
         ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);
@@ -91,5 +95,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         TextView common_courses = findViewById(R.id.common_classes_view);
         common_courses.setText(displayList);
         common_courses.setVisibility(View.VISIBLE);
+
+
     }
 }

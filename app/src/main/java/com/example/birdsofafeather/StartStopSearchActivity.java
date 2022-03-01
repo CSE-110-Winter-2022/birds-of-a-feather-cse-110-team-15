@@ -1,6 +1,8 @@
 package com.example.birdsofafeather;
 
 import android.content.Intent;
+import static java.lang.System.out;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Pair;
@@ -60,9 +62,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // Pass in student list and function to update favorite and wave status to the adapter
         studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student)->{
             db.studentWithCoursesDao().updateStudent(student);
-        }, (student)->{
-            db.studentWithCoursesDao().updateStudent(student); //wave list?
-        }  );
+        });
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
         // update the recycler view based on the current student list
@@ -174,9 +174,11 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 //add to top of list
                 studentAndCountPairs.add(0,tempStudent);
             }
-
         }
 
+        for(StudentWithCourses student : otherStudents){
+            out.println(student.getName());
+        }
         return studentAndCountPairs;
     }
 
@@ -185,6 +187,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     // don't make any change on the recycler view, so the previous information is retained
     public void updateRecyclerViewIfNonEmpty() {
         List<StudentWithCourses> otherStudents = db.studentWithCoursesDao().getAll();
+
         otherStudents.remove(0); // remove myself
         studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
         if (!otherStudents.isEmpty())
