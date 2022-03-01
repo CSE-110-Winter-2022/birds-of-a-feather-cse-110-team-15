@@ -56,14 +56,6 @@ public class SaveAndNameSessionTest {
             Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
             AppDatabase.useTestSingleton(context);
             db = AppDatabase.singleton(context);
-            List<Course> courseList= db.coursesDao().getForStudent(1);
-            List<StudentWithCourses> studentList = db.studentWithCoursesDao().getAll();
-            List<SessionWithStudents> sessionList = db.sessionWithStudentsDao().getAll();
-            db.studentWithCoursesDao().insert(new Student("John", "john.com"));
-            db.coursesDao().insert(new Course(1, "CSE 21 FA 2020"));
-            db.coursesDao().insert(new Course(1, "CSE 30 WI 2021"));
-            db.coursesDao().insert(new Course(1, "CSE 105 WI 2022"));
-            db.coursesDao().insert(new Course(1, "CSE 110 WI 2022"));
         }
     };
 
