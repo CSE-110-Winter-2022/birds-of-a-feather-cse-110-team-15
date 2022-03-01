@@ -91,9 +91,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
-        // for testing purposes, but also won't affect code because of error catching
-        // for this function
-        updateRecyclerView();
     }
 
     @Override
@@ -268,7 +265,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     // update the recycler view based on the current session in the database.
     public void updateRecyclerView() {
-        sessionId = PreferenceManager.getDefaultSharedPreferences(this).getInt("sessionId", 0);
+        sessionId = preferences.getInt("sessionId", 0);
         // if no session id in shared preferences, don't update recycler view
         if (sessionId == 0) {
             Log.d("StartStopSearchActivity", "Not currently in a session!");
