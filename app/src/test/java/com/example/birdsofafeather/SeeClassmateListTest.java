@@ -65,6 +65,11 @@ public class SeeClassmateListTest {
     public void testViewingList(){
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
             scenario.onActivity(activity -> {
+                scenario.moveToState(Lifecycle.State.CREATED);
+                Button stopBtn = activity.findViewById(R.id.stop_button);
+                stopBtn.setVisibility(View.VISIBLE);
+                scenario.moveToState(Lifecycle.State.RESUMED);
+                out.println(scenario.getState());
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
                 final int studentCount = studentList.getChildCount();
 
