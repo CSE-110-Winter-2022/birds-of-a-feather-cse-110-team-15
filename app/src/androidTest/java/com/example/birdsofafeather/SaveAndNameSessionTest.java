@@ -61,7 +61,7 @@ public class SaveAndNameSessionTest {
     };
 
     @Test
-    public void saveSessionTest3() {
+    public void saveSessionTest() {
 
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.input_name_textview),
