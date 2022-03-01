@@ -11,6 +11,9 @@ public class Student {
     @ColumnInfo(name = "id")
     private int studentId;
 
+    @ColumnInfo(name = "session_id")
+    private int sessionId = 0;
+
     @ColumnInfo(name = "name")
     private String name;
 
@@ -20,10 +23,28 @@ public class Student {
     @ColumnInfo(name="favorite")
     private boolean favorite;
 
+    // default constructor
+    public Student(String name, String headshotURL, int sessionId) {
+        this.name = name;
+        this.headshotURL = headshotURL;
+        this.sessionId = sessionId;
+        this.favorite = false;        // New students begin as unfavorited
+    }
+
+    // Overloaded constructor for setting a student with no sessionId (for testing)
+    @Ignore
     public Student(String name, String headshotURL) {
         this.name = name;
         this.headshotURL = headshotURL;
         this.favorite = false;        // New students begin as unfavorited
+    }
+    // Overloaded constructor for setting a session and favorite student (for testing)
+    @Ignore
+    public Student(String name, String headshotURL, int sessionId, boolean favorite) {
+        this.name = name;
+        this.headshotURL = headshotURL;
+        this.sessionId = sessionId;
+        this.favorite = favorite;
     }
     @Ignore
     // Overloaded constructor for setting a favorite student (for testing)
@@ -36,6 +57,10 @@ public class Student {
     public int getStudentId() { return studentId; }
 
     public void setStudentId(int studentId) { this.studentId = studentId; }
+
+    public int getSessionId() { return sessionId; }
+
+    public void setSessionId(int sessionId) { this.sessionId = sessionId; }
 
     public String getName() { return name; }
 

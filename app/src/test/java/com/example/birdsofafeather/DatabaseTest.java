@@ -12,10 +12,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.CourseDao;
+import com.example.birdsofafeather.models.db.Session;
+import com.example.birdsofafeather.models.db.SessionWithStudents;
+import com.example.birdsofafeather.models.db.SessionWithStudentsDao;
 import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.example.birdsofafeather.models.db.StudentWithCoursesDao;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,7 +31,10 @@ import java.util.List;
 public class DatabaseTest {
     private StudentWithCoursesDao studentDao;
     private CourseDao courseDao;
+    private SessionWithStudentsDao sessionDao;
     private AppDatabase db;
+    private Session session1;
+    private Session session2;
     private Student s1;
     private Student s2;
     private Student s3;
@@ -47,9 +54,12 @@ public class DatabaseTest {
         db = AppDatabase.singleton(context);
         studentDao = db.studentWithCoursesDao();
         courseDao = db.coursesDao();
+        sessionDao = db.sessionWithStudentsDao();
+        session1 = new Session("CSE 30");
+        session2 = new Session("02/25/2022 19:30");
         s1 = new Student("John", "link.com");
-        s2 = new Student("Mary", "link.com");
-        s3 = new Student("Nancy", "link.com");
+        s2 = new Student("Mary", "link.com", 1);
+        s3 = new Student("Nancy", "link.com", 2);
         c1 = new Course(1, "CSE 30 FA 2021");
         c2 = new Course(1, "CSE 101 WI 2021");
         c3 = new Course(1, "CSE 21 SP 2021");
@@ -58,6 +68,11 @@ public class DatabaseTest {
         c6 = new Course(2, "CSE 105 FA 2021");
         c7 = new Course(3, "CSE 11 FA 2020");
         c8 = new Course(3, "CSE 110 WI 2021");
+    }
+
+    @After
+    public void teardown() {
+        db.close();
     }
 
     @Test
@@ -208,5 +223,60 @@ public class DatabaseTest {
         courseDao.insert(c1);
         courseDao.insert(c2);
         assertEquals(courseDao.count(), 2);
+    }
+
+    @Test
+    public void insertDeleteSession() {
+        // test insert session
+        int id = (int) sessionDao.insert(session1);
+        assertEquals(1, id);
+        System.out.println("Expect: CSE 30\nActual: " + sessionDao.get(1).getName());
+        assertEquals("Session Name", "CSE 30", sessionDao.get(1).getName());
+        // delete session
+        sessionDao.delete(sessionDao.get(1).getSession());
+        assertEquals("Session Count after deletion", 0, sessionDao.count());
+    }
+
+    @Test
+    public void getAllSessions() {
+        // insert into database
+        sessionDao.insert(session1);
+        sessionDao.insert(session2);
+        List<SessionWithStudents> sessionsList = sessionDao.getAll();
+        assertEquals("First session in database", "CSE 30", sessionsList.get(0).getName());
+        assertEquals("Second session in database", "02/25/2022 19:30", sessionsList.get(1).getName());
+    }
+
+    @Test
+    public void getStudentsFromSession() {
+        // set up database
+        sessionDao.insert(session1);
+        sessionDao.insert(session2);
+        studentDao.insert(s2);
+        courseDao.insert(c4);
+        courseDao.insert(c5);
+        courseDao.insert(c6);
+        studentDao.insert(new Student("John", "link.com", 1));
+        studentDao.insert(s3);
+        SessionWithStudents curSession = sessionDao.get(1);
+        assertEquals("Session count", 2, curSession.getStudents().size());
+        // check if can retrieve student's courses
+        for (String course : curSession.getStudents().get(1).getCourses()) {
+            System.out.println(course);
+        }
+
+    }
+
+    @Test
+    public void changeSessionName() {
+        sessionDao.insert(session2);
+        SessionWithStudents retrievedSession = sessionDao.get(1);
+        retrievedSession.setName("CSE 105");
+        // update database
+        sessionDao.updateSession(retrievedSession.getSession());
+
+        // check if updated
+        SessionWithStudents retrieved = sessionDao.get(1);
+        assertEquals("Get session name", "CSE 105", retrieved.getName());
     }
 }
