@@ -1,9 +1,12 @@
 package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static java.lang.System.out;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +34,7 @@ public class SeeClassmateListTest {
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", true));
         db.studentWithCoursesDao().insert(new Student("Toby", "toby.com"));
         // Bob's classes
         db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
@@ -54,10 +57,11 @@ public class SeeClassmateListTest {
     public void testViewingList(){
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
             scenario.onActivity(activity -> {
+                // Get the RecyclerView of the StudentList
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
                 final int studentCount = studentList.getChildCount();
 
-                // There are 3 other students in database, only two should appear in the view
+                // There are 3 other students in database, but only two should appear in the view
                 assertEquals(2, studentCount);
 
                 // Assert Mary and her information was rendered first because she shares more classes
@@ -65,29 +69,41 @@ public class SeeClassmateListTest {
                 TextView name = studentEntry.findViewById(R.id.classmate_name_text);
                 ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
                 TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+
+                // Check if Mary and her information is the same as expected
                 assertEquals("Mary", name.getText());
                 assertEquals("mary.com", headshot.getTag());
                 assertEquals("2", classCount.getText());
 
-                // Don't actually know if this is how the log messages should be printed or if
-                // it needs to be more elaborate
+                // Test if the Favorite Checkbox is checked
+                CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertTrue(favoriteIcon.isChecked());
+
+                // Log messages to visually check
                 out.println("Expected: Mary        Actual: " + name.getText());
                 out.println("Expected: mary.com    Actual: " + headshot.getTag());
                 out.println("Expected: 2           Actual: " + classCount.getText());
-
+                out.println("Expected: True        Actual: " + favoriteIcon.isChecked());
 
                 // Assert Bill's info was rendered next correctly
                 studentEntry = studentList.getChildAt(1);
                 name = studentEntry.findViewById(R.id.classmate_name_text);
                 headshot = studentEntry.findViewById(R.id.classmate_imageview);
                 classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+
+                // Check if Bill and his information is the same as expected
                 assertEquals("Bill", name.getText());
                 assertEquals("bill.com", headshot.getTag());
                 assertEquals("1", classCount.getText());
 
+                // Check if the Favorite Checkbox is not checked
+                favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertFalse(favoriteIcon.isChecked());
+
                 out.println("Expected: Bill        Actual: " + name.getText());
                 out.println("Expected: bill.com    Actual: " + headshot.getTag());
                 out.println("Expected: 1           Actual: " + classCount.getText());
+                out.println("Expected: False        Actual: " + favoriteIcon.isChecked());
             });
         }
     }
