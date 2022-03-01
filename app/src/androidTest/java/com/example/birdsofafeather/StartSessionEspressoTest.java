@@ -157,12 +157,6 @@ public class StartSessionEspressoTest {
                         isDisplayed()));
         materialButton5.perform(click());
 
-//        try {
-//            Thread.sleep(60000);
-//        } catch(Exception e) {
-//            // do nothing
-//        }
-
         ViewInteraction materialButton14 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
                         childAtPosition(
@@ -257,10 +251,6 @@ public class StartSessionEspressoTest {
         } catch(InterruptedException e) {
             System.out.println("got interrupted!");
         }
-
-        // check if recycler view to see if students found are still retained
-//        onView(withId(R.id.students_recycler_view))
-//                .check(matches(hasChildCount(1)));
     }
 
     private static Matcher<View> childAtPosition(
