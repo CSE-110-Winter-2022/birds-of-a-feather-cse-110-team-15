@@ -2,6 +2,7 @@ package com.example.birdsofafeather;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -57,6 +58,17 @@ public class ViewProfileActivity extends AppCompatActivity {
                 db.studentWithCoursesDao().updateStudent(student.getStudent());
                 }
         );
+
+        CheckBox waveCheck =  findViewById(R.id.profile_wave);
+        //if student waved at user, checkbox is visible.
+        if(student.getWavedToUser()){
+            //wave is light gray
+            // TO DO: provide option to wave back to student -> wave turns black
+        } else {
+            //no wave to user wave is invisible
+            CheckBox waveToClassmate = (CheckBox) findViewById(R.id.profile_wave);
+            waveToClassmate.setVisibility(View.INVISIBLE);
+        }
 
         // Retrieve profile image from URL using Picasso
         ImageView picture_view = (ImageView)findViewById(R.id.profile_picture_view);

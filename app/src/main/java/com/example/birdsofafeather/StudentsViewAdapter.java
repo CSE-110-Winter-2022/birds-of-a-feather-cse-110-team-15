@@ -25,12 +25,14 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
     // List of pair of StudentWithCourses object and the number of common courses
     private List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs;
     private final Consumer<Student> onFavorite;
+    private final Consumer<Student> onWaved;
 
     // Constructor for StudentsViewAdapter
-    StudentsViewAdapter(List<Pair<StudentWithCourses, Integer>> students, Consumer<Student> onFavorite) {
+    StudentsViewAdapter(List<Pair<StudentWithCourses, Integer>> students, Consumer<Student> onFavorite, Consumer<Student> onWaved) {
         super();
         this.studentAndCoursesCountPairs = students;
         this.onFavorite = onFavorite;
+        this.onWaved = onWaved;
     }
 
     // Create a copy of the row layout and pass it to the ViewHolder
@@ -41,7 +43,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                 .from(parent.getContext())
                 .inflate(R.layout.classmate_row, parent, false);
 
-        return new ViewHolder(view, onFavorite);
+        return new ViewHolder(view, onFavorite, onWaved);
     }
 
     // Bind student data at the given position to the ViewHolder
@@ -71,10 +73,11 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         private final ImageView studentImageView;
         private StudentWithCourses student;
         private final CheckBox fav;
+        private final CheckBox wav;
         Picasso picasso;
 
         // Constructor
-        ViewHolder (View view, Consumer<Student> onFavorite) {
+        ViewHolder(View view, Consumer<Student> onFavorite, Consumer<Student> onWave) {
             super(view);
             this.studentNameView = view.findViewById(R.id.classmate_name_text);
             this.commonCourseCountView = view.findViewById(R.id.common_course_count_textview);
@@ -93,6 +96,19 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                 }
                 // onFavorite updates the student in the database
                 onFavorite.accept(student.getStudent());
+            });
+
+            //handle receiving wave from other student
+            wav = view.findViewById(R.id.classmate_waved);
+            wav.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if(buttonView.isChecked()) {
+                    student.setWavedToUser(true);
+                } else {
+                    //no wave -> invisible hand
+                    wav.setVisibility(View.INVISIBLE);
+                }
+                //update student in database
+                onWave.accept(student.getStudent());
             });
         }
 
@@ -128,6 +144,11 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
 
             // Set favorite status
             fav.setChecked(student.isFavorite());
+
+            //set waved status
+            if(student.getWavedToUser()){
+
+            }
         }
 
         // Define the onClick behavior

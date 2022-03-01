@@ -33,6 +33,10 @@ public class StudentWithCourses {
 
     public void setFavorite(boolean favorite) {student.setFavorite(favorite); }
 
+    public boolean getWavedToUser(){ return student.getWavedToUser();}
+
+    public void setWavedToUser(boolean wave){student.setWavedToUser(wave);}
+
     public List<String> getCourses() { return courses; }
 
     public List<String> getCommonCourses(StudentWithCourses otherStudent) {

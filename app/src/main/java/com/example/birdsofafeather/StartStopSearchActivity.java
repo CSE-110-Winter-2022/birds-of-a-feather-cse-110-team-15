@@ -57,10 +57,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
         studentsLayoutManager = new LinearLayoutManager(this);
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
 
-        // Pass in student list and function to update favorite status to the adapter
+        // Pass in student list and function to update favorite and wave status to the adapter
         studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student)->{
             db.studentWithCoursesDao().updateStudent(student);
-        } );
+        }, (student)->{
+            db.studentWithCoursesDao().updateStudent(student); //wave list?
+        }  );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
         // update the recycler view based on the current student list
@@ -160,6 +162,20 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // sort the list by the number of common courses in descending order
         Collections.sort(studentAndCountPairs, (s1, s2) -> { return s2.second - s1.second; });
+
+        //if classmate waved, place at top of list
+        for (StudentWithCourses student : otherStudents) {
+            if(student.getWavedToUser()){
+                count = me.getCommonCourses(student).size();
+                //store
+                Pair<StudentWithCourses, Integer> tempStudent = new Pair<StudentWithCourses, Integer>(student, count);
+                //remove
+                studentAndCountPairs.remove(student);
+                //add to top of list
+                studentAndCountPairs.add(0,tempStudent);
+            }
+
+        }
 
         return studentAndCountPairs;
     }
