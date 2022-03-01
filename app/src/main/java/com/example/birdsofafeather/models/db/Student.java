@@ -13,6 +13,9 @@ public class Student {
     @ColumnInfo(name="uuid")
     private String uuid;
 
+    @ColumnInfo(name = "session_id")
+    private int sessionId = 0;
+
     @ColumnInfo(name = "name")
     private String name;
 
@@ -20,7 +23,7 @@ public class Student {
     private String headshotURL;
 
     @ColumnInfo(name="favorite")
-    private boolean favorite;
+    private boolean favorite = false;
 
     @ColumnInfo(name="wavedToUser")
     private boolean wavedToUser;
@@ -28,25 +31,27 @@ public class Student {
     @ColumnInfo(name="wavedFromUser")
     private boolean wavedFromUser;
 
-    public Student(@NonNull String uuid, String name, String headshotURL) {
+    public Student(@NonNull String uuid, String name, String headshotURL, int sessionId) {
         this.uuid = uuid;
         this.name = name;
         this.headshotURL = headshotURL;
+        this.sessionId = sessionId;
         this.favorite = false;        // New students begin as unfavorited
         this.wavedToUser = false;        // New students haven't waved to current user by default
     }
 
+
     @Ignore
-    public Student(@NonNull String uuid, String name, String headshotURL, boolean wavedToUser) {
-        this(uuid, name, headshotURL);
+    public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser) {
+        this(uuid, name, headshotURL, sessionId);
 
         this.wavedToUser = wavedToUser;
     }
 
     @Ignore
     // Overloaded constructor for setting a favorite student (for testing)
-    public Student(@NonNull String uuid, String name, String headshotURL, boolean wavedToUser, boolean favorite) {
-        this(uuid, name, headshotURL, wavedToUser);
+    public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser, boolean favorite) {
+        this(uuid, name, headshotURL, sessionId, wavedToUser);
 
         this.favorite = favorite;
     }
@@ -55,6 +60,10 @@ public class Student {
     public String getUuid() { return uuid; }
 
     public void setUuid(String uuid) { this.uuid = uuid; }
+
+    public int getSessionId() { return sessionId; }
+
+    public void setSessionId(int sessionId) { this.sessionId = sessionId; }
 
     public String getName() { return name; }
 

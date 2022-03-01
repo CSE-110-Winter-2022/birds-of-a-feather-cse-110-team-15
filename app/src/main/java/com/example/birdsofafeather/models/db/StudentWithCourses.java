@@ -19,6 +19,10 @@ public class StudentWithCourses {
 
     public void setUUID(String uuid) { student.setUuid(uuid); }
 
+    public int getSessionId() { return student.getSessionId(); }
+
+    public void setSessionId(int sessionId) { student.setSessionId(sessionId); }
+
     public String getName() { return student.getName(); }
 
     public void setName(String name) { student.setName(name); }

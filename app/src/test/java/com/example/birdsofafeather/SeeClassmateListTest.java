@@ -7,9 +7,11 @@ import static java.lang.System.out;
 
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.Lifecycle;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -18,6 +20,7 @@ import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
+import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.Student;
 
 import org.junit.Before;
@@ -38,6 +41,13 @@ public class SeeClassmateListTest {
         db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
         db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", false, true));
         db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com"));
+        // add dummy session
+        db.sessionWithStudentsDao().insert(new Session("dummy"));
+
+        db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
+        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com", 1));
+        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", 1));
+        db.studentWithCoursesDao().insert(new Student("Toby", "toby.com", 1));
         // Bob's classes
         db.coursesDao().insert(new Course(uuid, "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course(uuid, "CSE 100 FA 2021")) ;
@@ -52,6 +62,9 @@ public class SeeClassmateListTest {
 
         // Toby's class (Has 1, shares none)
         db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
+        db.coursesDao().insert(new Course(4, "CSE 8B FA 2021")) ;
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
+        preferences.edit().putInt("sessionId", 1).commit();
     }
 
     @Test
@@ -60,6 +73,11 @@ public class SeeClassmateListTest {
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
             scenario.onActivity(activity -> {
                 // Get the RecyclerView of the StudentList
+                scenario.moveToState(Lifecycle.State.CREATED);
+                Button stopBtn = activity.findViewById(R.id.stop_button);
+                stopBtn.setVisibility(View.VISIBLE);
+                scenario.moveToState(Lifecycle.State.RESUMED);
+                out.println(scenario.getState());
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
                 final int studentCount = studentList.getChildCount();
 

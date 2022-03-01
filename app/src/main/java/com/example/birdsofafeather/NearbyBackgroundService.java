@@ -1,10 +1,13 @@
 package com.example.birdsofafeather;
 
 import android.app.Activity;
+import android.app.Presentation;
 import android.app.Service;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Binder;
 import android.os.IBinder;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -75,6 +78,14 @@ public class NearbyBackgroundService extends Service {
                 }
                 i++;
             }
+            // get sessionId from sharedPreferences
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+            int sessionId = preferences.getInt("sessionId", 0);
+            if (sessionId == 0) {
+                // log and return
+                Log.d(TAG, "No active session!");
+                return;
+            }
 
             // create objects
             AppDatabase db = AppDatabase.singleton(getApplicationContext());
@@ -95,7 +106,6 @@ public class NearbyBackgroundService extends Service {
                     db.coursesDao().insert(new Course(senderUUID, course));
                 }
             }
-
         }
     };
     // our mock of Nearby Messages API
