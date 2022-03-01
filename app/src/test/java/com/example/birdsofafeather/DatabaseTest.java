@@ -65,7 +65,6 @@ public class DatabaseTest {
         // add a new student
         studentDao.insert(s1);
         // have to set studentId after generated, so kind of extra step
-        s1.setStudentId(studentDao.count());
         StudentWithCourses retrievedStudent = studentDao.get(s1.getUuid());
 
         assertEquals("s1ID", retrievedStudent.getUUID());

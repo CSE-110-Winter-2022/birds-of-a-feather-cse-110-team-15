@@ -30,16 +30,17 @@ public class ViewProfileActivityTest {
     @Before
     public void init() {
         Context context = ApplicationProvider.getApplicationContext();
+        String currentUserID = new UUIDManager(context).getUserUUID();
         AppDatabase.useTestSingleton(context);
         AppDatabase db = AppDatabase.singleton(context);
 
-        db.studentWithCoursesDao().insert(new Student("s1ID", "Bob", "bob.com"));
+        db.studentWithCoursesDao().insert(new Student(currentUserID, "Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", true));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", false, true));
 
         // Bob's classes
-        db.coursesDao().insert(new Course("s1ID", "CSE 20 FA 2021"));
-        db.coursesDao().insert(new Course("s1ID", "CSE 100 FA 2021"));
+        db.coursesDao().insert(new Course(currentUserID, "CSE 20 FA 2021"));
+        db.coursesDao().insert(new Course(currentUserID, "CSE 100 FA 2021"));
 
         // Bill's class (Has 2, shares 1)
         db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021"));

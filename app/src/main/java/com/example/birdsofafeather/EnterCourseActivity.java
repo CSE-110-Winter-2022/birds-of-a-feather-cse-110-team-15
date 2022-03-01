@@ -23,7 +23,7 @@ public class EnterCourseActivity extends AppCompatActivity {
     Spinner quarterSpinner, yearSpinner;
     List<Course> enteredCourses;
     AppDatabase db;
-    String studentId; // User's obtained from UUIDManager
+    String uuid; // User's obtained from UUIDManager
 
     private RecyclerView coursesRecyclerView;
     private RecyclerView.LayoutManager coursesLayoutManager;
@@ -48,12 +48,12 @@ public class EnterCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
-        //get the intent for extra student_id
+        //get the intent for extra uuid
         Bundle extras = getIntent().getExtras();
-        studentId = new UUIDManager(getApplicationContext()).getUserUUID();
+        uuid = extras.getString("uuid");
 
         db = AppDatabase.singleton(this);
-        enteredCourses = db.coursesDao().getForStudent(studentId);
+        enteredCourses = db.coursesDao().getForStudent(uuid);
 
         // prevent software keyboard from messing up with the layout
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -124,7 +124,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         }
 
         // create a new course and update the list
-        Course newCourse = new Course(studentId, courseEntry);
+        Course newCourse = new Course(uuid, courseEntry);
         int course_id = (int) db.coursesDao().insert(newCourse);
         newCourse.setCourseId(course_id); // set newly created id
         Log.d("", "" + newCourse.getCourseId());

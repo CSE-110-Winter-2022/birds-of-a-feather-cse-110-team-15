@@ -27,21 +27,21 @@ public class SeeFavoriteListTest {
     public void init(){
         AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
-        db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com", true));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com"));
+        db.studentWithCoursesDao().insert(new Student("s1ID", "Bob", "bob.com"));
+        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com",false, true));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com"));
 
         // Bob's classes
-        db.coursesDao().insert(new Course(1, "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course(1, "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course("s1ID", "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course("s1ID", "CSE 100 FA 2021")) ;
 
         // Bill's class (Has 2, shares 1)
-        db.coursesDao().insert(new Course(2, "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course(2, "CSE 15L FA 2021")) ;
+        db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course("s2ID", "CSE 15L FA 2021")) ;
 
         // Mary's classes (Has 2, shares 2)
-        db.coursesDao().insert(new Course(3, "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course(3, "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021")) ;
     }
 
     @Test

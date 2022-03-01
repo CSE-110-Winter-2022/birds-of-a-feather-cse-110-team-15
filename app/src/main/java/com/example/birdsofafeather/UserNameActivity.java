@@ -59,6 +59,8 @@ public class UserNameActivity extends AppCompatActivity{
     public void onContinueNameClick(View view){
         //get the intent
         Intent intent = new Intent(this, InputHeadshotActivity.class);
+        intent.putExtra("uuid", getIntent().getStringExtra("uuid"));
+
         TextView InputUserNameView = findViewById(R.id.input_name_textview);
         String getInputUserNameView = InputUserNameView.getText().toString();
 

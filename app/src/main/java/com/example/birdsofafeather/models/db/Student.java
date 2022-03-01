@@ -8,9 +8,6 @@ import androidx.room.PrimaryKey;
 
 @Entity(tableName = "students")
 public class Student {
-    @ColumnInfo(name = "id")
-    private int studentId;
-
     @NonNull
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name="uuid")
@@ -28,15 +25,8 @@ public class Student {
     @ColumnInfo(name="wavedToUser")
     private boolean wavedToUser;
 
-    // Temporary until we can replace this version of the constructor
-    @Ignore
-    public Student(String name, String headshotURL) {
-        this.uuid = "55555";
-        this.name = name;
-        this.headshotURL = headshotURL;
-        this.favorite = false;        // New students begin as unfavorited
-        this.wavedToUser = false;        // New students haven't waved to current user by default
-    }
+    @ColumnInfo(name="wavedFromUser")
+    private boolean wavedFromUser;
 
     public Student(@NonNull String uuid, String name, String headshotURL) {
         this.uuid = uuid;
@@ -61,17 +51,20 @@ public class Student {
         this.favorite = favorite;
     }
 
-    public int getStudentId() { return studentId; }
 
     public String getUuid() { return uuid; }
 
-    public void setStudentId(int studentId) { this.studentId = studentId; }
+    public void setUuid(String uuid) { this.uuid = uuid; }
 
     public String getName() { return name; }
 
     public void setWavedToUser(boolean wavedToUser) { this.wavedToUser = wavedToUser; }
 
     public boolean getWavedToUser() { return wavedToUser; }
+
+    public void setWavedFromUser(boolean wavedFromUser) { this.wavedFromUser = wavedFromUser; }
+
+    public boolean getWavedFromUser() { return wavedFromUser; }
 
     public void setName(String name) { this.name = name; }
 

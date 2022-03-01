@@ -53,6 +53,7 @@ public class MockScreenActivity extends AppCompatActivity {
 
         // bindService will initiate the bound service NearbyBackgroundService
         Intent intent = new Intent(this, NearbyBackgroundService.class);
+        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         isBound = true;
     }

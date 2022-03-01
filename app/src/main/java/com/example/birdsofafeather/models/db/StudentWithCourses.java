@@ -15,11 +15,9 @@ public class StudentWithCourses {
 
     public Student getStudent() { return student;}
 
-    public int getStudentId() { return student.getStudentId(); }
-
-    public void setStudentId(int studentId) { student.setStudentId(studentId); }
-
     public String getUUID() { return student.getUuid(); }
+
+    public void setUUID(String uuid) { student.setUuid(uuid); }
 
     public String getName() { return student.getName(); }
 
@@ -28,6 +26,14 @@ public class StudentWithCourses {
     public String getHeadshotURL() { return student.getHeadshotURL(); }
 
     public void setHeadshotURL(String headshotURL) { student.setHeadshotURL(headshotURL); }
+
+    public void setWavedToUser(boolean wavedToUser) { student.setWavedToUser(wavedToUser); }
+
+    public boolean getWavedToUser() { return student.getWavedToUser(); }
+
+    public void setWavedFromUser(boolean wavedFromUser) { student.setWavedFromUser(wavedFromUser); }
+
+    public boolean getWavedFromUser() { return student.getWavedFromUser(); }
 
     public boolean isFavorite() { return student.isFavorite(); }
 

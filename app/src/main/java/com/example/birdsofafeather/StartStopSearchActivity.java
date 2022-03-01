@@ -65,7 +65,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // update the recycler view based on the current student list
         updateRecyclerViewIfNonEmpty();
-
     }
 
     @Override

@@ -1,9 +1,12 @@
 package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static java.lang.System.out;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
@@ -32,7 +36,7 @@ public class SeeClassmateListTest {
         String uuid = new UUIDManager(InstrumentationRegistry.getInstrumentation().getTargetContext()).getUserUUID();
         db.studentWithCoursesDao().insert(new Student(uuid,"Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com"));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", false, true));
         db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com"));
         // Bob's classes
         db.coursesDao().insert(new Course(uuid, "CSE 20 FA 2021")) ;

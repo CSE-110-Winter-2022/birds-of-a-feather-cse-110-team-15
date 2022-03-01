@@ -8,24 +8,26 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.room.util.StringUtil;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Student;
+import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.google.android.gms.nearby.Nearby;
 import com.google.android.gms.nearby.messages.Message;
 import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.ListIterator;
 
 public class NearbyBackgroundService extends Service {
     private String TAG = "NearbyBackground";
     private final NearbyBinder binder = new NearbyBinder();
+    private String uuid;
     private final MessageListener realListener = new MessageListener() {
-    private final UUIDManager uuidManager = new UUIDManager(getApplicationContext());
-
         @Override
         public void onFound(@NonNull Message message) {
             String data = new String(message.getContent());
@@ -41,7 +43,7 @@ public class NearbyBackgroundService extends Service {
 
         public void processData(String data) {
             // first line has to be the uuid
-            String uuid = "";
+            String senderUUID = "";
             // second line has to be name
             String name = "";
             // third line has to be headshot URL
@@ -53,23 +55,22 @@ public class NearbyBackgroundService extends Service {
             int i = 0;
             for (String line : data.split(System.lineSeparator())) {
                 if (i == 0) {
-                    uuid = line.split(",")[0];
+                    senderUUID = line.split(",")[0];
                 } else if (i == 1) {
                     name = line.split(",")[0];
                 } else if (i == 2) {
                     headshotURL = line.split(",")[0];
                 } else {
-                    String[] courseOrWave = line.split(",");
-                    if (courseOrWave[1].equals("wave")) {
-                        String receiverUUID = courseOrWave[0];
+                    List<String> courseOrWave = Arrays.asList(line.split(","));
+                    if (courseOrWave.get(1).equals("wave")) {
+                        String receiverUUID = courseOrWave.get(0);
 
                         // Method that takes the ID of the person the wave is for, and returns true
                         // if the wave was at the current user
-                        if (uuidManager.match(uuid))
+                        if (uuid.equals(receiverUUID))
                             wavedAtCurrentUser = true;
-
                     } else {
-                        courses.add(String.join(" ", courseOrWave));
+                        courses.add(String.join(" ", courseOrWave.get(2), courseOrWave.get(3), courseOrWave.get(1), courseOrWave.get(0)));
                     }
                 }
                 i++;
@@ -77,19 +78,34 @@ public class NearbyBackgroundService extends Service {
 
             // create objects
             AppDatabase db = AppDatabase.singleton(getApplicationContext());
-            db.studentWithCoursesDao().insert(new Student(uuid, name, headshotURL, wavedAtCurrentUser));
-            for (String course : courses) {
-                db.coursesDao().insert(new Course(uuid, course));
+
+            // If the student already existed, get old values and update the student in the database
+            if ( db.studentWithCoursesDao().get(senderUUID) != null) {
+                StudentWithCourses oldStudent = db.studentWithCoursesDao().get(senderUUID);
+                boolean oldWavedTo = (oldStudent.getWavedToUser() || wavedAtCurrentUser);
+                boolean oldWavedFrom = oldStudent.getWavedFromUser();
+                boolean oldFavorite = oldStudent.isFavorite();
+
+                db.studentWithCoursesDao().updateStudent(new Student(senderUUID, name, headshotURL, oldWavedTo, oldFavorite));
+                db.studentWithCoursesDao().get(senderUUID).setWavedFromUser(oldWavedFrom);
+            } else {
+                db.studentWithCoursesDao().insert(new Student(senderUUID, name, headshotURL, wavedAtCurrentUser));
+
+                for (String course : courses) {
+                    db.coursesDao().insert(new Course(senderUUID, course));
+                }
             }
+
         }
     };
     // our mock of Nearby Messages API
     private FakedMessageListener messageListener = new FakedMessageListener(realListener);
 
-    public NearbyBackgroundService() { }
+    public NearbyBackgroundService() {}
 
     @Override
     public IBinder onBind(Intent intent) {
+        uuid = intent.getStringExtra("uuid");
         return binder;
     }
 
