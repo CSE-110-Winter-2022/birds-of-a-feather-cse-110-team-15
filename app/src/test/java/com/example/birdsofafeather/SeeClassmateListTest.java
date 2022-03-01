@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
@@ -56,10 +55,11 @@ public class SeeClassmateListTest {
     public void testViewingList(){
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
             scenario.onActivity(activity -> {
+                // Get the RecyclerView of the StudentList
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
                 final int studentCount = studentList.getChildCount();
 
-                // There are 3 other students in database, only two should appear in the view
+                // There are 3 other students in database, but only two should appear in the view
                 assertEquals(2, studentCount);
 
                 // Assert Mary and her information was rendered first because she shares more classes
@@ -67,29 +67,41 @@ public class SeeClassmateListTest {
                 TextView name = studentEntry.findViewById(R.id.classmate_name_text);
                 ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
                 TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+
+                // Check if Mary and her information is the same as expected
                 assertEquals("Mary", name.getText());
                 assertEquals("mary.com", headshot.getTag());
                 assertEquals("2", classCount.getText());
 
-                // Don't actually know if this is how the log messages should be printed or if
-                // it needs to be more elaborate
+                // Test if the Favorite Checkbox is checked
+                CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertTrue(favoriteIcon.isChecked());
+
+                // Log messages to visually check
                 out.println("Expected: Mary        Actual: " + name.getText());
                 out.println("Expected: mary.com    Actual: " + headshot.getTag());
                 out.println("Expected: 2           Actual: " + classCount.getText());
-
+                out.println("Expected: True        Actual: " + favoriteIcon.isChecked());
 
                 // Assert Bill's info was rendered next correctly
                 studentEntry = studentList.getChildAt(1);
                 name = studentEntry.findViewById(R.id.classmate_name_text);
                 headshot = studentEntry.findViewById(R.id.classmate_imageview);
                 classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+
+                // Check if Bill and his information is the same as expected
                 assertEquals("Bill", name.getText());
                 assertEquals("bill.com", headshot.getTag());
                 assertEquals("1", classCount.getText());
 
+                // Check if the Favorite Checkbox is not checked
+                favoriteIcon = studentEntry.findViewById(R.id.favorite);
+                assertFalse(favoriteIcon.isChecked());
+
                 out.println("Expected: Bill        Actual: " + name.getText());
                 out.println("Expected: bill.com    Actual: " + headshot.getTag());
                 out.println("Expected: 1           Actual: " + classCount.getText());
+                out.println("Expected: False        Actual: " + favoriteIcon.isChecked());
             });
         }
     }
