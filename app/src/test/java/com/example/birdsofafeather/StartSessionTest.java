@@ -44,11 +44,11 @@ public class StartSessionTest {
        AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
        db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
        // this student is user of the app
-       db.studentWithCoursesDao().insert(new Student("John", "url.com"));
-       db.coursesDao().insert(new Course(1, "CSE 21 FA 2020"));
-       db.coursesDao().insert(new Course(1, "CSE 30 WI 2021"));
-       db.coursesDao().insert(new Course(1, "CSE 100 SP 2021"));
-       db.coursesDao().insert(new Course(1, "CSE 105 FA 2021"));
+       db.studentWithCoursesDao().insert(new Student("s1ID","John", "url.com"));
+       db.coursesDao().insert(new Course("s1ID", "CSE 21 FA 2020"));
+       db.coursesDao().insert(new Course("s1ID", "CSE 30 WI 2021"));
+       db.coursesDao().insert(new Course("s1ID", "CSE 100 SP 2021"));
+       db.coursesDao().insert(new Course("s1ID", "CSE 105 FA 2021"));
     }
 
     @After

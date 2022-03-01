@@ -23,4 +23,16 @@ public class SessionWithStudents {
     public void setName(String name) { session.setName(name); }
 
     public List<StudentWithCourses> getStudents() { return students; }
+
+    public boolean hasStudent(String uuid) {
+        List <StudentWithCourses> listOfStudents = getStudents();
+
+        for (StudentWithCourses student: listOfStudents) {
+            if (student.getUUID().equals(uuid)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

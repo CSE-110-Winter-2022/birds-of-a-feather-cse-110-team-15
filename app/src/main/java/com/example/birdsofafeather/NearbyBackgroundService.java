@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
+import com.example.birdsofafeather.models.db.CourseDao;
 import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.google.android.gms.nearby.Nearby;
@@ -97,10 +98,10 @@ public class NearbyBackgroundService extends Service {
                 boolean oldWavedFrom = oldStudent.getWavedFromUser();
                 boolean oldFavorite = oldStudent.isFavorite();
 
-                db.studentWithCoursesDao().updateStudent(new Student(senderUUID, name, headshotURL, oldWavedTo, oldFavorite));
+                db.studentWithCoursesDao().updateStudent(new Student(senderUUID, name, headshotURL, sessionId, oldWavedTo, oldFavorite));
                 db.studentWithCoursesDao().get(senderUUID).setWavedFromUser(oldWavedFrom);
             } else {
-                db.studentWithCoursesDao().insert(new Student(senderUUID, name, headshotURL, wavedAtCurrentUser));
+                db.studentWithCoursesDao().insert(new Student(senderUUID, name, headshotURL, sessionId, wavedAtCurrentUser));
 
                 for (String course : courses) {
                     db.coursesDao().insert(new Course(senderUUID, course));

@@ -36,7 +36,7 @@ public class ViewProfileActivityTest {
 
         db.studentWithCoursesDao().insert(new Student(currentUserID, "Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", false, true));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 0, false, true));
 
         // Bob's classes
         db.coursesDao().insert(new Course(currentUserID, "CSE 20 FA 2021"));

@@ -5,6 +5,9 @@ import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.Relation;
+
+import java.util.List;
 
 @Entity(tableName = "students")
 public class Student {
@@ -40,6 +43,16 @@ public class Student {
         this.wavedToUser = false;        // New students haven't waved to current user by default
     }
 
+    // Without sessions, for testing
+    @Ignore
+    public Student(@NonNull String uuid, String name, String headshotURL) {
+        this.uuid = uuid;
+        this.name = name;
+        this.headshotURL = headshotURL;
+        this.favorite = false;        // New students begin as unfavorited
+        this.wavedToUser = false;        // New students haven't waved to current user by default
+    }
+
 
     // Overloaded constructor for setting a student with no sessionId (for testing)
     @Ignore
@@ -49,14 +62,6 @@ public class Student {
         this.wavedToUser = wavedToUser;
     }
 
-    // Overloaded constructor for setting a session and favorite student (for testing)
-    @Ignore
-    public Student(String name, String headshotURL, int sessionId, boolean favorite) {
-        this.name = name;
-        this.headshotURL = headshotURL;
-        this.sessionId = sessionId;
-        this.favorite = favorite;
-    }
     @Ignore
     // Overloaded constructor for setting a favorite student (for testing)
     public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser, boolean favorite) {

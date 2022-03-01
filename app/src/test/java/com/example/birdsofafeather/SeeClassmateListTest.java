@@ -41,9 +41,9 @@ public class SeeClassmateListTest {
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         String uuid = new UUIDManager(InstrumentationRegistry.getInstrumentation().getTargetContext()).getUserUUID();
         db.studentWithCoursesDao().insert(new Student(uuid,"Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", false, true));
-        db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com"));
+        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com", 1));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 1, false, true));
+        db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com", 1));
         // add dummy session
         db.sessionWithStudentsDao().insert(new Session("dummy"));
 
@@ -61,6 +61,8 @@ public class SeeClassmateListTest {
 
         // Toby's class (Has 1, shares none)
         db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
+        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         preferences.edit().putInt("sessionId", 1).commit();
     }

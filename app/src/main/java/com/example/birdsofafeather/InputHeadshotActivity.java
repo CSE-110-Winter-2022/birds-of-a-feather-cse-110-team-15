@@ -97,7 +97,7 @@ public class InputHeadshotActivity extends AppCompatActivity{
 
         // Write the student to database
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        Student s1 = new Student(getIntent().getStringExtra("uuid"), name, URL);
+        Student s1 = new Student(getIntent().getStringExtra("uuid"), name, URL, 0);
         db.studentWithCoursesDao().insert(s1);
 
         // Link to next activity (EnterCourseActivity)

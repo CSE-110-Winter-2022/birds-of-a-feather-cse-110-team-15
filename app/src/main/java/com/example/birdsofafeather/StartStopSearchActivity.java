@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -55,7 +56,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     private Map<String, Integer> sessionIdMap;
     private CheckBox fav;
-    private int updateListDelay = 5000; // update the list every 5 seconds
     private String currentUUID;
 
     //list of pairs, each of which has a student and the number of common courses with the user
@@ -299,7 +299,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         sessionNameView.setHint(currentTime);
 
         // create a list of current courses
-        List<String> allCourses = db.studentWithCoursesDao().get(1).getCourses(); // list of the courses of the user
+        List<String> allCourses = db.studentWithCoursesDao().get(currentUUID).getCourses(); // list of the courses of the user
         List<String> currentCourses = new ArrayList<>();
         String defaultMessage = "(Current Course)";
         currentCourses.add(defaultMessage);

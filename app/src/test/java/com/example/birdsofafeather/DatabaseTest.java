@@ -58,8 +58,8 @@ public class DatabaseTest {
         session1 = new Session("CSE 30");
         session2 = new Session("02/25/2022 19:30");
         s1 = new Student("s1ID", "John", "link.com");
-        s2 = new Student("s2ID", "Mary", "link.com");
-        s3 = new Student("s3ID" , "Nancy", "link.com");
+        s2 = new Student("s2ID", "Mary", "link.com", 1);
+        s3 = new Student("s3ID" , "Nancy", "link.com", 2);
         c1 = new Course("s1ID", "CSE 30 FA 2021");
         c2 = new Course("s1ID", "CSE 101 WI 2021");
         c3 = new Course("s1ID", "CSE 21 SP 2021");
@@ -257,7 +257,7 @@ public class DatabaseTest {
         courseDao.insert(c4);
         courseDao.insert(c5);
         courseDao.insert(c6);
-        studentDao.insert(new Student("John", "link.com", 1));
+        studentDao.insert(new Student("s1ID","John", "link.com", 1));
         studentDao.insert(s3);
         SessionWithStudents curSession = sessionDao.get(1);
         assertEquals("Session count", 2, curSession.getStudents().size());

@@ -28,7 +28,7 @@ public class SeeFavoriteListTest {
         AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         db.studentWithCoursesDao().insert(new Student("s1ID", "Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com",false, true));
+        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com",0, false, true));
         db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com"));
 
         // Bob's classes
