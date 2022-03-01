@@ -21,7 +21,7 @@ public class Student {
     private String headshotURL;
 
     @ColumnInfo(name="favorite")
-    private boolean favorite = false;
+    private boolean favorite;
 
     // default constructor
     public Student(String name, String headshotURL, int sessionId) {
@@ -31,12 +31,20 @@ public class Student {
         this.favorite = false;        // New students begin as unfavorited
     }
 
-    // for testing with no sessions
+    // Overloaded constructor for setting a student with no sessionId (for testing)
     @Ignore
     public Student(String name, String headshotURL) {
         this.name = name;
         this.headshotURL = headshotURL;
         this.favorite = false;        // New students begin as unfavorited
+    }
+    // Overloaded constructor for setting a session and favorite student (for testing)
+    @Ignore
+    public Student(String name, String headshotURL, int sessionId, boolean favorite) {
+        this.name = name;
+        this.headshotURL = headshotURL;
+        this.sessionId = sessionId;
+        this.favorite = favorite;
     }
     @Ignore
     // Overloaded constructor for setting a favorite student (for testing)
