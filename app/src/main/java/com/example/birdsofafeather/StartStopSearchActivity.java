@@ -332,7 +332,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 String selectedCourse = coursesSpinner.getSelectedItem().toString();
 
                 // if the user actually selected a course, then use that name
-                if (selectedCourse.equals(defaultMessage)){
+                if (!selectedCourse.equals(defaultMessage)){
                     sessionName = selectedCourse;
                 }
                 // else check the user input

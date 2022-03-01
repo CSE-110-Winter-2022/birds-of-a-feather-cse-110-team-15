@@ -41,6 +41,7 @@ public class Student {
     }
 
 
+    // Overloaded constructor for setting a student with no sessionId (for testing)
     @Ignore
     public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser) {
         this(uuid, name, headshotURL, sessionId);
@@ -48,6 +49,14 @@ public class Student {
         this.wavedToUser = wavedToUser;
     }
 
+    // Overloaded constructor for setting a session and favorite student (for testing)
+    @Ignore
+    public Student(String name, String headshotURL, int sessionId, boolean favorite) {
+        this.name = name;
+        this.headshotURL = headshotURL;
+        this.sessionId = sessionId;
+        this.favorite = favorite;
+    }
     @Ignore
     // Overloaded constructor for setting a favorite student (for testing)
     public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser, boolean favorite) {

@@ -232,10 +232,10 @@ public class DatabaseTest {
         int id = (int) sessionDao.insert(session1);
         assertEquals(1, id);
         System.out.println("Expect: CSE 30\nActual: " + sessionDao.get(1).getName());
-        assertEquals("CSE 30", sessionDao.get(1).getName());
+        assertEquals("Session Name", "CSE 30", sessionDao.get(1).getName());
         // delete session
         sessionDao.delete(sessionDao.get(1).getSession());
-        assertEquals(0, sessionDao.count());
+        assertEquals("Session Count after deletion", 0, sessionDao.count());
     }
 
     @Test
@@ -244,8 +244,8 @@ public class DatabaseTest {
         sessionDao.insert(session1);
         sessionDao.insert(session2);
         List<SessionWithStudents> sessionsList = sessionDao.getAll();
-        assertEquals("CSE 30", sessionsList.get(0).getName());
-        assertEquals("02/25/2022 19:30", sessionsList.get(1).getName());
+        assertEquals("First session in database", "CSE 30", sessionsList.get(0).getName());
+        assertEquals("Second session in database", "02/25/2022 19:30", sessionsList.get(1).getName());
     }
 
     @Test
@@ -260,7 +260,7 @@ public class DatabaseTest {
         studentDao.insert(new Student("John", "link.com", 1));
         studentDao.insert(s3);
         SessionWithStudents curSession = sessionDao.get(1);
-        assertEquals(2, curSession.getStudents().size());
+        assertEquals("Session count", 2, curSession.getStudents().size());
         // check if can retrieve student's courses
         for (String course : curSession.getStudents().get(1).getCourses()) {
             System.out.println(course);
@@ -278,6 +278,6 @@ public class DatabaseTest {
 
         // check if updated
         SessionWithStudents retrieved = sessionDao.get(1);
-        assertEquals("CSE 105", retrieved.getName());
+        assertEquals("Get session name", "CSE 105", retrieved.getName());
     }
 }
