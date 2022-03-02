@@ -38,6 +38,7 @@ public class SeeClassmateListTest {
         // Bob's classes
         db.coursesDao().insert(new Course(uuid, "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course(uuid, "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course(uuid, "CSE 120 FA 2021")) ;
 
         // Bill's class (Has 2, shares 1)
         db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021")) ;
@@ -46,6 +47,7 @@ public class SeeClassmateListTest {
         // Mary's classes (Has 2, shares 2)
         db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course("s3ID", "CSE 120 FA 2021")) ;
 
         // Toby's class (Has 1, shares none)
         db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
@@ -69,7 +71,7 @@ public class SeeClassmateListTest {
                 TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
                 assertEquals("Mary", name.getText());
                 assertEquals("mary.com", headshot.getTag());
-                assertEquals("2", classCount.getText());
+                assertEquals("3", classCount.getText());
 
                 // Don't actually know if this is how the log messages should be printed or if
                 // it needs to be more elaborate

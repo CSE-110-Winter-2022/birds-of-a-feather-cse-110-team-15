@@ -164,21 +164,18 @@ public class StartStopSearchActivity extends AppCompatActivity {
         //create new list to modify and return
         List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
 
+        int position = 0;
         //if classmate waved, place at top of list
         for (Pair<StudentWithCourses, Integer> student : studentAndCountPairs) {
-            out.println("student: " + student.first.getName());
-            //store
+            //store student pair
             Pair<StudentWithCourses, Integer> tempStudent = student;
             if(student.first.getWavedToUser()){
                 //add to top of waved list
-                wavedStudentAndCountPairs.add(0,tempStudent);
-                out.println("add student");
+                wavedStudentAndCountPairs.add(position,tempStudent);
+                position = position + 1;
+            } else{
+                wavedStudentAndCountPairs.add(tempStudent);
             }
-            wavedStudentAndCountPairs.add(tempStudent);
-        }
-
-        for(Pair<StudentWithCourses, Integer> student : studentAndCountPairs){ //print out list?
-            out.println(student.first.getName());
         }
 
         return studentAndCountPairs;
