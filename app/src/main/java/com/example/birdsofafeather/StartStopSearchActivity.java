@@ -45,7 +45,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private SharedPreferences preferences;
     private Handler handler = new Handler();
     private Runnable runnable;
-    private final int updateListDelay = 2000; // update the list every 2 seconds
+    private final int updateListDelay = 5000; // update the list every 5 seconds
     private View startSessionPopupView;
     private Spinner startSessionSpinner;
     private int sessionId;

@@ -54,6 +54,7 @@ public class SaveAndNameSessionTest {
     public ActivityTestRule<UserNameActivity> mActivityTestRule = new ActivityTestRule<UserNameActivity>(UserNameActivity.class){
         @Override
         public void beforeActivityLaunched() {
+            // set up to use test database
             Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
             AppDatabase.useTestSingleton(context);
             db = AppDatabase.singleton(context);
@@ -62,7 +63,6 @@ public class SaveAndNameSessionTest {
 
     @Test
     public void saveSessionTest() {
-
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.input_name_textview),
                         childAtPosition(
@@ -400,8 +400,6 @@ public class SaveAndNameSessionTest {
                         isDisplayed()));
         materialButton15.perform(click());
 
-        SystemClock.sleep(3000); // wait for 3 seconds for student list to show up
-
         ViewInteraction materialButton16 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
                         childAtPosition(
@@ -508,8 +506,6 @@ public class SaveAndNameSessionTest {
                         isDisplayed()));
         materialButton22.perform(click());
 
-        SystemClock.sleep(3000); // wait for 3 seconds for student list to show up
-
         ViewInteraction materialButton23 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
                         childAtPosition(
@@ -614,8 +610,6 @@ public class SaveAndNameSessionTest {
                                 3),
                         isDisplayed()));
         materialButton29.perform(click());
-
-        SystemClock.sleep(3000); // wait for 3 seconds for student list to show up
 
         ViewInteraction materialButton30 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
