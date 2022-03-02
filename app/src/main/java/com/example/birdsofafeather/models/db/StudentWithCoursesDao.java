@@ -19,6 +19,9 @@ public interface StudentWithCoursesDao {
    @Query("SELECT * FROM students WHERE uuid=:uuid")
    StudentWithCourses get(String uuid);
 
+   @Query("SELECT * FROM students WHERE uuid=:uuid AND session_id=:sessionId")
+   StudentWithCourses getStudentWithSession(String uuid, int sessionId);
+
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    long insert(Student student);
 
@@ -27,6 +30,15 @@ public interface StudentWithCoursesDao {
 
    @Update
    void updateStudent(Student student);
+
+   @Query("UPDATE students SET favorite=:favorite WHERE uuid=:uuid")
+   void updateFavorite(String uuid, boolean favorite);
+
+   @Query("UPDATE students SET wavedFromUser=:waveFrom WHERE uuid=:uuid")
+   void updateWaveFrom(String uuid, boolean waveFrom);
+
+   @Query("UPDATE students SET wavedToUser=:waveTo WHERE uuid=:uuid")
+   void updateWaveTo(String uuid, boolean waveTo);
 
    @Query("SELECT COUNT(*) FROM students")
    int count();

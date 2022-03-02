@@ -11,8 +11,11 @@ import java.util.List;
 
 @Entity(tableName = "students")
 public class Student {
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name="id")
+    private int id;
+
     @NonNull
-    @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name="uuid")
     private String uuid;
 
@@ -70,6 +73,10 @@ public class Student {
         this.favorite = favorite;
     }
 
+
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
 
     public String getUuid() { return uuid; }
 

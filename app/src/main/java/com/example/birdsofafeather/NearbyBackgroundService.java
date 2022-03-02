@@ -92,14 +92,15 @@ public class NearbyBackgroundService extends Service {
             AppDatabase db = AppDatabase.singleton(getApplicationContext());
 
             // If the student already existed, get old values and update the student in the database
-            if ( db.studentWithCoursesDao().get(senderUUID) != null) {
-                StudentWithCourses oldStudent = db.studentWithCoursesDao().get(senderUUID);
+            if ( db.studentWithCoursesDao().getStudentWithSession(senderUUID, sessionId) != null) {
+                StudentWithCourses oldStudent = db.studentWithCoursesDao().getStudentWithSession(senderUUID, sessionId);
                 boolean oldWavedTo = (oldStudent.getWavedToUser() || wavedAtCurrentUser);
                 boolean oldWavedFrom = oldStudent.getWavedFromUser();
                 boolean oldFavorite = oldStudent.isFavorite();
 
-                db.studentWithCoursesDao().updateStudent(new Student(senderUUID, name, headshotURL, sessionId, oldWavedTo, oldFavorite));
-                db.studentWithCoursesDao().get(senderUUID).setWavedFromUser(oldWavedFrom);
+                db.studentWithCoursesDao().updateFavorite(senderUUID, oldFavorite);
+                db.studentWithCoursesDao().updateWaveFrom(senderUUID, oldWavedFrom);
+                db.studentWithCoursesDao().updateWaveTo(senderUUID, oldWavedTo);
             } else {
                 db.studentWithCoursesDao().insert(new Student(senderUUID, name, headshotURL, sessionId, wavedAtCurrentUser));
 
