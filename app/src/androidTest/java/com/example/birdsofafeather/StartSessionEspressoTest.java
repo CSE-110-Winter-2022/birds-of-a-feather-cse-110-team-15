@@ -57,7 +57,6 @@ public class StartSessionEspressoTest {
     @Before
     public void init() {
         context = ApplicationProvider.getApplicationContext();
-//        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
         db = AppDatabase.singleton(context);
         // insert user into database
         db.studentWithCoursesDao().insert(new Student("Joe", "joe.com"));
@@ -72,7 +71,6 @@ public class StartSessionEspressoTest {
         @Override
         public void beforeActivityLaunched() {
             context = ApplicationProvider.getApplicationContext();
-//            context = InstrumentationRegistry.getInstrumentation().getTargetContext();
             AppDatabase.useTestSingleton(context);
         }
     };
