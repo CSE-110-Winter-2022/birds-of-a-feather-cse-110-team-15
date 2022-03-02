@@ -25,8 +25,8 @@ public interface StudentWithCoursesDao {
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    long insert(Student student);
 
-   @Delete
-   void delete(Student student);
+   @Query("DELETE FROM students WHERE uuid=:uuid")
+   void delete(String uuid);
 
    @Update
    void updateStudent(Student student);
@@ -46,6 +46,6 @@ public interface StudentWithCoursesDao {
    @Query("SELECT last_insert_rowid()")
    int lastIdCreated();
 
-   @Query("SELECT * FROM students WHERE favorite=1")
+   @Query("SELECT * FROM students WHERE favorite=1 GROUP BY uuid")
    List<StudentWithCourses> getFavorites();
 }

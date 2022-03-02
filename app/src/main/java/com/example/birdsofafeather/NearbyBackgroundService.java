@@ -102,9 +102,18 @@ public class NearbyBackgroundService extends Service {
                 db.studentWithCoursesDao().updateWaveFrom(senderUUID, oldWavedFrom);
                 db.studentWithCoursesDao().updateWaveTo(senderUUID, oldWavedTo);
             } else {
-                db.studentWithCoursesDao().insert(new Student(senderUUID, name, headshotURL, sessionId, wavedAtCurrentUser));
+                boolean setFavorite = false;
+                if ( db.studentWithCoursesDao().get(senderUUID) != null) {
+                    StudentWithCourses oldStudent = db.studentWithCoursesDao().get(senderUUID);
+                    setFavorite =  oldStudent.isFavorite();
+                }
 
-                for (String course : courses) {
+                db.studentWithCoursesDao().insert(new Student(senderUUID, name, headshotURL, sessionId, wavedAtCurrentUser, setFavorite));
+
+            }
+
+            for (String course : courses) {
+                if (db.coursesDao().getCourseWithStudent(course, senderUUID) == null) {
                     db.coursesDao().insert(new Course(senderUUID, course));
                 }
             }

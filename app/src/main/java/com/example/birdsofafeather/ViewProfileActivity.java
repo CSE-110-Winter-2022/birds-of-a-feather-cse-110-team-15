@@ -48,13 +48,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         favoriteCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (buttonView.isChecked()) {
                         Toast.makeText(ViewProfileActivity.this, "Added to Favorites", Toast.LENGTH_SHORT).show();
-                        student.setFavorite(true);
+                        db.studentWithCoursesDao().updateFavorite(student.getUUID(), true);
                     } else {
                         Toast.makeText(ViewProfileActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
-                        student.setFavorite(false);
+                        db.studentWithCoursesDao().updateFavorite(student.getUUID(), false);
                     }
-                // Have to use getStudent() to extract Student from StudentWithCourses
-                db.studentWithCoursesDao().updateStudent(student.getStudent());
+                    // Have to use getStudent() to extract Student from StudentWithCourses
                 }
         );
 

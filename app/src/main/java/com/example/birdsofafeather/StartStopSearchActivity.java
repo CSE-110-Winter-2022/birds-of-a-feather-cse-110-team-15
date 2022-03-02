@@ -87,8 +87,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
 
         // Pass in student list and function to update favorite status to the adapter
-        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student) ->
-            db.studentWithCoursesDao().updateStudent(student)
+        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (uuid, isFavorite) ->
+            db.studentWithCoursesDao().updateFavorite(uuid, isFavorite)
         );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 

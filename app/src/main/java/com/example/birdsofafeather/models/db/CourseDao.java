@@ -21,6 +21,9 @@ public interface CourseDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(Course course);
 
+    @Query("SELECT * FROM courses WHERE name=:name AND student_id=:uuid")
+    Course getCourseWithStudent(String name, String uuid);
+
     @Delete
     void delete(Course course);
 

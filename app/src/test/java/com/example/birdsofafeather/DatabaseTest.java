@@ -88,11 +88,11 @@ public class DatabaseTest {
         assertEquals(0, retrievedStudent.getCourses().size());
 
         // test delete student not in database
-        studentDao.delete(s2);
+        studentDao.delete("s2ID");
 
         studentDao.insert(s2);
         // delete student that exists
-        studentDao.delete(s1);
+        studentDao.delete("s1ID");
 
         // make sure id is being updated correctly
         assertNull(studentDao.get(s1.getUuid()));
