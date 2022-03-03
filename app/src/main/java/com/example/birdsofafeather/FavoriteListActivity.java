@@ -1,7 +1,6 @@
 package com.example.birdsofafeather;
 
 import android.os.Bundle;
-import android.util.Pair;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -19,7 +18,6 @@ public class FavoriteListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_favorite_list);
         AppDatabase db = AppDatabase.singleton(this);
-        List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
         List<StudentWithCourses> favorites = db.studentWithCoursesDao().getFavorites();
 
         FavoriteViewAdapter studentsViewAdapter;

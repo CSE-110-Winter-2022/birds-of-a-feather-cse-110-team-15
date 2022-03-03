@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.models.db.Course;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 

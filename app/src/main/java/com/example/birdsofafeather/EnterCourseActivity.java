@@ -25,8 +25,6 @@ public class EnterCourseActivity extends AppCompatActivity {
     AppDatabase db;
     String uuid; // User's obtained from UUIDManager
 
-    private RecyclerView coursesRecyclerView;
-    private RecyclerView.LayoutManager coursesLayoutManager;
     private CoursesViewAdapter coursesViewAdapter;
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
@@ -72,13 +70,11 @@ public class EnterCourseActivity extends AppCompatActivity {
         yearSpinner.setSelection(1, true); // Starts by selecting the last year, not the first
 
         // recycle view for courses
-        coursesRecyclerView = findViewById(R.id.courses_recycler_view);
-        coursesLayoutManager = new LinearLayoutManager(this);
+        RecyclerView coursesRecyclerView = findViewById(R.id.courses_recycler_view);
+        RecyclerView.LayoutManager coursesLayoutManager = new LinearLayoutManager(this);
         coursesRecyclerView.setLayoutManager(coursesLayoutManager);
 
-        coursesViewAdapter = new CoursesViewAdapter(enteredCourses, (course) -> {
-            db.coursesDao().delete(course);
-        });
+        coursesViewAdapter = new CoursesViewAdapter(enteredCourses, (course) -> db.coursesDao().delete(course));
         coursesRecyclerView.setAdapter(coursesViewAdapter);
     }
 

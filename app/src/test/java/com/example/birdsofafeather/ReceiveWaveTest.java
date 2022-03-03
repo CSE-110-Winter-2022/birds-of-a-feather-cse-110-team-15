@@ -1,7 +1,6 @@
 package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static java.lang.System.out;
 
@@ -28,6 +27,7 @@ import com.example.birdsofafeather.models.db.Student;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 @RunWith(AndroidJUnit4.class)
 public class ReceiveWaveTest {
     @Before
@@ -135,7 +135,6 @@ public class ReceiveWaveTest {
 
                 // Get the RecyclerView of the StudentList
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
-                final int studentCount = studentList.getChildCount();
 
                 // Assert Bill, 1 class in common
                 View studentEntry = studentList.getChildAt(2);

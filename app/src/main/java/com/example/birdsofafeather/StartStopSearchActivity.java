@@ -11,13 +11,12 @@ import android.util.Pair;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.view.ViewGroup.LayoutParams;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
-
 import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.SessionWithStudents;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
@@ -55,7 +53,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private TextView sessionTitle;
 
     private Map<String, Integer> sessionIdMap;
-    private CheckBox fav;
     private String currentUUID;
 
     //list of pairs, each of which has a student and the number of common courses with the user
@@ -72,7 +69,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         currentUUID = uuidManager.getUserUUID();
 
         StartButton = findViewById(R.id.start_button);
-        StartButton.setOnClickListener((View view) -> onStartClick(view));
+        StartButton.setOnClickListener(this::onStartClick);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         db = AppDatabase.singleton(this);
@@ -273,13 +270,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
         //if classmate waved, place at top of list
         for (Pair<StudentWithCourses, Integer> student : studentAndCountPairs) {
             //store student pair
-            Pair<StudentWithCourses, Integer> tempStudent = student;
             if(student.first.getWavedToUser()){
                 //add to top of waved list
-                wavedStudentAndCountPairs.add(position,tempStudent);
+                wavedStudentAndCountPairs.add(position, student);
                 position = position + 1;
             } else{
-                wavedStudentAndCountPairs.add(tempStudent);
+                wavedStudentAndCountPairs.add(student);
             }
         }
 
@@ -339,37 +335,34 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         // set up the save button and its onClick event
         Button saveSessionButton = (Button) savePopupView.findViewById(R.id.save_session_button);
-        saveSessionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String sessionName;
+        saveSessionButton.setOnClickListener(view1 -> {
+            String sessionName;
 
-                // get the selected item in the current course dropdown
-                String selectedCourse = coursesSpinner.getSelectedItem().toString();
+            // get the selected item in the current course dropdown
+            String selectedCourse = coursesSpinner.getSelectedItem().toString();
 
-                // if the user actually selected a course, then use that name
-                if (!selectedCourse.equals(defaultMessage)){
-                    sessionName = selectedCourse;
-                }
-                // else check the user input
-                else {
-                    // get the user input for session name
-                    String userInput = sessionNameView.getText().toString();
-                    // set session name to user input
-                    // if no name is provided, save the session with the date and time
-                    sessionName = userInput.isEmpty() ? currentTime : userInput;
-                }
-
-                // update the name of the current session
-                Session currentSession = db.sessionWithStudentsDao().get(sessionId).getSession();
-                currentSession.setName(sessionName);
-                db.sessionWithStudentsDao().updateSession(currentSession);
-
-                sessionNameView.setText("");  // clear input field
-                sessionTitle.setText(sessionName); // update session title view
-
-                savePopupWindow.dismiss();
+            // if the user actually selected a course, then use that name
+            if (!selectedCourse.equals(defaultMessage)){
+                sessionName = selectedCourse;
             }
+            // else check the user input
+            else {
+                // get the user input for session name
+                String userInput = sessionNameView.getText().toString();
+                // set session name to user input
+                // if no name is provided, save the session with the date and time
+                sessionName = userInput.isEmpty() ? currentTime : userInput;
+            }
+
+            // update the name of the current session
+            Session currentSession = db.sessionWithStudentsDao().get(sessionId).getSession();
+            currentSession.setName(sessionName);
+            db.sessionWithStudentsDao().updateSession(currentSession);
+
+            sessionNameView.setText("");  // clear input field
+            sessionTitle.setText(sessionName); // update session title view
+
+            savePopupWindow.dismiss();
         });
     }
 }

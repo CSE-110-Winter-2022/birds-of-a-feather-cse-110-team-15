@@ -1,7 +1,6 @@
 package com.example.birdsofafeather.models.db;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
@@ -16,9 +15,11 @@ public interface StudentWithCoursesDao {
    @Query("SELECT * FROM students")
    List<StudentWithCourses> getAll();
 
+   @Transaction
    @Query("SELECT * FROM students WHERE uuid=:uuid")
    StudentWithCourses get(String uuid);
 
+   @Transaction
    @Query("SELECT * FROM students WHERE uuid=:uuid AND session_id=:sessionId")
    StudentWithCourses getStudentWithSession(String uuid, int sessionId);
 
@@ -46,6 +47,7 @@ public interface StudentWithCoursesDao {
    @Query("SELECT last_insert_rowid()")
    int lastIdCreated();
 
+   @Transaction
    @Query("SELECT * FROM students WHERE favorite=1 GROUP BY uuid")
    List<StudentWithCourses> getFavorites();
 }
