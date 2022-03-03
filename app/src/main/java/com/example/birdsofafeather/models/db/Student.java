@@ -56,7 +56,6 @@ public class Student {
         this.wavedToUser = false;        // New students haven't waved to current user by default
     }
 
-
     // Overloaded constructor for setting a student with no sessionId (for testing)
     @Ignore
     public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser) {
