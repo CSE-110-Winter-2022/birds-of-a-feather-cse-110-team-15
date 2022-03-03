@@ -283,7 +283,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
             }
         }
 
-        return studentAndCountPairs;
+        return wavedStudentAndCountPairs;
     }
 
     // update the recycler view based on the current session in the database.
