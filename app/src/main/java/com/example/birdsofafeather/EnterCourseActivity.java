@@ -20,16 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnterCourseActivity extends AppCompatActivity {
-    Spinner quarterSpinner, yearSpinner;
+    Spinner quarterSpinner, yearSpinner, sizeSpinner;
     List<Course> enteredCourses;
     AppDatabase db;
     String uuid; // User's obtained from UUIDManager
 
-    private RecyclerView coursesRecyclerView;
-    private RecyclerView.LayoutManager coursesLayoutManager;
     private CoursesViewAdapter coursesViewAdapter;
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
+    String[] classSizes = {"Tiny", "Small", "Medium", "Large", "Huge", "Gigantic"};
 
     // firstYear: 2016
     // maxYear: In a full release, could be replaced with call for current year.
@@ -71,14 +70,18 @@ public class EnterCourseActivity extends AppCompatActivity {
         yearSpinner.setAdapter(yearAdapter);
         yearSpinner.setSelection(1, true); // Starts by selecting the last year, not the first
 
+        //dropdown for class size
+        sizeSpinner = (Spinner) findViewById(R.id.class_size_spinner);
+        ArrayAdapter<String> sizeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, classSizes);
+        sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sizeSpinner.setAdapter(sizeAdapter);
+
         // recycle view for courses
-        coursesRecyclerView = findViewById(R.id.courses_recycler_view);
-        coursesLayoutManager = new LinearLayoutManager(this);
+        RecyclerView coursesRecyclerView = findViewById(R.id.courses_recycler_view);
+        RecyclerView.LayoutManager coursesLayoutManager = new LinearLayoutManager(this);
         coursesRecyclerView.setLayoutManager(coursesLayoutManager);
 
-        coursesViewAdapter = new CoursesViewAdapter(enteredCourses, (course) -> {
-            db.coursesDao().delete(course);
-        });
+        coursesViewAdapter = new CoursesViewAdapter(enteredCourses, (course) -> db.coursesDao().delete(course));
         coursesRecyclerView.setAdapter(coursesViewAdapter);
     }
 
@@ -90,6 +93,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         String courseNumber = numberView.getText().toString().toUpperCase();
         String courseQuarter = (String) quarterSpinner.getSelectedItem();
         String courseYear = (String) yearSpinner.getSelectedItem();
+        String courseSize = (String) sizeSpinner.getSelectedItem();
 
         // if any of the entries is empty, show an error message
         if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
@@ -112,7 +116,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         }
 
         // create a new course string
-        String courseEntry = String.join(" ", courseSubject, courseNumber, courseQuarter, courseYear);
+        String courseEntry = String.join(" ", courseSubject, courseNumber, courseQuarter, courseYear, courseSize);
 
         // check if the course is already entered
         // if so, show an alert and return
