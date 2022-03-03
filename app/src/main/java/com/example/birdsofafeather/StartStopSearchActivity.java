@@ -267,7 +267,23 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // sort the list by the number of common courses in descending order
         studentAndCountPairs.sort((s1, s2) -> s2.second - s1.second);
 
-        return studentAndCountPairs;
+        //create new list to modify and return
+        List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
+        int position = 0;
+        //if classmate waved, place at top of list
+        for (Pair<StudentWithCourses, Integer> student : studentAndCountPairs) {
+            //store student pair
+            Pair<StudentWithCourses, Integer> tempStudent = student;
+            if(student.first.getWavedToUser()){
+                //add to top of waved list
+                wavedStudentAndCountPairs.add(position,tempStudent);
+                position = position + 1;
+            } else{
+                wavedStudentAndCountPairs.add(tempStudent);
+            }
+        }
+
+        return wavedStudentAndCountPairs;
     }
 
     // update the recycler view based on the current session in the database.
