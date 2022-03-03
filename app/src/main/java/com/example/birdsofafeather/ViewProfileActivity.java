@@ -24,7 +24,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
-        int classmate_id = extras.getInt("classmate_id");
+        String classmate_id = extras.getString("classmate_id");
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
         StudentWithCourses student = db.studentWithCoursesDao().get(classmate_id);
 
@@ -48,13 +48,12 @@ public class ViewProfileActivity extends AppCompatActivity {
         favoriteCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (buttonView.isChecked()) {
                         Toast.makeText(ViewProfileActivity.this, "Added to Favorites", Toast.LENGTH_SHORT).show();
-                        student.setFavorite(true);
+                        db.studentWithCoursesDao().updateFavorite(student.getUUID(), true);
                     } else {
                         Toast.makeText(ViewProfileActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
-                        student.setFavorite(false);
+                        db.studentWithCoursesDao().updateFavorite(student.getUUID(), false);
                     }
-                // Have to use getStudent() to extract Student from StudentWithCourses
-                db.studentWithCoursesDao().updateStudent(student.getStudent());
+                    // Have to use getStudent() to extract Student from StudentWithCourses
                 }
         );
 
@@ -67,7 +66,9 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Compare other student with user's classes
         // The user is always the first entry in the database, so we use id 1
-        StudentWithCourses me = db.studentWithCoursesDao().get(1);
+        String currentUserID = new UUIDManager(getApplicationContext()).getUserUUID();
+
+        StudentWithCourses me = db.studentWithCoursesDao().get(currentUserID);
         List<String> cc = student.getCommonCourses(me);
         String displayList = "";
         for (String course : cc){

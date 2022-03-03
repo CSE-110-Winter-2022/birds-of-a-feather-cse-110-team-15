@@ -30,24 +30,25 @@ public class ViewProfileActivityTest {
     @Before
     public void init() {
         Context context = ApplicationProvider.getApplicationContext();
+        String currentUserID = new UUIDManager(context).getUserUUID();
         AppDatabase.useTestSingleton(context);
         AppDatabase db = AppDatabase.singleton(context);
 
-        db.studentWithCoursesDao().insert(new Student("Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("Bill", "bill.com"));
-        db.studentWithCoursesDao().insert(new Student("Mary", "mary.com", true));
+        db.studentWithCoursesDao().insert(new Student(currentUserID, "Bob", "bob.com"));
+        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 0, false, true));
 
         // Bob's classes
-        db.coursesDao().insert(new Course(1, "CSE 20 FA 2021"));
-        db.coursesDao().insert(new Course(1, "CSE 100 FA 2021"));
+        db.coursesDao().insert(new Course(currentUserID, "CSE 20 FA 2021"));
+        db.coursesDao().insert(new Course(currentUserID, "CSE 100 FA 2021"));
 
         // Bill's class (Has 2, shares 1)
-        db.coursesDao().insert(new Course(2, "CSE 20 FA 2021"));
-        db.coursesDao().insert(new Course(2, "CSE 15L FA 2021"));
+        db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021"));
+        db.coursesDao().insert(new Course("s2ID", "CSE 15L FA 2021"));
 
         // Mary's classes (Has 2, shares 2)
-        db.coursesDao().insert(new Course(3, "CSE 20 FA 2021"));
-        db.coursesDao().insert(new Course(3, "CSE 100 FA 2021"));
+        db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021"));
+        db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021"));
     }
 
     @Test
@@ -55,7 +56,7 @@ public class ViewProfileActivityTest {
     public void testCommonCourses(){
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
         // Pass Bill to intent
-        intent.putExtra("classmate_id", 2);
+        intent.putExtra("classmate_id", "s2ID");
         try(ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 // Multiple assertions in one test to avoid launching too many activities
@@ -80,7 +81,7 @@ public class ViewProfileActivityTest {
     public void testFavoriteChecked() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
         // Pass Mary to intent
-        intent.putExtra("classmate_id", 3);
+        intent.putExtra("classmate_id", "s3ID");
         try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 // Multiple assertions in one test to avoid launching too many activities
@@ -104,7 +105,7 @@ public class ViewProfileActivityTest {
     public void testFavoriteUnchecked() {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
         // Pass Bill to intent
-        intent.putExtra("classmate_id", 2);
+        intent.putExtra("classmate_id", "s2ID");
         try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
             scenario.onActivity(activity -> {
                 // Multiple assertions in one test to avoid launching too many activities

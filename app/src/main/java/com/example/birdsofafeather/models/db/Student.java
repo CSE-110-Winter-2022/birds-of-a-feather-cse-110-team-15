@@ -1,15 +1,23 @@
 package com.example.birdsofafeather.models.db;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
+import androidx.room.Relation;
+
+import java.util.List;
 
 @Entity(tableName = "students")
 public class Student {
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "id")
-    private int studentId;
+    @ColumnInfo(name="id")
+    private int id;
+
+    @NonNull
+    @ColumnInfo(name="uuid")
+    private String uuid;
 
     @ColumnInfo(name = "session_id")
     private int sessionId = 0;
@@ -21,48 +29,71 @@ public class Student {
     private String headshotURL;
 
     @ColumnInfo(name="favorite")
-    private boolean favorite;
+    private boolean favorite = false;
 
-    // default constructor
-    public Student(String name, String headshotURL, int sessionId) {
+    @ColumnInfo(name="wavedToUser")
+    private boolean wavedToUser;
+
+    @ColumnInfo(name="wavedFromUser")
+    private boolean wavedFromUser;
+
+    public Student(@NonNull String uuid, String name, String headshotURL, int sessionId) {
+        this.uuid = uuid;
         this.name = name;
         this.headshotURL = headshotURL;
         this.sessionId = sessionId;
         this.favorite = false;        // New students begin as unfavorited
+        this.wavedToUser = false;        // New students haven't waved to current user by default
+    }
+
+    // Without sessions, for testing
+    @Ignore
+    public Student(@NonNull String uuid, String name, String headshotURL) {
+        this.uuid = uuid;
+        this.name = name;
+        this.headshotURL = headshotURL;
+        this.favorite = false;        // New students begin as unfavorited
+        this.wavedToUser = false;        // New students haven't waved to current user by default
     }
 
     // Overloaded constructor for setting a student with no sessionId (for testing)
     @Ignore
-    public Student(String name, String headshotURL) {
-        this.name = name;
-        this.headshotURL = headshotURL;
-        this.favorite = false;        // New students begin as unfavorited
+    public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser) {
+        this(uuid, name, headshotURL, sessionId);
+
+        this.wavedToUser = wavedToUser;
     }
-    // Overloaded constructor for setting a session and favorite student (for testing)
-    @Ignore
-    public Student(String name, String headshotURL, int sessionId, boolean favorite) {
-        this.name = name;
-        this.headshotURL = headshotURL;
-        this.sessionId = sessionId;
-        this.favorite = favorite;
-    }
+
     @Ignore
     // Overloaded constructor for setting a favorite student (for testing)
-    public Student(String name, String headshotURL, boolean favorite) {
-        this.name = name;
-        this.headshotURL = headshotURL;
+    public Student(@NonNull String uuid, String name, String headshotURL, int sessionId, boolean wavedToUser, boolean favorite) {
+        this(uuid, name, headshotURL, sessionId, wavedToUser);
+
         this.favorite = favorite;
     }
 
-    public int getStudentId() { return studentId; }
 
-    public void setStudentId(int studentId) { this.studentId = studentId; }
+    public int getId() { return id; }
+
+    public void setId(int id) { this.id = id; }
+
+    public String getUuid() { return uuid; }
+
+    public void setUuid(String uuid) { this.uuid = uuid; }
 
     public int getSessionId() { return sessionId; }
 
     public void setSessionId(int sessionId) { this.sessionId = sessionId; }
 
     public String getName() { return name; }
+
+    public void setWavedToUser(boolean wavedToUser) { this.wavedToUser = wavedToUser; }
+
+    public boolean getWavedToUser() { return wavedToUser; }
+
+    public void setWavedFromUser(boolean wavedFromUser) { this.wavedFromUser = wavedFromUser; }
+
+    public boolean getWavedFromUser() { return wavedFromUser; }
 
     public void setName(String name) { this.name = name; }
 

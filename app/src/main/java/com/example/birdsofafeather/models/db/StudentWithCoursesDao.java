@@ -16,17 +16,29 @@ public interface StudentWithCoursesDao {
    @Query("SELECT * FROM students")
    List<StudentWithCourses> getAll();
 
-   @Query("SELECT * FROM students WHERE id=:id")
-   StudentWithCourses get(int id);
+   @Query("SELECT * FROM students WHERE uuid=:uuid")
+   StudentWithCourses get(String uuid);
+
+   @Query("SELECT * FROM students WHERE uuid=:uuid AND session_id=:sessionId")
+   StudentWithCourses getStudentWithSession(String uuid, int sessionId);
 
    @Insert(onConflict = OnConflictStrategy.REPLACE)
    long insert(Student student);
 
-   @Delete
-   void delete(Student student);
+   @Query("DELETE FROM students WHERE uuid=:uuid")
+   void delete(String uuid);
 
    @Update
    void updateStudent(Student student);
+
+   @Query("UPDATE students SET favorite=:favorite WHERE uuid=:uuid")
+   void updateFavorite(String uuid, boolean favorite);
+
+   @Query("UPDATE students SET wavedFromUser=:waveFrom WHERE uuid=:uuid")
+   void updateWaveFrom(String uuid, boolean waveFrom);
+
+   @Query("UPDATE students SET wavedToUser=:waveTo WHERE uuid=:uuid")
+   void updateWaveTo(String uuid, boolean waveTo);
 
    @Query("SELECT COUNT(*) FROM students")
    int count();
@@ -34,6 +46,6 @@ public interface StudentWithCoursesDao {
    @Query("SELECT last_insert_rowid()")
    int lastIdCreated();
 
-   @Query("SELECT * FROM students WHERE favorite=1")
+   @Query("SELECT * FROM students WHERE favorite=1 GROUP BY uuid")
    List<StudentWithCourses> getFavorites();
 }

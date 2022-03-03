@@ -19,15 +19,15 @@ import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapter.ViewHolder> {
     // List of pair of StudentWithCourses object and the number of common courses
     private List<Pair<StudentWithCourses, Integer>> studentAndCoursesCountPairs;
-    private final Consumer<Student> onFavorite;
+    private final BiConsumer<String, Boolean> onFavorite;
 
     // Constructor for StudentsViewAdapter
-    StudentsViewAdapter(List<Pair<StudentWithCourses, Integer>> students, Consumer<Student> onFavorite) {
+    StudentsViewAdapter(List<Pair<StudentWithCourses, Integer>> students, BiConsumer<String, Boolean> onFavorite) {
         super();
         this.studentAndCoursesCountPairs = students;
         this.onFavorite = onFavorite;
@@ -74,7 +74,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
         Picasso picasso;
 
         // Constructor
-        ViewHolder (View view, Consumer<Student> onFavorite) {
+        ViewHolder (View view, BiConsumer<String, Boolean> onFavorite) {
             super(view);
             this.studentNameView = view.findViewById(R.id.classmate_name_text);
             this.commonCourseCountView = view.findViewById(R.id.common_course_count_textview);
@@ -92,7 +92,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
                     student.setFavorite(false);
                 }
                 // onFavorite updates the student in the database
-                onFavorite.accept(student.getStudent());
+                onFavorite.accept(student.getUUID(), student.isFavorite());
             });
         }
 
@@ -136,7 +136,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             // Go to this student's profile page
             Context context = view.getContext();
             Intent intent = new Intent(context, ViewProfileActivity.class);
-            intent.putExtra("classmate_id", this.student.getStudentId());
+            intent.putExtra("classmate_id", this.student.getUUID());
             context.startActivity(intent);
         }
     }

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -54,6 +55,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private TextView sessionTitle;
 
     private Map<String, Integer> sessionIdMap;
+    private CheckBox fav;
+    private String currentUUID;
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
@@ -65,13 +68,17 @@ public class StartStopSearchActivity extends AppCompatActivity {
         setTitle(getString(R.string.app_name));
         StopButton = findViewById(R.id.stop_button);
         StopButton.setVisibility(View.INVISIBLE);
+        UUIDManager uuidManager = new UUIDManager(getApplicationContext());
+        currentUUID = uuidManager.getUserUUID();
 
         StartButton = findViewById(R.id.start_button);
         StartButton.setOnClickListener((View view) -> onStartClick(view));
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         db = AppDatabase.singleton(this);
-        me = db.studentWithCoursesDao().get(1); // get the student with id 1
+
+        // get the student by looking up based on the current user's UUID
+        me = db.studentWithCoursesDao().get(currentUUID);
 
         // Set up the RecycleView for the list of students
         studentAndCountPairList = new ArrayList<>(); // on creation, it's an empty list
@@ -80,8 +87,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         studentsRecycleView.setLayoutManager(studentsLayoutManager);
 
         // Pass in student list and function to update favorite status to the adapter
-        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (student) ->
-            db.studentWithCoursesDao().updateStudent(student)
+        studentsViewAdapter = new StudentsViewAdapter(studentAndCountPairList, (uuid, isFavorite) ->
+            db.studentWithCoursesDao().updateFavorite(uuid, isFavorite)
         );
         studentsRecycleView.setAdapter(studentsViewAdapter);
 
@@ -292,7 +299,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         sessionNameView.setHint(currentTime);
 
         // create a list of current courses
-        List<String> allCourses = db.studentWithCoursesDao().get(1).getCourses(); // list of the courses of the user
+        List<String> allCourses = db.studentWithCoursesDao().get(currentUUID).getCourses(); // list of the courses of the user
         List<String> currentCourses = new ArrayList<>();
         String defaultMessage = "(Current Course)";
         currentCourses.add(defaultMessage);
