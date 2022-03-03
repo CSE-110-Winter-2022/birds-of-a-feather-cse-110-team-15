@@ -74,7 +74,7 @@ public class NearbyBackgroundService extends Service {
                         if (uuid.equals(receiverUUID))
                             wavedAtCurrentUser = true;
                     } else {
-                        courses.add(String.join(" ", courseOrWave.get(2), courseOrWave.get(3), courseOrWave.get(1), courseOrWave.get(0)));
+                        courses.add(String.join(" ", courseOrWave));
                     }
                 }
                 i++;
