@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
@@ -38,7 +37,6 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 import org.hamcrest.core.IsInstanceOf;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
@@ -115,7 +113,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView = onView(
                 allOf(withId(android.R.id.message), withText(no_course_entered_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView.check(matches(isDisplayed()));
 
@@ -140,7 +138,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView2 = onView(
                 allOf(withId(android.R.id.message), withText(empty_field_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView2.check(matches(isDisplayed()));
 
@@ -175,7 +173,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView3 = onView(
                 allOf(withId(android.R.id.message), withText(empty_field_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView3.check(matches(isDisplayed()));
 
@@ -230,7 +228,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView4 = onView(
                 allOf(withId(android.R.id.message), withText(empty_field_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView4.check(matches(isDisplayed()));
 
@@ -265,7 +263,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView5 = onView(
                 allOf(withId(android.R.id.message), withText(course_name_invalid_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView5.check(matches(isDisplayed()));
 
@@ -310,7 +308,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView6 = onView(
                 allOf(withId(android.R.id.message), withText(course_name_invalid_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView6.check(matches(isDisplayed()));
 
@@ -355,7 +353,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView7 = onView(
                 allOf(withId(android.R.id.message), withText(course_name_invalid_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView7.check(matches(isDisplayed()));
 
@@ -420,7 +418,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView8 = onView(
                 allOf(withId(android.R.id.message), withText(course_number_invalid_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView8.check(matches(isDisplayed()));
 
@@ -465,7 +463,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView9 = onView(
                 allOf(withId(android.R.id.message), withText(course_number_invalid_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView9.check(matches(isDisplayed()));
 
@@ -592,7 +590,7 @@ public class EnterCourseActivityTest {
 
         ViewInteraction textView13 = onView(
                 allOf(withId(android.R.id.message), withText(duplicate_course_err_str),
-                        withParent(withParent(IsInstanceOf.<View>instanceOf(android.widget.ScrollView.class))),
+                        withParent(withParent(IsInstanceOf.instanceOf(android.widget.ScrollView.class))),
                         isDisplayed()));
         textView13.check(matches(isDisplayed()));
 

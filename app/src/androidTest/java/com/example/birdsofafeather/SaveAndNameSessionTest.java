@@ -15,13 +15,12 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
-import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
-import static org.junit.Assert.assertEquals;
 
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
@@ -31,9 +30,7 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
-import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.SessionWithStudents;
-import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import org.hamcrest.Description;
@@ -45,6 +42,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+@SuppressWarnings("deprecation")
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class SaveAndNameSessionTest {

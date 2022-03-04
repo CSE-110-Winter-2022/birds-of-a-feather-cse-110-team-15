@@ -79,9 +79,9 @@ public class StartSessionTest {
     }
 
     @Test
-    /**
-     * Test user opening start session popup for the first time
-     * - should see only one option to create 'New Session'
+    /*
+      Test user opening start session popup for the first time
+      - should see only one option to create 'New Session'
      */
     public void testFirstTimeStartingSessionPopUp() {
         try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)) {
@@ -98,9 +98,9 @@ public class StartSessionTest {
     }
 
     @Test
-    /**
-     * Test user opening start session popup after already creating 2 sessions
-     * - should see 3 choices in spinner: 'New Session', 'CSE 100', and 'COGS 109'
+    /*
+      Test user opening start session popup after already creating 2 sessions
+      - should see 3 choices in spinner: 'New Session', 'CSE 100', and 'COGS 109'
      */
     public void testResumingSessionPopup() {
         // insert sessions into database for test
@@ -125,8 +125,8 @@ public class StartSessionTest {
     }
 
     @Test
-    /**
-     * Test seeing list after popup for selecting "New Session"
+    /*
+      Test seeing list after popup for selecting "New Session"
      */
     public void testNewSessionList() {
         // simulate creating new session and updating Shared Preferences

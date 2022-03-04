@@ -1,25 +1,22 @@
 package com.example.birdsofafeather;
+
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.shadows.ShadowAlertDialog;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.shadows.ShadowAlertDialog;
 
 @RunWith(AndroidJUnit4.class)
 public class NameEntryTest {
@@ -58,7 +55,6 @@ public class NameEntryTest {
                 assertEquals("", getConfirmName);
 
                 //check that continue with no name results in alert
-                Button continueButton = activity.findViewById(R.id.cont);
                 AlertDialog alertCont = ShadowAlertDialog.getLatestAlertDialog();
                 assertTrue(alertCont.isShowing());
 

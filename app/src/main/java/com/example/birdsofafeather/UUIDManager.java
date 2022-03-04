@@ -4,20 +4,19 @@ import android.content.Context;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.UUID;
 
 public class UUIDManager {
     String userUUID = null;
-    private final String filename = "uuidStr";
 
 
     // Create a new UUID for the current user if none has been created
     // Fetch the previous UUID if one has been created
     public UUIDManager(Context context)  {
         // "file" is a file at ./uuidStr
+        String filename = "uuidStr";
         File file = new File(context.getFilesDir(), filename);
 
         // Attempt to create a file at ./uuidStr

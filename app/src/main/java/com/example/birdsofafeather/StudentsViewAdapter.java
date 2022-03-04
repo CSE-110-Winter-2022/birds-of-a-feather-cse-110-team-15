@@ -14,7 +14,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.squareup.picasso.Picasso;
 
@@ -137,7 +136,7 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             fav.setChecked(student.isFavorite());
 
             //if student waved to user, wave is visible
-            if(student.getWavedToUser()==true){
+            if(student.getWavedToUser()){
                 waveView.setVisibility(View.VISIBLE);
             }
         }
