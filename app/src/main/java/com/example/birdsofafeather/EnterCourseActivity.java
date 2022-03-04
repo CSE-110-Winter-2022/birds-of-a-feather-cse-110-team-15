@@ -28,7 +28,7 @@ public class EnterCourseActivity extends AppCompatActivity {
     private CoursesViewAdapter coursesViewAdapter;
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
-    String[] classSizes = {"Tiny", "Small", "Medium", "Large", "Huge", "Gigantic"};
+    String[] classSizes = {"Tiny (<40)", "Small (40-75)", "Medium (75-150)", "Large (150-250)", "Huge (250-400)", "Gigantic (600+)"};
 
     // firstYear: 2016
     // maxYear: In a full release, could be replaced with call for current year.
@@ -116,7 +116,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         }
 
         // create a new course string
-        String courseEntry = String.join(" ", courseSubject, courseNumber, courseQuarter, courseYear, courseSize);
+        String courseEntry = String.join(" ", courseSubject, courseNumber, courseQuarter, courseYear, courseSize.split(" ")[0]);
 
         // check if the course is already entered
         // if so, show an alert and return
