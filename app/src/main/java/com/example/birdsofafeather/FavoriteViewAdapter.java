@@ -48,7 +48,6 @@ public class FavoriteViewAdapter extends RecyclerView.Adapter<FavoriteViewAdapte
     public static class FaveViewHolder extends RecyclerView.ViewHolder {
         private final TextView studentNameView;
         private final ImageView studentImageView;
-        private StudentWithCourses student;
         Picasso picasso;
 
         // Constructor
@@ -60,7 +59,6 @@ public class FavoriteViewAdapter extends RecyclerView.Adapter<FavoriteViewAdapte
 
         // Set the student's data to name view and image view
         public void setStudent(StudentWithCourses student) {
-            this.student = student;
 
             // Set the view for student's name
             this.studentNameView.setText(student.getName());

@@ -47,7 +47,6 @@ public class InputHeadshotTest {
                 EditText url_view = activity.findViewById(R.id.editURL);
                 ImageView profile = activity.findViewById(R.id.profile);
                 Button save_button = activity.findViewById(R.id.saveBtn);
-                Button continue_button = activity.findViewById(R.id.continueBtn);
 
                 // Trying to save a bad URL
                 url_view.setText(BAD_URL);

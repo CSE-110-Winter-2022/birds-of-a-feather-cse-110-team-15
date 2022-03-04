@@ -1,7 +1,6 @@
 package com.example.birdsofafeather;
 
 import android.app.Activity;
-import android.app.Presentation;
 import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,7 +13,6 @@ import androidx.annotation.NonNull;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
-import com.example.birdsofafeather.models.db.CourseDao;
 import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.google.android.gms.nearby.Nearby;
@@ -23,9 +21,7 @@ import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-import java.util.ListIterator;
 
 public class NearbyBackgroundService extends Service {
     private String TAG = "NearbyBackground";

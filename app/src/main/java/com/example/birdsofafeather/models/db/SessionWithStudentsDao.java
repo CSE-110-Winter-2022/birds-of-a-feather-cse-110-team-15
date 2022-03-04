@@ -8,9 +8,6 @@ import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
 
-import com.example.birdsofafeather.models.db.Session;
-import com.example.birdsofafeather.models.db.SessionWithStudents;
-
 import java.util.List;
 
 @Dao
@@ -19,6 +16,7 @@ public interface SessionWithStudentsDao {
     @Query("SELECT * FROM sessions")
     List<SessionWithStudents> getAll();
 
+    @Transaction
     @Query("SELECT * FROM sessions WHERE id=:id")
     SessionWithStudents get(int id);
 

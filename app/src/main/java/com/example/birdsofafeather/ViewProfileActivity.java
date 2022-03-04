@@ -40,11 +40,7 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         CheckBox favoriteCheck =  findViewById(R.id.profile_favorite);
         // Set favorite icon
-        if (student.isFavorite()){
-            favoriteCheck.setChecked(true);
-        } else {
-            favoriteCheck.setChecked(false);
-        }
+        favoriteCheck.setChecked(student.isFavorite());
         favoriteCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (buttonView.isChecked()) {
                         Toast.makeText(ViewProfileActivity.this, "Added to Favorites", Toast.LENGTH_SHORT).show();
@@ -70,13 +66,13 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         StudentWithCourses me = db.studentWithCoursesDao().get(currentUserID);
         List<String> cc = student.getCommonCourses(me);
-        String displayList = "";
+        StringBuilder displayList = new StringBuilder();
         for (String course : cc){
-            displayList = displayList + course;
-            displayList = displayList + "\n";
+            displayList.append(course);
+            displayList.append("\n");
         }
         TextView common_courses = findViewById(R.id.common_classes_view);
-        common_courses.setText(displayList);
+        common_courses.setText(displayList.toString());
         common_courses.setVisibility(View.VISIBLE);
     }
 }
