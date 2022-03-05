@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Pair;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,6 +35,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private CheckBox fav;
     private int updateListDelay = 5000; // update the list every 5 seconds
 
+    String[] set = {"Default", "Most Recency", "Class Size", "Only This Quarter"};
+
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
 
@@ -57,6 +61,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
             db.studentWithCoursesDao().updateStudent(student);
         } );
         studentsRecycleView.setAdapter(studentsViewAdapter);
+
+        // Set spinner
+        Spinner spinner = (Spinner)findViewById(R.id.set_spinner);
+        ArrayAdapter<String> setAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, set);
+        setAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(setAdapter);
 
         // update the recycler view based on the current student list
         updateRecyclerViewIfNonEmpty();
