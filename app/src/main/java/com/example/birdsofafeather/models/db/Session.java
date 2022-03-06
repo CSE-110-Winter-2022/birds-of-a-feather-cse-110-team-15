@@ -2,6 +2,7 @@ package com.example.birdsofafeather.models.db;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.text.SimpleDateFormat;
@@ -17,11 +18,12 @@ public class Session {
     private String name;
 
     public Session() {
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy hh:mm aa");
         Date date = new Date();
         name = formatter.format(date);
     }
 
+    @Ignore
     public Session(String name) {
         this.name = name;
     }

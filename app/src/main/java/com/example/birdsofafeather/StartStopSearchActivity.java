@@ -106,6 +106,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
     protected void onResume(){
         super.onResume();
 
+        // make sure variables are not null when resumed
+        UUIDManager uuidManager = new UUIDManager(getApplicationContext());
+        currentUUID = uuidManager.getUserUUID();
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        me = db.studentWithCoursesDao().get(currentUUID);
+
         // if the search is off, do nothing
         if (StopButton.getVisibility() == View.INVISIBLE){
             return;

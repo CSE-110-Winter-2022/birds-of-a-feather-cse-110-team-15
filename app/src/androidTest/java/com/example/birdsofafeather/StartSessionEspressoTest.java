@@ -16,11 +16,14 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.anything;
 import static org.hamcrest.Matchers.is;
 
+import static java.lang.System.out;
+
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
@@ -54,12 +57,14 @@ public class StartSessionEspressoTest {
     public void init() {
         context = ApplicationProvider.getApplicationContext();
         db = AppDatabase.singleton(context);
+        UUIDManager uuidManager = new UUIDManager(ApplicationProvider.getApplicationContext());
+        String UUID = uuidManager.getUserUUID();
         // insert user into database
-        db.studentWithCoursesDao().insert(new Student("Joe", "joe.com"));
-        db.coursesDao().insert(new Course(1, "CSE 21 FA 2020"));
-        db.coursesDao().insert(new Course(1, "CSE 30 WI 2021"));
-        db.coursesDao().insert(new Course(1, "CSE 100 SP 2021"));
-        db.coursesDao().insert(new Course(1, "CSE 105 FA 2021"));
+        db.studentWithCoursesDao().insert(new Student(UUID, "Joe", "joe.com"));
+        db.coursesDao().insert(new Course(UUID, "CSE 21 FA 2020"));
+        db.coursesDao().insert(new Course(UUID, "CSE 30 WI 2021"));
+        db.coursesDao().insert(new Course(UUID, "CSE 100 SP 2021"));
+        db.coursesDao().insert(new Course(UUID, "CSE 105 FA 2021"));
     }
 
     @Rule
@@ -119,7 +124,7 @@ public class StartSessionEspressoTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("Toby,,,\r\nhttps://lh3.googleusercontent.com/pw/AM-JKLVOqkfwjcRfaEo5UIwLKN9FLPM3iiVTvxJdr58qPI4G4ipBruOCWm8lUTC3q-YEWpK_JiWfdRzE3WPh6eezbcDVsRC1qYsxoy_UwUIx0X2YY8nMA_6-iPqWX2R3Z_9LaTIjNCaBRTSCcauP1OB6Bljb=w275-h183-no?authuser=0,,,\r\nCSE,21,FA,2020\r\nCSE,30,WI,2021\r\nCSE,105,FA,2021\r\nCSE,100,SP,2021"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("a123,,,\nToby,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLVOqkfwjcRfaEo5UIwLKN9FLPM3iiVTvxJdr58qPI4G4ipBruOCWm8lUTC3q-YEWpK_JiWfdRzE3WPh6eezbcDVsRC1qYsxoy_UwUIx0X2YY8nMA_6-iPqWX2R3Z_9LaTIjNCaBRTSCcauP1OB6Bljb=w275-h183-no?authuser=0,,,\nCSE,21,FA,2020\nCSE,30,WI,2021\nCSE,105,FA,2021\nCSE,100,SP,2021"), closeSoftKeyboard());
 
         ViewInteraction materialButton4 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -150,6 +155,12 @@ public class StartSessionEspressoTest {
                                 3),
                         isDisplayed()));
         materialButton5.perform(click());
+
+        try {
+            Thread.sleep(1000);
+        } catch (Exception e) {
+
+        }
 
         ViewInteraction materialButton14 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
@@ -243,8 +254,13 @@ public class StartSessionEspressoTest {
         try {
             Thread.sleep(5000);
         } catch(InterruptedException e) {
-            System.out.println("got interrupted!");
+            out.println("got interrupted!");
         }
+
+        // assert recycler view is the same
+        RecyclerView recyclerView = mActivityTestRule.getActivity().findViewById(R.id.students_recycler_view);
+        out.println("RecyclerView Child Count");
+        out.println("Expected: 1      Actual: " + recyclerView.getAdapter().getItemCount());
     }
 
     private static Matcher<View> childAtPosition(
