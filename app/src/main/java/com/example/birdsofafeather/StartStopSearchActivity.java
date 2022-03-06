@@ -27,6 +27,9 @@ import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.SessionWithStudents;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,6 +60,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
+
+    private MessageListener mMessageListener;
+    private Message mMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +101,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
+
+        mMessageListener = new NearbyMessagesFactory().build(currentUUID);
+        mMessage = new NearbyMessagesFactory().buildMessage(me, null);
     }
 
     @Override
@@ -133,8 +142,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
     }
 
     public void onStartClick(View view) {
-        //start bluetooth
-
         // add all the sessions found in database to sessions list
         List<String> sessions = new ArrayList<>();
         sessions.add("New Session");
@@ -208,10 +215,15 @@ public class StartStopSearchActivity extends AppCompatActivity {
                updateRecyclerView();
                handler.postDelayed(runnable, updateListDelay);
        }, updateListDelay);
+
+       Nearby.getMessagesClient(this).publish(mMessage);
+       Nearby.getMessagesClient(this).subscribe(mMessageListener);
     }
 
     public void onStopClick(View view) {
         //stop bluetooth
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
 
         //hide stop
         StopButton = findViewById(R.id.stop_button);
