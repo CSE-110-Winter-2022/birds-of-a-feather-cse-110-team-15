@@ -1,6 +1,9 @@
 package com.example.birdsofafeather;
 
+import android.content.ComponentName;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -16,6 +19,26 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
+    private NearbyBackgroundService nearbyService;
+    private boolean isBound;
+
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+        // called when connection to NearbyBackgroundService has been established
+        @Override
+        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
+            NearbyBackgroundService.NearbyBinder nearbyBinder = (NearbyBackgroundService.NearbyBinder)iBinder;
+            nearbyService = nearbyBinder.getService();
+            isBound = true;
+        }
+
+        // - called when connection to NearbyBackgroundService has been lost
+        // - does not remove binding; can still receive call to onServiceConnected
+        //   when service is running
+        @Override
+        public void onServiceDisconnected(ComponentName componentName) {
+            isBound = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +72,28 @@ public class ViewProfileActivity extends AppCompatActivity {
                         Toast.makeText(ViewProfileActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), false);
                     }
-                    // Have to use getStudent() to extract Student from StudentWithCourses
+                }
+        );
+
+        //send wave to student
+        CheckBox waveCheck = findViewById(R.id.send_wave);
+        waveCheck.setChecked(student.getWavedFromUser());
+        waveCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (buttonView.isChecked()) {
+                        Toast.makeText(ViewProfileActivity.this, "Send Wave", Toast.LENGTH_SHORT).show();
+                        db.studentWithCoursesDao().updateWaveFrom(student.getUUID(), true);
+                        student.setWavedFromUser(true);
+
+                        String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
+                        String studentInfo = student.getUUID() + student.getName() + student.getHeadshotURL() +
+                                student.getCourses() + userUUID.;
+
+                        //send wave service
+                        nearbyService.publish(studentInfo);
+
+                        //disable checkbox
+                        waveCheck.setEnabled(false);
+                    }
                 }
         );
 
@@ -74,5 +118,15 @@ public class ViewProfileActivity extends AppCompatActivity {
         TextView common_courses = findViewById(R.id.common_classes_view);
         common_courses.setText(displayList.toString());
         common_courses.setVisibility(View.VISIBLE);
+    }
+
+    // make sure to stop service when ending activity
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (isBound)  {
+            unbindService(serviceConnection);
+            isBound = false;
+        }
     }
 }
