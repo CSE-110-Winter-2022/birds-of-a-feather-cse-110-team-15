@@ -4,9 +4,4 @@
         <item name="colorAccent">#ffc800</item>
         <item name="android:textColorSecondary">#969696</item>
     </style>
-
-    <style name="wave_style" parent="Base.Theme.AppCompat">
-        <item name="colorAccent">@color/blue</item>
-        <item name="android:textColorSecondary">#969696</item>
-    </style>
 </resources>
