@@ -1,6 +1,8 @@
 package com.example.birdsofafeather;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -45,6 +47,11 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
+        Intent intent = new Intent(this, NearbyBackgroundService.class);
+        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        isBound = true;
+
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
         String classmate_id = extras.getString("classmate_id");
@@ -68,6 +75,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     if (buttonView.isChecked()) {
                         Toast.makeText(ViewProfileActivity.this, "Added to Favorites", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), true);
+
                     } else {
                         Toast.makeText(ViewProfileActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), false);
@@ -84,15 +92,14 @@ public class ViewProfileActivity extends AppCompatActivity {
                         db.studentWithCoursesDao().updateWaveFrom(student.getUUID(), true);
                         student.setWavedFromUser(true);
 
-                        String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
-                        String studentInfo = student.getUUID() + student.getName() + student.getHeadshotURL() +
-                                student.getCourses() + userUUID.;
-
                         //send wave service
+                        String studentInfo = sendWaveService(student);
                         nearbyService.publish(studentInfo);
 
                         //disable checkbox
-                        waveCheck.setEnabled(false);
+                       // waveCheck.setEnabled(false);
+
+
                     }
                 }
         );
@@ -118,6 +125,21 @@ public class ViewProfileActivity extends AppCompatActivity {
         TextView common_courses = findViewById(R.id.common_classes_view);
         common_courses.setText(displayList.toString());
         common_courses.setVisibility(View.VISIBLE);
+    }
+
+    protected String sendWaveService(StudentWithCourses student){
+        //obtain strings to input into service
+      //  String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
+        String studentInfo = student.getUUID() + ",,,,\n" +
+                student.getName() + ",,,,\n" +
+                student.getHeadshotURL() + ",,,,\n";
+        for(String course: student.getCourses()){
+            String temp = course.replace(" ", ",");
+            studentInfo += temp + ",\n";
+        }
+        studentInfo += student.getUUID() + ",wave,,,";
+
+        return studentInfo;
     }
 
     // make sure to stop service when ending activity
