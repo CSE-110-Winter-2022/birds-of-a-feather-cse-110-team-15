@@ -1,5 +1,7 @@
 package com.example.birdsofafeather;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -16,11 +18,17 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
+    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
+
+        Intent intent = new Intent(this, NearbyBackgroundService.class);
+        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
+        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        serviceConnection.setBound(true);
 
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
@@ -39,17 +47,51 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
 
         CheckBox favoriteCheck =  findViewById(R.id.profile_favorite);
+        CheckBox waveCheck = findViewById(R.id.send_wave);
+
         // Set favorite icon
         favoriteCheck.setChecked(student.isFavorite());
         favoriteCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (buttonView.isChecked()) {
                         Toast.makeText(ViewProfileActivity.this, "Added to Favorites", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), true);
+
+                        //wave visible if favorite
+                        waveCheck.setVisibility(View.VISIBLE);
                     } else {
                         Toast.makeText(ViewProfileActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), false);
+
+                        //wave not visible if not favorite
+                        if (!waveCheck.isChecked()) {
+                            waveCheck.setVisibility(View.GONE);
+                        }
                     }
-                    // Have to use getStudent() to extract Student from StudentWithCourses
+                }
+        );
+
+        //case to handle: favorite -> wave -> unfavorite -> wave still visible
+        if(!student.isFavorite() && !student.getWavedFromUser()){
+            waveCheck.setVisibility(View.GONE);
+        }
+
+        //send wave to student
+        boolean isWavedTo = student.getWavedFromUser();
+        waveCheck.setEnabled(!isWavedTo);
+        waveCheck.setChecked(isWavedTo);
+        waveCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (buttonView.isChecked()) {
+                        Toast.makeText(ViewProfileActivity.this, "Wave Sent!", Toast.LENGTH_SHORT).show();
+                        db.studentWithCoursesDao().updateWaveFrom(student.getUUID(), true);
+                        student.setWavedFromUser(true);
+
+                        //send wave by publishing message
+                        NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
+                        nearbyService.publish(waveMessage(student));
+
+                        //wave cannot be unsent/sent again
+                        waveCheck.setEnabled(false);
+                    }
                 }
         );
 
@@ -74,5 +116,29 @@ public class ViewProfileActivity extends AppCompatActivity {
         TextView common_courses = findViewById(R.id.common_classes_view);
         common_courses.setText(displayList.toString());
         common_courses.setVisibility(View.VISIBLE);
+    }
+
+    protected String waveMessage(StudentWithCourses student){
+        //obtain strings to input into service
+        StringBuilder studentInfo = new StringBuilder(student.getUUID() + ",,,,\n" +
+                student.getName() + ",,,,\n" +
+                student.getHeadshotURL() + ",,,,\n");
+        for(String course: student.getCourses()){
+            String temp = course.replace(" ", ",");
+            studentInfo.append(temp).append(",\n");
+        }
+        studentInfo.append(student.getUUID()).append(",wave,,,");
+
+        return studentInfo.toString();
+    }
+
+    // make sure to stop service when ending activity
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (serviceConnection.isBound())  {
+            unbindService(serviceConnection);
+            serviceConnection.setBound(false);
+        }
     }
 }
