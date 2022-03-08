@@ -112,12 +112,14 @@ public class ViewProfileActivityTest {
                 // Multiple assertions in one test to avoid launching too many activities
                 TextView name = activity.findViewById(R.id.name_view);
                 CheckBox fav = activity.findViewById(R.id.profile_favorite);
+                CheckBox sendWave = activity.findViewById(R.id.send_wave);
 
                 // Test if the name is correct
                 Assert.assertEquals("Bill", name.getText());
 
                 // Test if the Favorite CheckBox is checked
                 assertFalse(fav.isChecked());
+                assertEquals(View.GONE, sendWave.getVisibility());
 
                 out.println("Expected: Bill    Actual:" + name.getText());
                 out.println("Expected: False   Actual:" + fav.isChecked());
@@ -125,5 +127,48 @@ public class ViewProfileActivityTest {
         }
     }
 
+    @Test
+    /*
+     * Tests wave checkbox
+     * student is favorite -> click wave (visible) -> click unfavorite -> wave still visible
+     */
+    public void testWaveIsChecked() {
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), ViewProfileActivity.class);
+        // Pass Mary to intent
+        intent.putExtra("classmate_id", "s3ID");
+        try (ActivityScenario<ViewProfileActivity> scenario = ActivityScenario.launch(intent)) {
+            scenario.onActivity(activity -> {
+                TextView name = activity.findViewById(R.id.name_view);
+                CheckBox favorite = activity.findViewById(R.id.profile_favorite);
+                CheckBox sendWave = activity.findViewById(R.id.send_wave);
 
+                // Test if the Favorite CheckBox is checked and wave not checked
+                assertTrue(favorite.isChecked());
+                assertEquals(View.VISIBLE, sendWave.getVisibility());
+                assertEquals(false, sendWave.isChecked());
+
+                out.println("Expected: Mary    Actual:" + name.getText());
+                out.println("Expected: True    Actual:" + favorite.isChecked());
+
+                //click wave
+                sendWave.performClick();
+                assertEquals(View.VISIBLE, sendWave.getVisibility());
+                assertEquals(true, sendWave.isChecked());
+
+                out.println("student is favorite -> click wave");
+                out.println("Expected: VISIBLE    Actual:" +  sendWave.getVisibility());
+                out.println("Expected: True    Actual:" + sendWave.isChecked());
+
+                //click to unfavorite, wave should still be checked
+                favorite.performClick();
+                assertFalse(favorite.isChecked());
+                assertEquals(View.VISIBLE, sendWave.getVisibility());
+                assertEquals(true, sendWave.isChecked());
+
+                out.println("student is not favorite anymore -> wave is still visible");
+                out.println("Expected: VISIBLE    Actual:" +  sendWave.getVisibility());
+                out.println("Expected: True    Actual:" + sendWave.isChecked());
+            });
+        }
+    }
 }
