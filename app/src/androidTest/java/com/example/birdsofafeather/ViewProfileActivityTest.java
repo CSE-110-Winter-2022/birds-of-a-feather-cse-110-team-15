@@ -96,7 +96,6 @@ public class ViewProfileActivityTest {
 
                 out.println("Expected: Mary    Actual:" + name.getText());
                 out.println("Expected: True    Actual:" + fav.isChecked());
-
             });
         }
     }

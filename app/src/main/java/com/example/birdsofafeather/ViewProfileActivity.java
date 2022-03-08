@@ -70,11 +70,12 @@ public class ViewProfileActivity extends AppCompatActivity {
                 }
         );
 
-        //send wave to student
+        //case to handle: favorite -> wave -> unfavorite -> wave still visible
         if(!student.isFavorite() && !student.getWavedFromUser()){
             waveCheck.setVisibility(View.GONE);
         }
 
+        //send wave to student
         boolean isWavedTo = student.getWavedFromUser();
         waveCheck.setEnabled(!isWavedTo);
         waveCheck.setChecked(isWavedTo);
@@ -88,6 +89,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                         NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
                         nearbyService.publish(waveMessage(student));
 
+                        //wave cannot be unsent/sent again
                         waveCheck.setEnabled(false);
                     }
                 }
@@ -118,7 +120,6 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     protected String waveMessage(StudentWithCourses student){
         //obtain strings to input into service
-      //  String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
         StringBuilder studentInfo = new StringBuilder(student.getUUID() + ",,,,\n" +
                 student.getName() + ",,,,\n" +
                 student.getHeadshotURL() + ",,,,\n");
