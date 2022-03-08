@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         setButtonVisibilities();
     }
 
-
     public void onLoginClick(View view) {
         Intent intent = new Intent(this, StartStopSearchActivity.class);
         startActivity(intent);
