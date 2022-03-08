@@ -71,7 +71,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         );
 
         //send wave to student
-        if(!student.isFavorite() && student.getWavedToUser()){
+        if(!student.isFavorite() && !student.getWavedFromUser()){
             waveCheck.setVisibility(View.GONE);
         }
 
