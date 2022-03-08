@@ -37,11 +37,11 @@
 
     <CheckBox
         android:id="@+id/send_wave"
-        android:layout_width="30dp"
-        android:layout_height="34dp"
+        android:layout_width="38dp"
+        android:layout_height="37dp"
         android:layout_marginTop="19dp"
-        android:theme="@style/wave_style"
         android:button="@drawable/wave_button"
+        android:theme="@style/wave_style"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/profile_favorite"
         app:layout_constraintHorizontal_bias="0.844"

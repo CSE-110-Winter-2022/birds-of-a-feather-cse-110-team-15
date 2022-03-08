@@ -1,12 +1,7 @@
 package com.example.birdsofafeather;
 
-<<<<<<< Updated upstream
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-=======
->>>>>>> Stashed changes
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -23,7 +18,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
-
     private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
 
     @Override
@@ -34,7 +28,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, NearbyBackgroundService.class);
         intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        isBound = true;
+        serviceConnection.setBound(true);
 
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
@@ -69,13 +63,15 @@ public class ViewProfileActivity extends AppCompatActivity {
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), false);
 
                         //wave not visible if not favorite
-                        waveCheck.setVisibility(View.GONE);
+                        if (!waveCheck.isChecked()) {
+                            waveCheck.setVisibility(View.GONE);
+                        }
                     }
                 }
         );
 
         //send wave to student
-        if(!student.isFavorite()){
+        if(!student.isFavorite() && student.getWavedToUser()){
             waveCheck.setVisibility(View.GONE);
         }
 
@@ -84,12 +80,9 @@ public class ViewProfileActivity extends AppCompatActivity {
         waveCheck.setChecked(isWavedTo);
         waveCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (buttonView.isChecked()) {
-                        Toast.makeText(ViewProfileActivity.this, "Send Wave", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(ViewProfileActivity.this, "Wave Sent!", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateWaveFrom(student.getUUID(), true);
                         student.setWavedFromUser(true);
-
-                        String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
-                        String studentInfo = student.getUUID();
 
                         //send wave by publishing message
                         NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
@@ -126,16 +119,16 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected String waveMessage(StudentWithCourses student){
         //obtain strings to input into service
       //  String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
-        String studentInfo = student.getUUID() + ",,,,\n" +
+        StringBuilder studentInfo = new StringBuilder(student.getUUID() + ",,,,\n" +
                 student.getName() + ",,,,\n" +
-                student.getHeadshotURL() + ",,,,\n";
+                student.getHeadshotURL() + ",,,,\n");
         for(String course: student.getCourses()){
             String temp = course.replace(" ", ",");
-            studentInfo += temp + ",\n";
+            studentInfo.append(temp).append(",\n");
         }
-        studentInfo += student.getUUID() + ",wave,,,";
+        studentInfo.append(student.getUUID()).append(",wave,,,");
 
-        return studentInfo;
+        return studentInfo.toString();
     }
 
     // make sure to stop service when ending activity
