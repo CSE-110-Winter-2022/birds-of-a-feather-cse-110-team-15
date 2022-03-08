@@ -185,9 +185,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
             onStartSessionClicked(v);
             popupWindow.dismiss(); // close popup
         });
-
-        // set the sorting option to be the default at the beginning of search
-        sortOptionSpinner.setSelection(0);
     }
 
     public void onStartSessionClicked(View view) {
@@ -226,6 +223,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
        // show stop button
        StopButton = findViewById(R.id.stop_button);
        StopButton.setVisibility(View.VISIBLE);
+
+        // set the sorting option to be the default at the beginning of search
+        sortOptionSpinner.setSelection(0);
 
        // update the recycler view based on the current student list
        updateRecyclerView();
@@ -293,9 +293,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
             }
         }
 
-        // sort the list by the number of common courses in descending order
-        studentAndCountPairs.sort((s1, s2) -> s2.second - s1.second);
-
         //create new list to modify and return
         List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
         int position = 0;
@@ -326,9 +323,13 @@ public class StartStopSearchActivity extends AppCompatActivity {
         }
         else if (sortOption.equals("By Recent Classes")){
             // TODO: sort the list by using the recency algorithm
+            // dummy sort algorithm 1: by the number of count in ascending order
+            studentList.sort((s1, s2) -> s1.getCommonCourses(me).size() - s2.getCommonCourses(me).size());
         }
         else {
             // TODO: sort the list by using the class size algorithm
+            // dummy sort algorithm 2: by student's name in alphabetical order
+            studentList.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
         }
 
         studentAndCountPairList = createStudentAndCountPairList(me, studentList);
