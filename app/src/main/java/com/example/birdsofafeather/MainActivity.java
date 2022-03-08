@@ -26,23 +26,23 @@ public class MainActivity extends AppCompatActivity {
         createProfileButton = (Button) findViewById(R.id.Create_Profile_Button);
         favoriteListButton = (Button) findViewById(R.id.Favorites_Button);
         db = AppDatabase.singleton(this);
-        setButtonVisibilities();
+//        setButtonVisibilities();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
 
-        if (!loginHandler.isUserSignedIn()) {
-            loginHandler.signIn();
-        }
+//        if (!loginHandler.isUserSignedIn()) {
+//            loginHandler.signIn();
+//        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        setButtonVisibilities();
+//        setButtonVisibilities();
     }
 
 

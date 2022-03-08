@@ -109,6 +109,7 @@ public class NearbyBackgroundService extends Service {
             }
 
             for (String course : courses) {
+                Course temp = db.coursesDao().getCourseWithStudent(course, senderUUID);
                 if (db.coursesDao().getCourseWithStudent(course, senderUUID) == null) {
                     db.coursesDao().insert(new Course(senderUUID, course));
                 }

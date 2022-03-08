@@ -1,11 +1,13 @@
 package com.example.birdsofafeather;
 
+<<<<<<< Updated upstream
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+=======
+>>>>>>> Stashed changes
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -21,26 +23,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
-    private NearbyBackgroundService nearbyService;
-    private boolean isBound;
 
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-        // called when connection to NearbyBackgroundService has been established
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            NearbyBackgroundService.NearbyBinder nearbyBinder = (NearbyBackgroundService.NearbyBinder)iBinder;
-            nearbyService = nearbyBinder.getService();
-            isBound = true;
-        }
-
-        // - called when connection to NearbyBackgroundService has been lost
-        // - does not remove binding; can still receive call to onServiceConnected
-        //   when service is running
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            isBound = false;
-        }
-    };
+    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,14 +76,15 @@ public class ViewProfileActivity extends AppCompatActivity {
                         db.studentWithCoursesDao().updateWaveFrom(student.getUUID(), true);
                         student.setWavedFromUser(true);
 
-                        //send wave service
-                        String studentInfo = sendWaveService(student);
-                        nearbyService.publish(studentInfo);
+                        String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
+                        String studentInfo = student.getUUID();
+
+                        //send wave by publishing message
+                        NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
+                        nearbyService.publish(waveMessage(student));
 
                         //disable checkbox
                        // waveCheck.setEnabled(false);
-
-
                     }
                 }
         );
@@ -127,7 +112,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         common_courses.setVisibility(View.VISIBLE);
     }
 
-    protected String sendWaveService(StudentWithCourses student){
+    protected String waveMessage(StudentWithCourses student){
         //obtain strings to input into service
       //  String userUUID = new UUIDManager(getApplicationContext()).getUserUUID();
         String studentInfo = student.getUUID() + ",,,,\n" +
@@ -146,9 +131,9 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isBound)  {
+        if (serviceConnection.isBound())  {
             unbindService(serviceConnection);
-            isBound = false;
+            serviceConnection.setBound(false);
         }
     }
 }
