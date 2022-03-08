@@ -53,6 +53,8 @@ public class ViewProfileActivity extends AppCompatActivity {
         }
 
         CheckBox favoriteCheck =  findViewById(R.id.profile_favorite);
+        CheckBox waveCheck = findViewById(R.id.send_wave);
+
         // Set favorite icon
         favoriteCheck.setChecked(student.isFavorite());
         favoriteCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -60,16 +62,26 @@ public class ViewProfileActivity extends AppCompatActivity {
                         Toast.makeText(ViewProfileActivity.this, "Added to Favorites", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), true);
 
+                        //wave visible if favorite
+                        waveCheck.setVisibility(View.VISIBLE);
                     } else {
                         Toast.makeText(ViewProfileActivity.this, "Removed from Favorites", Toast.LENGTH_SHORT).show();
                         db.studentWithCoursesDao().updateFavorite(student.getUUID(), false);
+
+                        //wave not visible if not favorite
+                        waveCheck.setVisibility(View.GONE);
                     }
                 }
         );
 
         //send wave to student
-        CheckBox waveCheck = findViewById(R.id.send_wave);
-        waveCheck.setChecked(student.getWavedFromUser());
+        if(!student.isFavorite()){
+            waveCheck.setVisibility(View.GONE);
+        }
+
+        boolean isWavedTo = student.getWavedFromUser();
+        waveCheck.setEnabled(!isWavedTo);
+        waveCheck.setChecked(isWavedTo);
         waveCheck.setOnCheckedChangeListener((buttonView, isChecked) -> {
                     if (buttonView.isChecked()) {
                         Toast.makeText(ViewProfileActivity.this, "Send Wave", Toast.LENGTH_SHORT).show();
@@ -83,8 +95,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                         NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
                         nearbyService.publish(waveMessage(student));
 
-                        //disable checkbox
-                       // waveCheck.setEnabled(false);
+                        waveCheck.setEnabled(false);
                     }
                 }
         );
