@@ -102,13 +102,15 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
 
-        mMessageListener = new NearbyMessagesFactory().build(currentUUID);
+        mMessageListener = new NearbyMessagesFactory().build(currentUUID, this);
         mMessage = new NearbyMessagesFactory().buildMessage(me, null);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
     }
 
     @Override

@@ -13,12 +13,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.MessageListener;
+import com.google.android.gms.nearby.messages.Message;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
     private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
+    private StudentWithCourses me;
+    private MessageListener mMessageListener;
+    private Message mMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +32,26 @@ public class ViewProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_profile);
 
         Intent intent = new Intent(this, NearbyBackgroundService.class);
-        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
+        String uuid = new UUIDManager(getApplicationContext()).getUserUUID();
+        intent.putExtra("uuid", uuid);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
         serviceConnection.setBound(true);
+
 
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
         String classmate_id = extras.getString("classmate_id");
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
         StudentWithCourses student = db.studentWithCoursesDao().get(classmate_id);
+
+        // get reference to me, the user
+        me = db.studentWithCoursesDao().get(uuid);
+
+        // build messageListener and Message
+        mMessageListener = new NearbyMessagesFactory().build(uuid, this);
+        mMessage = new NearbyMessagesFactory().buildMessage(me, classmate_id);
+        // subscribe so that messages will still be received when viewing profile
+        Nearby.getMessagesClient(this).subscribe(mMessageListener);
 
         // Set profile name
         TextView nameView = findViewById(R.id.name_view);
@@ -89,6 +106,9 @@ public class ViewProfileActivity extends AppCompatActivity {
                         NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
                         nearbyService.publish(waveMessage(student));
 
+                        // publish message to Nearby Messages
+                        Nearby.getMessagesClient(this).publish(mMessage);
+
                         //wave cannot be unsent/sent again
                         waveCheck.setEnabled(false);
                     }
@@ -120,10 +140,10 @@ public class ViewProfileActivity extends AppCompatActivity {
 
     protected String waveMessage(StudentWithCourses student){
         //obtain strings to input into service
-        StringBuilder studentInfo = new StringBuilder(student.getUUID() + ",,,,\n" +
-                student.getName() + ",,,,\n" +
-                student.getHeadshotURL() + ",,,,\n");
-        for(String course: student.getCourses()){
+        StringBuilder studentInfo = new StringBuilder(me.getUUID() + ",,,,\n" +
+                me.getName() + ",,,,\n" +
+                me.getHeadshotURL() + ",,,,\n");
+        for(String course: me.getCourses()){
             String temp = course.replace(" ", ",");
             studentInfo.append(temp).append(",\n");
         }
@@ -136,6 +156,10 @@ public class ViewProfileActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // make sure to stop publishing wave message, and unsubscribe messageListener
+        // from this context
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
         if (serviceConnection.isBound())  {
             unbindService(serviceConnection);
             serviceConnection.setBound(false);

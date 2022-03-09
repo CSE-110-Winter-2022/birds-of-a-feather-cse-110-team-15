@@ -2,6 +2,7 @@ package com.example.birdsofafeather;
 
 import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -23,7 +24,7 @@ import java.util.List;
 public class NearbyMessagesFactory {
     private String TAG = "MESSAGE LISTENER";
 
-    public MessageListener build(String uuid) {
+    public MessageListener build(String uuid, Context context) {
         return new MessageListener() {
             @Override
             public void onFound(@NonNull Message message) {
@@ -73,7 +74,7 @@ public class NearbyMessagesFactory {
                     i++;
                 }
                 // get sessionId from sharedPreferences
-                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
                 int sessionId = preferences.getInt("sessionId", 0);
                 if (sessionId == 0) {
                     // log and return
@@ -82,7 +83,7 @@ public class NearbyMessagesFactory {
                 }
 
                 // create objects
-                AppDatabase db = AppDatabase.singleton(getApplicationContext());
+                AppDatabase db = AppDatabase.singleton(context);
 
                 // If the student already existed, get old values and update the student in the database
                 if ( db.studentWithCoursesDao().getStudentWithSession(senderUUID, sessionId) != null) {
