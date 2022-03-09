@@ -57,6 +57,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Map<String, Integer> sessionIdMap;
     private String currentUUID;
 
+    private Sorter sorter;
+
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
 
@@ -117,6 +119,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         startSessionPopupView = layoutInflater.inflate(R.layout.start_session_popup, null);
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
+
+        // create reference to sorter class for different sort methods
+        sorter = new Sorter();
     }
 
     @Override
@@ -275,67 +280,32 @@ public class StartStopSearchActivity extends AppCompatActivity {
         createSavePopup(view);
     }
 
-    // create a list of pairs of student and the number of common courses with me
-    // from a StudentWithCourses object (me) and the list of StudentWithCourses
-    public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
-            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
-        List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
-        int count; // count of common courses
-
-        // create a list of pair of student and the number of common courses
-        for (StudentWithCourses student : otherStudents) {
-            count = me.getCommonCourses(student).size();
-
-            // add a pair of this student and count if the student has at least one common course with me
-            if (count > 0){
-                studentAndCountPairs.add(new Pair<>(student, count));
-            }
-        }
-
-        //create new list to modify and return
-        List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
-        int position = 0;
-        //if classmate waved, place at top of list
-        for (Pair<StudentWithCourses, Integer> student : studentAndCountPairs) {
-            //store student pair
-            if(student.first.getWavedToUser()){
-                //add to top of waved list
-                wavedStudentAndCountPairs.add(position, student);
-                position = position + 1;
-            } else{
-                wavedStudentAndCountPairs.add(student);
-            }
-        }
-
-        return wavedStudentAndCountPairs;
-    }
-
     // update the recycler view based on the current session in the database.
     public void updateRecyclerView() {
         updateStudentList();
         // if student list is empty, then return
-        if (otherStudents.isEmpty())
+        if (otherStudents.isEmpty()) {
+            Log.d("StartStopSearchActivity", "There is no student to show!");
             return;
+        }
 
+        // else sort the student list by the algorithm chosen by the user
         String sortOption = sortOptionSpinner.getSelectedItem().toString();
 
         // sort the student list based on selected sort option
         if (sortOption.equals("Default")){
             // sort the list by the number of common courses in descending order
-            otherStudents.sort((s1, s2) -> s2.getCommonCourses(me).size() - s1.getCommonCourses(me).size());
+            studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.DEFAULT, me, otherStudents);
         }
         else if (sortOption.equals("By Recent Classes")){
-            // TODO: sort the list by using the recency algorithm
-            // dummy sort algorithm 1: by the number of count in ascending order
-            otherStudents.sort((s1, s2) -> s1.getCommonCourses(me).size() - s2.getCommonCourses(me).size());
+            // sort the list by using the recency algorithm
+            studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.RECENCY, me, otherStudents);
         }
         else {
-            // TODO: sort the list by using the class size algorithm
-            // dummy sort algorithm 2: by student's name in alphabetical order
-            otherStudents.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
+            // sort the list by using the class size algorithm
+            studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.CLASS_SIZE, me, otherStudents);
         }
 
-        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
         // update recycler based on student list obtained from sessions
         studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
