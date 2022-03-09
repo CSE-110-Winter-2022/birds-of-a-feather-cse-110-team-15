@@ -13,120 +13,115 @@ import java.util.List;
 import java.util.Map;
 
 public class Sort {
+    private Map<String, Integer> sizeWeights;
+    private Map<String, Integer> ageWeights;
 
-    public List<Pair<StudentWithCourses, Integer>> sortByClassSize
-            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
-        List<MyTriplet<StudentWithCourses, Integer, Double>> studentList = new ArrayList<>();
+    public Sort() {
+        // initialize maps for sorting
+        sizeWeights = new HashMap<>();
+        sizeWeights.put("Tiny", 100);
+        sizeWeights.put("Small", 33);
+        sizeWeights.put("Medium", 18);
+        sizeWeights.put("Large", 10);
+        sizeWeights.put("Huge", 6);
+        sizeWeights.put("Gigantic", 3);
 
-        Map<String, Double> weight = new HashMap<String, Double>();
-        weight.put("Tiny", 1.00);
-        weight.put("Small", 0.33);
-        weight.put("Medium", 0.18);
-        weight.put("Large", 0.10);
-        weight.put("Huge", 0.06);
-        weight.put("Gigantic", 0.03);
-
-        // create a list of pair of student and the number of common courses
-        for (StudentWithCourses student : otherStudents) {
-            double curr_w = 0.0;
-            List<String> commonCourses = me.getCommonCourses(student);
-            int count = commonCourses.size();
-            if (count == 0) {
-                continue;
-            }
-            for(String course : commonCourses){
-                curr_w += weight.get(course.split(" ")[4]);
-            }
-            studentList.add(new MyTriplet<>(student, count, curr_w));
-        }
-
-        // sort the list by the number of common courses in descending order
-        studentList.sort((s1, s2) -> (int) (s2.getThird() - s1.getThird()));
-
-        //create new list to modify and return
-        List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
-        int position = 0;
-        //if classmate waved, place at top of list
-        for (MyTriplet<StudentWithCourses, Integer, Double> student : studentList) {
-            //store student pair
-            if(student.getFirst().getWavedToUser()){
-                //add to top of waved list
-                wavedStudentAndCountPairs.add(position, new Pair<>(student.getFirst(), student.getSecond()));
-                position = position + 1;
-            } else{
-                wavedStudentAndCountPairs.add(new Pair<>(student.getFirst(), student.getSecond()));
-            }
-        }
-
-        return wavedStudentAndCountPairs;
+        ageWeights = new HashMap<>();
+        ageWeights.put("FA 2021", 0);
+        ageWeights.put("SSS 2021", 1);
+        ageWeights.put("SS2 2021", 1);
+        ageWeights.put("SS1 2021", 1);
+        ageWeights.put("SP 2021", 2);
+        ageWeights.put("WI 2021", 3);
     }
 
-    public List<Pair<StudentWithCourses, Integer>> sortByRecency
-            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
+    public List<Pair<StudentWithCourses, Integer>> sortList(
+            ALGORITHM algorithm,
+            StudentWithCourses me,
+            @NonNull List<StudentWithCourses> otherStudents
+    )
+    {
         List<MyTriplet<StudentWithCourses, Integer, Integer>> studentList = new ArrayList<>();
+        // choose which map based on algorithm
+        Map<String, Integer> curMap;
+        switch(algorithm) {
+            case CLASS_SIZE:
+                curMap = sizeWeights;
+                break;
+            case RECENCY:
+                curMap = ageWeights;
+                break;
+            default:
+                curMap = new HashMap<>();
+        }
 
-        Map<String, Integer> qua = new HashMap<String, Integer>();
-        qua.put("WI", 4);
-        qua.put("FA", 3);
-        qua.put("SSS", 2);
-        qua.put("SS2", 2);
-        qua.put("SS1", 2);
-        qua.put("SP", 1);
-
-        // create a list of pair of student and the number of common courses
+        // create a list of triplets: (Student Obj, Common Courses count, weight)
         for (StudentWithCourses student : otherStudents) {
-            int curr_r = 0;
+            int weight = 0;
             List<String> commonCourses = me.getCommonCourses(student);
             int count = commonCourses.size();
             if (count == 0) {
                 continue;
             }
-            int most_recent = 2020;
-            int tocompare = 0;
-            for(String course : commonCourses){
-                tocompare = qua.get(course.split(" ")[2]) + Integer.parseInt(course.split(" ")[3]);
-                if(tocompare > most_recent){
-                    most_recent = tocompare;
+
+            // only calculate weight for class size and recency sorts
+            if (algorithm != ALGORITHM.DEFAULT) {
+                for (String course : commonCourses) {
+                    String[] split = course.split(" ");
+                    String query = algorithm == ALGORITHM.CLASS_SIZE ? split[4] : split[2] + " " + split[3];
+                    weight += curMap.containsKey(query) ? curMap.get(query) : 1;
                 }
             }
-            
-            studentList.add(new MyTriplet<>(student, count, most_recent));
+            // add student to list
+            studentList.add(new MyTriplet<>(student, count, weight));
         }
 
-        // sort the list by the number of common courses in descending order
-        studentList.sort((s1, s2) -> (int) (s2.getThird() - s1.getThird()));
+        // sort the list by count or calculated weight in descending order
+        if (algorithm == ALGORITHM.DEFAULT) {
+            studentList.sort((s1, s2) -> (s2.getCount() - s1.getCount()));
+        }
+        else {
+            studentList.sort((s1, s2) -> s2.getWeight() - s1.getWeight());
+        }
 
-        //create new list to modify and return
+        // create new list to adhere to waving properties
         List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
         int position = 0;
         //if classmate waved, place at top of list
         for (MyTriplet<StudentWithCourses, Integer, Integer> student : studentList) {
             //store student pair
-            if(student.getFirst().getWavedToUser()){
+            if(student.getStudent().getWavedToUser()){
                 //add to top of waved list
-                wavedStudentAndCountPairs.add(position, new Pair<>(student.getFirst(), student.getSecond()));
-                position = position + 1;
+                wavedStudentAndCountPairs.add(position++, student.getPair());
             } else{
-                wavedStudentAndCountPairs.add(new Pair<>(student.getFirst(), student.getSecond()));
+                wavedStudentAndCountPairs.add(student.getPair());
             }
         }
 
         return wavedStudentAndCountPairs;
     }
 
-    class MyTriplet<T,U,V> {
-        T first;
-        U second;
-        V third;
+    class MyTriplet<StudentWithCourses,K,V> {
+        StudentWithCourses student;
+        K count;
+        V weight;
 
-        public MyTriplet(T first, U second, V third) {
-            this.first = first;
-            this.second = second;
-            this.third = third;
+        public MyTriplet(StudentWithCourses student, K count, V weight) {
+            this.student = student;
+            this.count = count;
+            this.weight = weight;
         }
 
-        public T getFirst() { return first; }
-        public U getSecond() { return second; }
-        public V getThird() { return third; }
+        public StudentWithCourses getStudent() { return student; }
+        public K getCount() { return count; }
+        public V getWeight() { return weight; }
+        public Pair<StudentWithCourses, K> getPair() { return new Pair<>(student, count); }
+    }
+
+    // ENUM to select which algorithm to use
+    public enum ALGORITHM {
+        DEFAULT,
+        CLASS_SIZE,
+        RECENCY
     }
 }
