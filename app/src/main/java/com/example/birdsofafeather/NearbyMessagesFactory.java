@@ -54,6 +54,8 @@ public class NearbyMessagesFactory {
                 for (String line : data.split(System.lineSeparator())) {
                     if (i == 0) {
                         senderUUID = line.split(",")[0];
+                        // make sure not to add yourself to the list
+                        if (uuid.equals(senderUUID)) return;
                     } else if (i == 1) {
                         name = line.split(",")[0];
                     } else if (i == 2) {
@@ -67,6 +69,8 @@ public class NearbyMessagesFactory {
                             // if the wave was at the current user
                             if (uuid.equals(receiverUUID))
                                 wavedAtCurrentUser = true;
+                            // if wave isn't directed at you, shouldn't process it
+                            else return;
                         } else {
                             courses.add(String.join(" ", courseOrWave));
                         }

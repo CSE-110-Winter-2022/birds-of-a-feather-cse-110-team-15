@@ -102,11 +102,12 @@ public class ViewProfileActivity extends AppCompatActivity {
                         db.studentWithCoursesDao().updateWaveFrom(student.getUUID(), true);
                         student.setWavedFromUser(true);
 
+                        // don't need to publish, since we're sending this data out instead of receiving
                         //send wave by publishing message
-                        NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
-                        nearbyService.publish(waveMessage(student));
+//                        NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
+//                        nearbyService.publish(waveMessage(student));
 
-                        // publish message to Nearby Messages
+                        // publish wave message to Nearby Messages
                         Nearby.getMessagesClient(this).publish(mMessage);
 
                         //wave cannot be unsent/sent again
