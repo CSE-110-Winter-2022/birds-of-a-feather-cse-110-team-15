@@ -58,6 +58,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Map<String, Integer> sessionIdMap;
     private String currentUUID;
 
+    private Sorter sorter;
+
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
 
@@ -105,6 +107,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
         mMessageListener = new NearbyMessagesFactory().build(currentUUID, this);
         mMessage = new NearbyMessagesFactory().buildMessage(me, null);
+
+        // create reference to sorter class for different sort methods
+        sorter = new Sorter();
     }
 
     @Override
@@ -280,44 +285,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
         createSavePopup(view);
     }
 
-    // create a list of pairs of student and the number of common courses with me
-    // from a StudentWithCourses object (me) and the list of StudentWithCourses
-    public List<Pair<StudentWithCourses, Integer>> createStudentAndCountPairList
-            (StudentWithCourses me, @NonNull List<StudentWithCourses> otherStudents) {
-        List<Pair<StudentWithCourses, Integer>> studentAndCountPairs = new ArrayList<>();
-        int count; // count of common courses
-
-        // create a list of pair of student and the number of common courses
-        for (StudentWithCourses student : otherStudents) {
-            count = me.getCommonCourses(student).size();
-
-            // add a pair of this student and count if the student has at least one common course with me
-            if (count > 0){
-                studentAndCountPairs.add(new Pair<>(student, count));
-            }
-        }
-
-        // sort the list by the number of common courses in descending order
-        studentAndCountPairs.sort((s1, s2) -> s2.second - s1.second);
-
-        //create new list to modify and return
-        List<Pair<StudentWithCourses, Integer>> wavedStudentAndCountPairs = new ArrayList<>();
-        int position = 0;
-        //if classmate waved, place at top of list
-        for (Pair<StudentWithCourses, Integer> student : studentAndCountPairs) {
-            //store student pair
-            if(student.first.getWavedToUser()){
-                //add to top of waved list
-                wavedStudentAndCountPairs.add(position, student);
-                position = position + 1;
-            } else{
-                wavedStudentAndCountPairs.add(student);
-            }
-        }
-
-        return wavedStudentAndCountPairs;
-    }
-
     // update the recycler view based on the current session in the database.
     public void updateRecyclerView() {
         sessionId = preferences.getInt("sessionId", 0);
@@ -329,7 +296,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // get students of current session
         List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
 
-        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
+        studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.DEFAULT, me, otherStudents);
         // update recycler based on student list obtained from sessions
         studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
