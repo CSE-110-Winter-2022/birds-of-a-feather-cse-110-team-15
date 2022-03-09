@@ -12,11 +12,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Sort {
+public class Sorter {
     private Map<String, Integer> sizeWeights;
     private Map<String, Integer> ageWeights;
 
-    public Sort() {
+    public Sorter() {
         // initialize maps for sorting
         sizeWeights = new HashMap<>();
         sizeWeights.put("Tiny", 100);
@@ -69,7 +69,7 @@ public class Sort {
                 for (String course : commonCourses) {
                     String[] split = course.split(" ");
                     String query = algorithm == ALGORITHM.CLASS_SIZE ? split[4] : split[2] + " " + split[3];
-                    weight += curMap.containsKey(query) ? curMap.get(query) : 1;
+                    weight += curMap.getOrDefault(query, 1);
                 }
             }
             // add student to list

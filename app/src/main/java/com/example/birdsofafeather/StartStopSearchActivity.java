@@ -55,7 +55,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Map<String, Integer> sessionIdMap;
     private String currentUUID;
 
-    private Sort sorter;
+    private Sorter sorter;
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
@@ -99,7 +99,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
 
         // create reference to sorter class for different sort methods
-        sorter = new Sort();
+        sorter = new Sorter();
     }
 
     @Override
@@ -266,7 +266,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // get students of current session
         List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
 
-        studentAndCountPairList = sorter.sortList(Sort.ALGORITHM.DEFAULT, me, otherStudents);
+        studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.DEFAULT, me, otherStudents);
         // update recycler based on student list obtained from sessions
         studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
