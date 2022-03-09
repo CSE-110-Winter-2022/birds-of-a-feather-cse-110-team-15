@@ -27,12 +27,12 @@ public class Sort {
         sizeWeights.put("Gigantic", 3);
 
         ageWeights = new HashMap<>();
-        ageWeights.put("FA 2021", 0);
-        ageWeights.put("SSS 2021", 1);
-        ageWeights.put("SS2 2021", 1);
-        ageWeights.put("SS1 2021", 1);
-        ageWeights.put("SP 2021", 2);
-        ageWeights.put("WI 2021", 3);
+        ageWeights.put("FA 2021", 5);
+        ageWeights.put("SSS 2021", 4);
+        ageWeights.put("SS2 2021", 4);
+        ageWeights.put("SS1 2021", 4);
+        ageWeights.put("SP 2021", 3);
+        ageWeights.put("WI 2021", 2);
     }
 
     public List<Pair<StudentWithCourses, Integer>> sortList(
