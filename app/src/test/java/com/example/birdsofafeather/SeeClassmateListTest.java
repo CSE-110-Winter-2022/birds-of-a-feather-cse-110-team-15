@@ -40,15 +40,18 @@ public class SeeClassmateListTest {
         AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         String uuid = new UUIDManager(InstrumentationRegistry.getInstrumentation().getTargetContext()).getUserUUID();
         db.studentWithCoursesDao().insert(new Student(uuid,"Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com", 1));
-        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 1, false, true));
+        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com", 1, false));
+        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 1, true, true));
         db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com", 1));
+        db.studentWithCoursesDao().insert(new Student("s5ID", "Rick", "rick.com", 1,true));
+
         // add dummy session
         db.sessionWithStudentsDao().insert(new Session("dummy"));
 
         // Bob's classes
         db.coursesDao().insert(new Course(uuid, "CSE 20 FA 2021")) ;
         db.coursesDao().insert(new Course(uuid, "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course(uuid, "CSE 120 FA 2021")) ;
 
         // Bill's class (Has 2, shares 1)
         db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021")) ;
@@ -60,7 +63,11 @@ public class SeeClassmateListTest {
 
         // Toby's class (Has 1, shares none)
         db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
-        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
+
+        //Rick's class (Has 3, shares 3)
+        db.coursesDao().insert(new Course("s5ID", "CSE 20 FA 2021")) ;
+        db.coursesDao().insert(new Course("s5ID", "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course("s5ID", "CSE 120 FA 2021")) ;
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         preferences.edit().putInt("sessionId", 1).commit();
@@ -83,19 +90,21 @@ public class SeeClassmateListTest {
                 RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
                 final int studentCount = studentList.getChildCount();
 
-                // There are 3 other students in database, but only two should appear in the view
-                assertEquals(2, studentCount);
+                // There are 4 other students in database, but only 3 should appear in the view
+                assertEquals(3, studentCount);
 
                 // Assert Mary and her information was rendered first because she shares more classes
-                View studentEntry = studentList.getChildAt(0);
+                View studentEntry = studentList.getChildAt(1);
                 TextView name = studentEntry.findViewById(R.id.classmate_name_text);
                 ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
                 TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+                ImageView wave = studentEntry.findViewById(R.id.classmate_waved);
 
                 // Check if Mary and her information is the same as expected
                 assertEquals("Mary", name.getText());
                 assertEquals("mary.com", headshot.getTag());
                 assertEquals("2", classCount.getText());
+                assertEquals(View.VISIBLE, wave.getVisibility()); //visible hand
 
                 // Test if the Favorite Checkbox is checked
                 CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
@@ -106,26 +115,69 @@ public class SeeClassmateListTest {
                 out.println("Expected: mary.com    Actual: " + headshot.getTag());
                 out.println("Expected: 2           Actual: " + classCount.getText());
                 out.println("Expected: True        Actual: " + favoriteIcon.isChecked());
+                out.println("Expected (show hand wave): 0 Actual: " + wave.getVisibility());
 
-                // Assert Bill's info was rendered next correctly
-                studentEntry = studentList.getChildAt(1);
+                // Assert Rick, 3 class in common, wave
+                studentEntry = studentList.getChildAt(0);
                 name = studentEntry.findViewById(R.id.classmate_name_text);
                 headshot = studentEntry.findViewById(R.id.classmate_imageview);
+                wave = studentEntry.findViewById(R.id.classmate_waved);
                 classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+                favoriteIcon = studentEntry.findViewById(R.id.favorite);
+
+                assertEquals("Rick", name.getText());
+                assertEquals("rick.com", headshot.getTag());
+                assertEquals("3", classCount.getText());
+                assertFalse(favoriteIcon.isChecked());
+                assertEquals(View.VISIBLE, wave.getVisibility()); //visible hand
+
+                out.println("Expected: Rick                  Actual: " + name.getText());
+                out.println("Expected: rick.com              Actual: " + headshot.getTag());
+                out.println("Expected: 3                     Actual: " + classCount.getText());
+                out.println("Expected: False                  Actual: " + favoriteIcon.isChecked());
+                out.println("Expected (no show hand wave): 4 Actual: " + wave.getVisibility());
+            });
+        }
+    }
+
+    @Test
+    // Test to see if Bill's hand is not waved
+    public void testNoHandWaves(){
+        try(ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)){
+            scenario.onActivity(activity -> {
+                // Hack to call updateRecyclerView() to populate recycler view with values in database
+                scenario.moveToState(Lifecycle.State.CREATED);
+                Button stopBtn = activity.findViewById(R.id.stop_button);
+                stopBtn.setVisibility(View.VISIBLE);
+                scenario.moveToState(Lifecycle.State.RESUMED);
+                out.println(scenario.getState());
+
+                // Get the RecyclerView of the StudentList
+                RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
+
+                // Assert Bill, 1 class in common
+                View studentEntry = studentList.getChildAt(2);
+                TextView name = studentEntry.findViewById(R.id.classmate_name_text);
+                ImageView wave = studentEntry.findViewById(R.id.classmate_waved);
+                ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
+                TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
 
                 // Check if Bill and his information is the same as expected
                 assertEquals("Bill", name.getText());
                 assertEquals("bill.com", headshot.getTag());
                 assertEquals("1", classCount.getText());
+                assertEquals(View.INVISIBLE, wave.getVisibility()); //invisible hand
 
                 // Check if the Favorite Checkbox is not checked
+                CheckBox favoriteIcon = studentEntry.findViewById(R.id.favorite);
                 favoriteIcon = studentEntry.findViewById(R.id.favorite);
                 assertFalse(favoriteIcon.isChecked());
 
-                out.println("Expected: Bill        Actual: " + name.getText());
+                out.println("Expected: Bill                  Actual: " + name.getText());
                 out.println("Expected: bill.com    Actual: " + headshot.getTag());
                 out.println("Expected: 1           Actual: " + classCount.getText());
                 out.println("Expected: False        Actual: " + favoriteIcon.isChecked());
+                out.println("Expected (no show hand wave): 4 Actual: " + wave.getVisibility());
             });
         }
     }
