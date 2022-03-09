@@ -85,17 +85,17 @@ public class StartStopSearchActivity extends AppCompatActivity {
         ArrayAdapter<String> sortOptionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sortOptions);
         sortOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         sortOptionSpinner.setAdapter(sortOptionAdapter);
+
+        // set up the onItemSelected event
         sortOptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                // if student list is not empty, update student list recycler view
-                if (!studentList.isEmpty())
-                    updateRecyclerView();
+                updateRecyclerView();
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                // do nothing here
+                // do nothing
             }
         });
 
@@ -314,6 +314,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
     // update the recycler view based on the current session in the database.
     public void updateRecyclerView() {
         updateStudentList();
+        // if student list is empty, then return
+        if (studentList.isEmpty())
+            return;
+
         String sortOption = sortOptionSpinner.getSelectedItem().toString();
 
         // sort the student list based on selected sort option

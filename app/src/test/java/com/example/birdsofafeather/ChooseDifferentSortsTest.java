@@ -6,7 +6,6 @@ import static java.lang.System.out;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,29 +22,38 @@ import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.Student;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class ChooseDifferentSortsTest {
+    AppDatabase db;
+    View studentEntry;
+    TextView name, classCount;
+    ImageView headshot;
+    RecyclerView studentList;
+    String billName = "Bill", billURL = "bill.com", billCount = "1";
+    String maryName = "Mary", maryURL = "mary.com", maryCount = "2";
+    String tobyName = "Toby", tobyURL = "toby.com", tobyCount = "3";
 
     @Before
     // Initialize the database where Bob is the user. And,
     // Bill shares 1 class with him, with recency score medium and class size score high
     // Mary shares 2, with recency score high and class size score low
     // Toby shares 3, with recency score low and class size score medium
-    // Default sort: Toby -> Mary -> Bill
-    // Recency: Mary -> Bill -> Toby
-    // Class size: Bill -> Toby -> Mary
+    // Default sort:    Toby -> Mary -> Bill
+    // Recency sort:    Mary -> Bill -> Toby
+    // Class size sort: Bill -> Toby -> Mary
     public void init() {
         AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
-        AppDatabase db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
+        db = AppDatabase.singleton(ApplicationProvider.getApplicationContext());
         String uuid = new UUIDManager(InstrumentationRegistry.getInstrumentation().getTargetContext()).getUserUUID();
         db.studentWithCoursesDao().insert(new Student(uuid, "Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com", 1));
-        db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 1));
-        db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com", 1));
+        db.studentWithCoursesDao().insert(new Student("s2ID", billName, billURL, 1));
+        db.studentWithCoursesDao().insert(new Student("s3ID", maryName, maryURL, 1));
+        db.studentWithCoursesDao().insert(new Student("s4ID", tobyName, tobyURL, 1));
         // add dummy session
         db.sessionWithStudentsDao().insert(new Session("dummy"));
 
@@ -72,206 +80,124 @@ public class ChooseDifferentSortsTest {
         preferences.edit().putInt("sessionId", 1).commit();
     }
 
-    @Test
-    public void defaultSortTest() {
-        try (ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)) {
-            scenario.onActivity(activity -> {
-                // Hack to call updateRecyclerView() to populate recycler view with values in database
-                scenario.moveToState(Lifecycle.State.CREATED);
-                Button stopBtn = activity.findViewById(R.id.stop_button);
-                stopBtn.setVisibility(View.VISIBLE);
-                Spinner sortOptionSpinner = activity.findViewById(R.id.sort_option_spinner);
-                sortOptionSpinner.setSelection(0);  // set to the default sort
-                scenario.moveToState(Lifecycle.State.RESUMED);
-                out.println(scenario.getState());
-
-                // Get the RecyclerView of the StudentList
-                RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
-                final int studentCount = studentList.getChildCount();
-
-                // There are 3 other students in database, but only two should appear in the view
-                assertEquals(3, studentCount);
-
-                // Check if Toby is top of the list as he shares most classes
-                View studentEntry = studentList.getChildAt(0);
-                TextView name = studentEntry.findViewById(R.id.classmate_name_text);
-                ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Toby information is the same as expected
-                assertEquals("Toby", name.getText());
-                assertEquals("toby.com", headshot.getTag());
-                assertEquals("3", classCount.getText());
-
-                // Log messages to visually check
-                out.println("Expected: Toby        Actual: " + name.getText());
-                out.println("Expected: toby.com    Actual: " + headshot.getTag());
-                out.println("Expected: 3           Actual: " + classCount.getText());
-
-                // Check if Mary comes next
-                studentEntry = studentList.getChildAt(1);
-                name = studentEntry.findViewById(R.id.classmate_name_text);
-                headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Mary and her information is the same as expected
-                assertEquals("Mary", name.getText());
-                assertEquals("mary.com", headshot.getTag());
-                assertEquals("2", classCount.getText());
-
-                // Log messages to visually check
-                out.println("Expected: Mary        Actual: " + name.getText());
-                out.println("Expected: mary.com    Actual: " + headshot.getTag());
-                out.println("Expected: 2           Actual: " + classCount.getText());
-
-                // Check if Bill comes last
-                studentEntry = studentList.getChildAt(2);
-                name = studentEntry.findViewById(R.id.classmate_name_text);
-                headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Bill and his information is the same as expected
-                assertEquals("Bill", name.getText());
-                assertEquals("bill.com", headshot.getTag());
-                assertEquals("1", classCount.getText());
-
-                out.println("Expected: Bill        Actual: " + name.getText());
-                out.println("Expected: bill.com    Actual: " + headshot.getTag());
-                out.println("Expected: 1           Actual: " + classCount.getText());
-            });
-        }
+    // close the test database after test is done
+    @After
+    public void teardown() {
+        db.close();
     }
 
+    // get the student info at the given position in the recycler view and
+    // set those data to variables
+    public void obtainStudentInfoAtPosition(int position){
+        studentEntry = studentList.getChildAt(position);
+        name = studentEntry.findViewById(R.id.classmate_name_text);
+        headshot = studentEntry.findViewById(R.id.classmate_imageview);
+        classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+    }
+
+    // check that the actual data that is obtained from the recycler view matches expected student info
+    public void assertStudentInfo(String studentName, String url, String commonCourseCount) {
+        // Check that the actual data matches the expected one
+        assertEquals(studentName, name.getText());
+        assertEquals(url, headshot.getTag());
+        assertEquals(commonCourseCount, classCount.getText());
+
+        // Log messages to visually check
+        out.println("Expected: " + studentName + "        Actual: " + name.getText());
+        out.println("Expected: "+ url + "    Actual: " + headshot.getTag());
+        out.println("Expected: " + commonCourseCount + "           Actual: " + classCount.getText());
+    }
+
+    // test if recency sort is correctly executed when the user chooses it in the dropdown menu
+    // expected order is Mary -> Bill -> Toby
     @Test
-    public void recencySortTest() {
+    public void testRecencySort() {
         try (ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)) {
             scenario.onActivity(activity -> {
-                // Hack to call updateRecyclerView() to populate recycler view with values in database
                 scenario.moveToState(Lifecycle.State.CREATED);
-                Button stopBtn = activity.findViewById(R.id.stop_button);
-                stopBtn.setVisibility(View.VISIBLE);
+
+                // Select sort option in the dropdown menu. It also triggers updateRecyclerView() method.
                 Spinner sortOptionSpinner = activity.findViewById(R.id.sort_option_spinner);
                 sortOptionSpinner.setSelection(1);  // set to the recency sort
-                scenario.moveToState(Lifecycle.State.RESUMED);
-                out.println(scenario.getState());
 
                 // Get the RecyclerView of the StudentList
-                RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
-                final int studentCount = studentList.getChildCount();
+                studentList = activity.findViewById(R.id.students_recycler_view);
 
                 // Check if Mary is top of the list as she has the highest score for recency algorithm
-                View studentEntry = studentList.getChildAt(0);
-                TextView name = studentEntry.findViewById(R.id.classmate_name_text);
-                ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Mary and her information is the same as expected
-                assertEquals("Mary", name.getText());
-                assertEquals("mary.com", headshot.getTag());
-                assertEquals("2", classCount.getText());
-
-                // Log messages to visually check
-                out.println("Expected: Mary        Actual: " + name.getText());
-                out.println("Expected: mary.com    Actual: " + headshot.getTag());
-                out.println("Expected: 2           Actual: " + classCount.getText());
+                obtainStudentInfoAtPosition(0);
+                assertStudentInfo(maryName, maryURL, maryCount);
 
                 // Check if Bill is next
-                studentEntry = studentList.getChildAt(1);
-                name = studentEntry.findViewById(R.id.classmate_name_text);
-                headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Bill and his information is the same as expected
-                assertEquals("Bill", name.getText());
-                assertEquals("bill.com", headshot.getTag());
-                assertEquals("1", classCount.getText());
-
-                out.println("Expected: Bill        Actual: " + name.getText());
-                out.println("Expected: bill.com    Actual: " + headshot.getTag());
-                out.println("Expected: 1           Actual: " + classCount.getText());
+                obtainStudentInfoAtPosition(1);
+                assertStudentInfo(billName, billURL, billCount);
 
                 // Check if Toby is last
-                studentEntry = studentList.getChildAt(2);
-                name = studentEntry.findViewById(R.id.classmate_name_text);
-                headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Toby and his information is the same as expected
-                assertEquals("Toby", name.getText());
-                assertEquals("toby.com", headshot.getTag());
-                assertEquals("3", classCount.getText());
-
-                // Log messages to visually check
-                out.println("Expected: Toby        Actual: " + name.getText());
-                out.println("Expected: toby.com    Actual: " + headshot.getTag());
-                out.println("Expected: 3           Actual: " + classCount.getText());
+                obtainStudentInfoAtPosition(2);
+                assertStudentInfo(tobyName, tobyURL, tobyCount);
             });
         }
     }
 
+    // test if class size sort is correctly executed when the user chooses it in the dropdown menu
+    // expected order is Bill -> Toby -> Mary
     @Test
-    public void classSizeSortTest() {
+    public void testClassSizeSort() {
         try (ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)) {
             scenario.onActivity(activity -> {
-                // Hack to call updateRecyclerView() to populate recycler view with values in database
                 scenario.moveToState(Lifecycle.State.CREATED);
-                Button stopBtn = activity.findViewById(R.id.stop_button);
-                stopBtn.setVisibility(View.VISIBLE);
+
+                // Select sort option in the dropdown menu. it also triggers updateRecyclerView() method.
                 Spinner sortOptionSpinner = activity.findViewById(R.id.sort_option_spinner);
-                sortOptionSpinner.setSelection(2);  // set to the class size sort
-                scenario.moveToState(Lifecycle.State.RESUMED);
-                out.println(scenario.getState());
+                sortOptionSpinner.setSelection(1);  // set to the class size sort
 
                 // Get the RecyclerView of the StudentList
-                RecyclerView studentList = activity.findViewById(R.id.students_recycler_view);
-                final int studentCount = studentList.getChildCount();
+                studentList = activity.findViewById(R.id.students_recycler_view);
 
-                // Check if Bill is top if list as he has highest score for class size algorithm
-                View studentEntry = studentList.getChildAt(0);
-                TextView name = studentEntry.findViewById(R.id.classmate_name_text);
-                ImageView headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                TextView classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Bill and his information is the same as expected
-                assertEquals("Bill", name.getText());
-                assertEquals("bill.com", headshot.getTag());
-                assertEquals("1", classCount.getText());
-
-                out.println("Expected: Bill        Actual: " + name.getText());
-                out.println("Expected: bill.com    Actual: " + headshot.getTag());
-                out.println("Expected: 1           Actual: " + classCount.getText());
+                // Check if Bill is top of list as he has highest score for class size algorithm
+                obtainStudentInfoAtPosition(0);
+                assertStudentInfo(billName, billURL, billCount);
 
                 // Check if Toby comes next
-                studentEntry = studentList.getChildAt(1);
-                name = studentEntry.findViewById(R.id.classmate_name_text);
-                headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                classCount = studentEntry.findViewById(R.id.common_course_count_textview);
-
-                // Check if Toby and his information is the same as expected
-                assertEquals("Toby", name.getText());
-                assertEquals("toby.com", headshot.getTag());
-                assertEquals("3", classCount.getText());
-
-                // Log messages to visually check
-                out.println("Expected: Toby        Actual: " + name.getText());
-                out.println("Expected: toby.com    Actual: " + headshot.getTag());
-                out.println("Expected: 3           Actual: " + classCount.getText());
+                obtainStudentInfoAtPosition(1);
+                assertStudentInfo(tobyName, tobyURL, tobyCount);
 
                 // Check if Mary comes last
-                studentEntry = studentList.getChildAt(2);
-                name = studentEntry.findViewById(R.id.classmate_name_text);
-                headshot = studentEntry.findViewById(R.id.classmate_imageview);
-                classCount = studentEntry.findViewById(R.id.common_course_count_textview);
+                obtainStudentInfoAtPosition(2);
+                assertStudentInfo(maryName, maryURL, maryCount);
+            });
+        }
+    }
 
-                // Check if Mary and her information is the same as expected
-                assertEquals("Mary", name.getText());
-                assertEquals("mary.com", headshot.getTag());
-                assertEquals("2", classCount.getText());
+    // first sort the list by recency algorithm, then sort the list again by the default algorithm
+    // test if the list is properly sorted by the number of common courses with the user
+    // expected order is Toby -> Mary -> Bill
+    @Test
+    public void testDefaultSortAfterRecencySort() {
+        try (ActivityScenario<StartStopSearchActivity> scenario = ActivityScenario.launch(StartStopSearchActivity.class)) {
+            scenario.onActivity(activity -> {
+                scenario.moveToState(Lifecycle.State.CREATED);
 
-                // Log messages to visually check
-                out.println("Expected: Mary        Actual: " + name.getText());
-                out.println("Expected: mary.com    Actual: " + headshot.getTag());
-                out.println("Expected: 2           Actual: " + classCount.getText());
+                // First sort the list by recency sort
+                Spinner sortOptionSpinner = activity.findViewById(R.id.sort_option_spinner);
+                sortOptionSpinner.setSelection(1);
+
+                // Then sort the list again by the default sort
+                sortOptionSpinner.setSelection(0);
+
+                // Get the RecyclerView of the StudentList
+                studentList = activity.findViewById(R.id.students_recycler_view);
+
+                // Check if Toby is top of the list as he shares most classes
+                obtainStudentInfoAtPosition(0);
+                assertStudentInfo(tobyName, tobyURL, tobyCount);
+
+                // Check if Mary comes next
+                obtainStudentInfoAtPosition(1);
+                assertStudentInfo(maryName, maryURL, maryCount);
+
+                // Check if Bill comes last
+                obtainStudentInfoAtPosition(2);
+                assertStudentInfo(billName, billURL, billCount);
             });
         }
     }
