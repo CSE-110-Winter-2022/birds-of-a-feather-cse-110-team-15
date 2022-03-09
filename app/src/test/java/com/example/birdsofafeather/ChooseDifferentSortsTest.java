@@ -61,23 +61,23 @@ public class ChooseDifferentSortsTest {
         db.sessionWithStudentsDao().insert(new Session("dummy"));
 
         // Bob's classes
-        db.coursesDao().insert(new Course(uuid, "CSE 8A FA 2018 Large"));
-        db.coursesDao().insert(new Course(uuid, "CSE 8B WI 2018 Large"));
-        db.coursesDao().insert(new Course(uuid, "CSE 15L WI 2018 Huge"));
+        db.coursesDao().insert(new Course(uuid, "CSE 8A FA 2020 Large"));
+        db.coursesDao().insert(new Course(uuid, "CSE 8B WI 2020 Large"));
+        db.coursesDao().insert(new Course(uuid, "CSE 15L WI 2020 Huge"));
+        db.coursesDao().insert(new Course(uuid, "CSE 101 FA 2021 Huge"));
         db.coursesDao().insert(new Course(uuid, "CSE 190 FA 2021 Tiny"));
-        db.coursesDao().insert(new Course(uuid, "CSE 110 WI 2022 Huge"));
 
         // Bill's classes
         db.coursesDao().insert(new Course("s2ID", "CSE 190 FA 2021 Tiny"));
 
         // Mary's classes
-        db.coursesDao().insert(new Course("s3ID", "CSE 8A FA 2018 Large"));
-        db.coursesDao().insert(new Course("s3ID", "CSE 110 WI 2022 Huge"));
+        db.coursesDao().insert(new Course("s3ID", "CSE 8A FA 2020 Large"));
+        db.coursesDao().insert(new Course("s3ID", "CSE 101 FA 2021 Huge"));
 
         // Toby's classes
-        db.coursesDao().insert(new Course("s4ID", "CSE 8A FA 2018 Large"));
-        db.coursesDao().insert(new Course("s4ID", "CSE 8B WI 2018 Large"));
-        db.coursesDao().insert(new Course("s4ID", "CSE 15L WI 2018 Huge"));
+        db.coursesDao().insert(new Course("s4ID", "CSE 8A FA 2020 Large"));
+        db.coursesDao().insert(new Course("s4ID", "CSE 8B WI 2020 Large"));
+        db.coursesDao().insert(new Course("s4ID", "CSE 15L WI 2020 Huge"));
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         preferences.edit().putInt("sessionId", 1).commit();
@@ -131,22 +131,21 @@ public class ChooseDifferentSortsTest {
                 // And moving to onResume state invokes updateRecyclerView() method
                 setUpButtonAndSpinnerPosition(activity, 1);
                 scenario.moveToState(Lifecycle.State.RESUMED);
-                out.println(scenario.getState());
 
                 // Get the RecyclerView of the StudentList
                 studentList = activity.findViewById(R.id.students_recycler_view);
 
                 // Check if Mary is top of the list as she has the highest score for recency algorithm
                 obtainStudentInfoAtPosition(0);
-                //assertStudentInfo(maryName, maryURL, maryCount);
+                assertStudentInfo(maryName, maryURL, maryCount);
 
                 // Check if Bill is next
-                //obtainStudentInfoAtPosition(1);
+                obtainStudentInfoAtPosition(1);
                 assertStudentInfo(billName, billURL, billCount);
 
                 // Check if Toby is last
-                //obtainStudentInfoAtPosition(2);
-                //assertStudentInfo(tobyName, tobyURL, tobyCount);
+                obtainStudentInfoAtPosition(2);
+                assertStudentInfo(tobyName, tobyURL, tobyCount);
             });
         }
     }
@@ -170,10 +169,10 @@ public class ChooseDifferentSortsTest {
 
                 // Check if Toby comes next
                 obtainStudentInfoAtPosition(1);
-                //assertStudentInfo(tobyName, tobyURL, tobyCount);
+                assertStudentInfo(tobyName, tobyURL, tobyCount);
 
                 // Check if Mary comes last
-                //obtainStudentInfoAtPosition(2);
+                obtainStudentInfoAtPosition(2);
                 assertStudentInfo(maryName, maryURL, maryCount);
             });
         }
