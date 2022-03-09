@@ -20,16 +20,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EnterCourseActivity extends AppCompatActivity {
-    Spinner quarterSpinner, yearSpinner;
+    Spinner quarterSpinner, yearSpinner, sizeSpinner;
     List<Course> enteredCourses;
     AppDatabase db;
-    int studentId = 1; // User's ID always set to 1
+    String uuid; // User's obtained from UUIDManager
 
-    private RecyclerView coursesRecyclerView;
-    private RecyclerView.LayoutManager coursesLayoutManager;
     private CoursesViewAdapter coursesViewAdapter;
 
     String[] quarters = {"FA", "WI", "SP", "SS1", "SS2", "SSS"};
+    String[] classSizes = {"Tiny (<40)", "Small (40-75)", "Medium (75-150)", "Large (150-250)", "Huge (250-400)", "Gigantic (600+)"};
 
     // firstYear: 2016
     // maxYear: In a full release, could be replaced with call for current year.
@@ -48,11 +47,12 @@ public class EnterCourseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_enter_class);
-        //get the intent for extra student_id
+        //get the intent for extra uuid
         Bundle extras = getIntent().getExtras();
-        studentId = extras.getInt("student_id");
+        uuid = extras.getString("uuid");
+
         db = AppDatabase.singleton(this);
-        enteredCourses = db.coursesDao().getForStudent(studentId);
+        enteredCourses = db.coursesDao().getForStudent(uuid);
 
         // prevent software keyboard from messing up with the layout
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
@@ -70,14 +70,18 @@ public class EnterCourseActivity extends AppCompatActivity {
         yearSpinner.setAdapter(yearAdapter);
         yearSpinner.setSelection(1, true); // Starts by selecting the last year, not the first
 
+        //dropdown for class size
+        sizeSpinner = (Spinner) findViewById(R.id.class_size_spinner);
+        ArrayAdapter<String> sizeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, classSizes);
+        sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sizeSpinner.setAdapter(sizeAdapter);
+
         // recycle view for courses
-        coursesRecyclerView = findViewById(R.id.courses_recycler_view);
-        coursesLayoutManager = new LinearLayoutManager(this);
+        RecyclerView coursesRecyclerView = findViewById(R.id.courses_recycler_view);
+        RecyclerView.LayoutManager coursesLayoutManager = new LinearLayoutManager(this);
         coursesRecyclerView.setLayoutManager(coursesLayoutManager);
 
-        coursesViewAdapter = new CoursesViewAdapter(enteredCourses, (course) -> {
-            db.coursesDao().delete(course);
-        });
+        coursesViewAdapter = new CoursesViewAdapter(enteredCourses, (course) -> db.coursesDao().delete(course));
         coursesRecyclerView.setAdapter(coursesViewAdapter);
     }
 
@@ -89,6 +93,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         String courseNumber = numberView.getText().toString().toUpperCase();
         String courseQuarter = (String) quarterSpinner.getSelectedItem();
         String courseYear = (String) yearSpinner.getSelectedItem();
+        String courseSize = (String) sizeSpinner.getSelectedItem();
 
         // if any of the entries is empty, show an error message
         if (courseSubject.isEmpty() || courseNumber.isEmpty() ||
@@ -111,7 +116,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         }
 
         // create a new course string
-        String courseEntry = String.join(" ", courseSubject, courseNumber, courseQuarter, courseYear);
+        String courseEntry = String.join(" ", courseSubject, courseNumber, courseQuarter, courseYear, courseSize.split(" ")[0]);
 
         // check if the course is already entered
         // if so, show an alert and return
@@ -123,7 +128,7 @@ public class EnterCourseActivity extends AppCompatActivity {
         }
 
         // create a new course and update the list
-        Course newCourse = new Course(studentId, courseEntry);
+        Course newCourse = new Course(uuid, courseEntry);
         int course_id = (int) db.coursesDao().insert(newCourse);
         newCourse.setCourseId(course_id); // set newly created id
         Log.d("", "" + newCourse.getCourseId());

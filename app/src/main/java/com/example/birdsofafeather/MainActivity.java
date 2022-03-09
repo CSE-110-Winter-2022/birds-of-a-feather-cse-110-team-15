@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         setButtonVisibilities();
     }
 
-
     public void onLoginClick(View view) {
         Intent intent = new Intent(this, StartStopSearchActivity.class);
         startActivity(intent);
@@ -53,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCreateProfile(View view) {
         Intent intent = new Intent(this, UserNameActivity.class);
+        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
         startActivity(intent);
     }
 

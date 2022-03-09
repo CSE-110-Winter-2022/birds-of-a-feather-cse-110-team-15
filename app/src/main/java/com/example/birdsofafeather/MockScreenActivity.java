@@ -1,50 +1,19 @@
 package com.example.birdsofafeather;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.gms.nearby.Nearby;
-import com.google.android.gms.nearby.messages.Message;
-import com.google.android.gms.nearby.messages.MessageListener;
-
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class MockScreenActivity extends AppCompatActivity {
     private static final String TAG = "MOCK SCREEN";
-    private boolean isBound;
-    private NearbyBackgroundService nearbyService;
 
     // used to help facilitate binding/unbinding the NearbyBackgroundService
     // to the MockScreenActivity
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-        // called when connection to NearbyBackgroundService has been established
-        @Override
-        public void onServiceConnected(ComponentName componentName, IBinder iBinder) {
-            NearbyBackgroundService.NearbyBinder nearbyBinder = (NearbyBackgroundService.NearbyBinder)iBinder;
-            nearbyService = nearbyBinder.getService();
-            isBound = true;
-        }
-
-        // - called when connection to NearbyBackgroundService has been lost
-        // - does not remove binding; can still receive call to onServiceConnected
-        //   when service is running
-        @Override
-        public void onServiceDisconnected(ComponentName componentName) {
-            isBound = false;
-        }
-    };
+    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,8 +22,9 @@ public class MockScreenActivity extends AppCompatActivity {
 
         // bindService will initiate the bound service NearbyBackgroundService
         Intent intent = new Intent(this, NearbyBackgroundService.class);
+        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        isBound = true;
+        serviceConnection.setBound(true);
     }
 
     @Override
@@ -71,9 +41,9 @@ public class MockScreenActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isBound)  {
+        if (serviceConnection.isBound())  {
             unbindService(serviceConnection);
-            isBound = false;
+            serviceConnection.setBound(false);
         }
     }
 
@@ -84,6 +54,7 @@ public class MockScreenActivity extends AppCompatActivity {
         inputDataTextView.setText("");
 
         // send/publish message to service to relay to messageListener
+        NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
         nearbyService.publish(inputString);
     }
 

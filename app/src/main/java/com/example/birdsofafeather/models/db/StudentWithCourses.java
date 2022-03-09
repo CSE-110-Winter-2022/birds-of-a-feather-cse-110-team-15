@@ -10,14 +10,18 @@ public class StudentWithCourses {
     @Embedded
     public Student student;
 
-    @Relation(parentColumn = "id", entityColumn = "student_id", entity = Course.class, projection = {"name"})
+    @Relation(parentColumn = "uuid", entityColumn = "student_id", entity = Course.class, projection = {"name"})
     public List<String> courses;
 
     public Student getStudent() { return student;}
 
-    public int getStudentId() { return student.getStudentId(); }
+    public String getUUID() { return student.getUuid(); }
 
-    public void setStudentId(int studentId) { student.setStudentId(studentId); }
+    public void setUUID(String uuid) { student.setUuid(uuid); }
+
+    public int getSessionId() { return student.getSessionId(); }
+
+    public void setSessionId(int sessionId) { student.setSessionId(sessionId); }
 
     public String getName() { return student.getName(); }
 
@@ -26,6 +30,14 @@ public class StudentWithCourses {
     public String getHeadshotURL() { return student.getHeadshotURL(); }
 
     public void setHeadshotURL(String headshotURL) { student.setHeadshotURL(headshotURL); }
+
+    public void setWavedToUser(boolean wavedToUser) { student.setWavedToUser(wavedToUser); }
+
+    public boolean getWavedToUser() { return student.getWavedToUser(); }
+
+    public void setWavedFromUser(boolean wavedFromUser) { student.setWavedFromUser(wavedFromUser); }
+
+    public boolean getWavedFromUser() { return student.getWavedFromUser(); }
 
     public boolean isFavorite() { return student.isFavorite(); }
 

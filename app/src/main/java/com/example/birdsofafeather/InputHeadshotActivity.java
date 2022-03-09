@@ -18,7 +18,6 @@ public class InputHeadshotActivity extends AppCompatActivity{
     EditText editURL;
     ImageView profile;
     private String name;
-    private Picasso picasso;
 
     // Default profile picture to use as needed
     private String defaultURL = "https://lh3.googleusercontent.com/pw/AM-JKLUTkMaSnWQDXiRUw7Fdr" +
@@ -43,7 +42,7 @@ public class InputHeadshotActivity extends AppCompatActivity{
     public void loadHeadshot() {
         // Use Picasso to easily load images from URLs into ImageView
         // Docs: https://guides.codepath.com/android/Displaying-Images-with-the-Picasso-Library
-        picasso = new Picasso.Builder(this).build();
+        Picasso picasso = new Picasso.Builder(this).build();
 
         // Try catch block needed for testing only
         try {
@@ -53,10 +52,9 @@ public class InputHeadshotActivity extends AppCompatActivity{
 
         // Load image into view
         Activity headshotActivity = this;
-        picasso.get().load(URL).into(profile, new Callback() {
+        Picasso.get().load(URL).into(profile, new Callback() {
             @Override
             public void onSuccess() {
-                return;
             }
             @Override
             public void onError(Exception e) {
@@ -97,12 +95,12 @@ public class InputHeadshotActivity extends AppCompatActivity{
 
         // Write the student to database
         AppDatabase db = AppDatabase.singleton(getApplicationContext());
-        Student s1 = new Student(name, URL);
-        int student_id = (int) db.studentWithCoursesDao().insert(s1);
+        Student s1 = new Student(getIntent().getStringExtra("uuid"), name, URL, 0);
+        db.studentWithCoursesDao().insert(s1);
 
         // Link to next activity (EnterCourseActivity)
         Intent intent = new Intent(this, EnterCourseActivity.class);
-        intent.putExtra("student_id", student_id);
+        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
         startActivity(intent);
         finish();
     }

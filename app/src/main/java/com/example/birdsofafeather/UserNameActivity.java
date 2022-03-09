@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -59,6 +58,8 @@ public class UserNameActivity extends AppCompatActivity{
     public void onContinueNameClick(View view){
         //get the intent
         Intent intent = new Intent(this, InputHeadshotActivity.class);
+        intent.putExtra("uuid", getIntent().getStringExtra("uuid"));
+
         TextView InputUserNameView = findViewById(R.id.input_name_textview);
         String getInputUserNameView = InputUserNameView.getText().toString();
 
