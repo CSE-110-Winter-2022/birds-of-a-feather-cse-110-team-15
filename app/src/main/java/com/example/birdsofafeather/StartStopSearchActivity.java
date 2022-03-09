@@ -52,7 +52,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private View savePopupView;
     private boolean isNewSession;
     private TextView sessionTitle;
-    private List<StudentWithCourses> studentList = new ArrayList<>();
+    private List<StudentWithCourses> otherStudents = new ArrayList<>();
 
     private Map<String, Integer> sessionIdMap;
     private String currentUUID;
@@ -98,7 +98,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
                 // do nothing
             }
         });
-
 
         // Set up the RecycleView for the list of students
         studentAndCountPairList = new ArrayList<>(); // on creation, it's an empty list
@@ -315,7 +314,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     public void updateRecyclerView() {
         updateStudentList();
         // if student list is empty, then return
-        if (studentList.isEmpty())
+        if (otherStudents.isEmpty())
             return;
 
         String sortOption = sortOptionSpinner.getSelectedItem().toString();
@@ -323,20 +322,20 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // sort the student list based on selected sort option
         if (sortOption.equals("Default")){
             // sort the list by the number of common courses in descending order
-            studentList.sort((s1, s2) -> s2.getCommonCourses(me).size() - s1.getCommonCourses(me).size());
+            otherStudents.sort((s1, s2) -> s2.getCommonCourses(me).size() - s1.getCommonCourses(me).size());
         }
         else if (sortOption.equals("By Recent Classes")){
             // TODO: sort the list by using the recency algorithm
             // dummy sort algorithm 1: by the number of count in ascending order
-            studentList.sort((s1, s2) -> s1.getCommonCourses(me).size() - s2.getCommonCourses(me).size());
+            otherStudents.sort((s1, s2) -> s1.getCommonCourses(me).size() - s2.getCommonCourses(me).size());
         }
         else {
             // TODO: sort the list by using the class size algorithm
             // dummy sort algorithm 2: by student's name in alphabetical order
-            studentList.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
+            otherStudents.sort((s1, s2) -> s1.getName().compareTo(s2.getName()));
         }
 
-        studentAndCountPairList = createStudentAndCountPairList(me, studentList);
+        studentAndCountPairList = createStudentAndCountPairList(me, otherStudents);
         // update recycler based on student list obtained from sessions
         studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
     }
@@ -351,7 +350,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
             return;
         }
         // get students of current session
-        studentList = db.sessionWithStudentsDao().get(sessionId).getStudents();
+        otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
     }
 
     // create a popup for saving a new session and also renaming session
