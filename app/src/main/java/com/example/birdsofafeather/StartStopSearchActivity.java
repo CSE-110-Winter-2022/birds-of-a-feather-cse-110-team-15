@@ -63,6 +63,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     private MessageListener mMessageListener;
     private Message mMessage;
+    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -218,14 +219,29 @@ public class StartStopSearchActivity extends AppCompatActivity {
                handler.postDelayed(runnable, updateListDelay);
        }, updateListDelay);
 
-       Nearby.getMessagesClient(this).publish(mMessage);
-       Nearby.getMessagesClient(this).subscribe(mMessageListener);
+       // test for putting nearby into services
+       Intent intent = new Intent(this, NearbyBackgroundService.class);
+       String uuid = new UUIDManager(getApplicationContext()).getUserUUID();
+       intent.putExtra("uuid", uuid);
+       bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+       serviceConnection.setBound(true);
+       serviceConnection.getNearbyService().publish(mMessage);
+
+//       Nearby.getMessagesClient(this).publish(mMessage);
+//       Nearby.getMessagesClient(this).subscribe(mMessageListener);
     }
 
     public void onStopClick(View view) {
         //stop bluetooth
-        Nearby.getMessagesClient(this).unpublish(mMessage);
-        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        // test putting nearby into services
+        serviceConnection.getNearbyService().unpublish(mMessage);
+        if (serviceConnection.isBound())  {
+            unbindService(serviceConnection);
+            serviceConnection.setBound(false);
+        }
+
+//        Nearby.getMessagesClient(this).unpublish(mMessage);
+//        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
 
         //hide stop
         StopButton = findViewById(R.id.stop_button);

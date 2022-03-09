@@ -108,7 +108,9 @@ public class ViewProfileActivity extends AppCompatActivity {
 //                        nearbyService.publish(waveMessage(student));
 
                         // publish wave message to Nearby Messages
-                        Nearby.getMessagesClient(this).publish(mMessage);
+//                        Nearby.getMessagesClient(this).publish(mMessage);
+
+                        serviceConnection.getNearbyService().publish(mMessage);
 
                         //wave cannot be unsent/sent again
                         waveCheck.setEnabled(false);
@@ -159,8 +161,9 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onDestroy();
         // make sure to stop publishing wave message, and unsubscribe messageListener
         // from this context
-        Nearby.getMessagesClient(this).unpublish(mMessage);
-        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        serviceConnection.getNearbyService().unpublish(mMessage);
+//        Nearby.getMessagesClient(this).unpublish(mMessage);
+//        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
         if (serviceConnection.isBound())  {
             unbindService(serviceConnection);
             serviceConnection.setBound(false);
