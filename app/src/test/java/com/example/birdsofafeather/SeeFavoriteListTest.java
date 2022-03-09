@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-package com.example.birdsofafeather;public class SeeFavoriteListTest {
-}
-=======
 package com.example.birdsofafeather;
 
 import static org.junit.Assert.assertEquals;
@@ -73,5 +69,3 @@ public class SeeFavoriteListTest {
         }
     }
 }
-
->>>>>>> ea2b1ed59b2a7a7979e63270de0822a98442cdd5
