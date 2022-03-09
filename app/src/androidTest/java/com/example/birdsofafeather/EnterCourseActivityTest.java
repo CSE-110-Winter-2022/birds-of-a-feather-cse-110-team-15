@@ -90,7 +90,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                4),
+                                3),
                         isDisplayed()));
         appCompatSpinner00.perform(click());
 
@@ -107,7 +107,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                6),
+                                7),
                         isDisplayed()));
         materialButton.perform(click());
 
@@ -132,7 +132,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton3.perform(click());
 
@@ -157,7 +157,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText.perform(replaceText("CSE"), closeSoftKeyboard());
 
@@ -167,7 +167,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton5.perform(click());
 
@@ -192,7 +192,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText2.perform(replaceText(""));
 
@@ -202,7 +202,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText3.perform(closeSoftKeyboard());
 
@@ -212,7 +212,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText4.perform(replaceText("110"), closeSoftKeyboard());
 
@@ -222,7 +222,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton7.perform(click());
 
@@ -247,7 +247,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText5.perform(replaceText("C"), closeSoftKeyboard());
 
@@ -257,7 +257,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton9.perform(click());
 
@@ -282,7 +282,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText6.perform(replaceText("C1"));
 
@@ -292,7 +292,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText7.perform(closeSoftKeyboard());
 
@@ -302,7 +302,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton11.perform(click());
 
@@ -327,7 +327,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText8.perform(replaceText("CSETL"));
 
@@ -337,7 +337,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText9.perform(closeSoftKeyboard());
 
@@ -347,7 +347,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton13.perform(click());
 
@@ -372,7 +372,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText10.perform(replaceText("MATH"));
 
@@ -382,7 +382,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText11.perform(closeSoftKeyboard());
 
@@ -392,7 +392,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText12.perform(replaceText("020"));
 
@@ -402,7 +402,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText13.perform(closeSoftKeyboard());
 
@@ -412,7 +412,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton15.perform(click());
 
@@ -437,7 +437,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText14.perform(replaceText("3111"));
 
@@ -447,7 +447,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText15.perform(closeSoftKeyboard());
 
@@ -457,7 +457,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton17.perform(click());
 
@@ -482,7 +482,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText16.perform(replaceText("31AH"));
 
@@ -492,7 +492,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText17.perform(closeSoftKeyboard());
 
@@ -502,16 +502,16 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton19.perform(click());
 
         ViewInteraction textView10 = onView(
-                allOf(withId(R.id.course_row_text), withText("MATH 31AH FA 2022"),
+                allOf(withId(R.id.course_row_text), withText("MATH 31AH FA 2022 Tiny"),
                         withParent(allOf(withId(R.id.frameLayout),
                                 withParent(withId(R.id.courses_recycler_view)))),
                         isDisplayed()));
-        textView10.check(matches(withText("MATH 31AH FA 2022")));
+        textView10.check(matches(withText("MATH 31AH FA 2022 Tiny")));
 
         ViewInteraction appCompatEditText18 = onView(
                 allOf(withId(R.id.course_number_textview), withText("31AH"),
@@ -519,7 +519,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText18.perform(click());
 
@@ -529,7 +529,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText19.perform(replaceText("31BH"));
 
@@ -539,7 +539,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText20.perform(closeSoftKeyboard());
 
@@ -549,23 +549,23 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton20.perform(click());
 
         ViewInteraction textView11 = onView(
-                allOf(withId(R.id.course_row_text), withText("MATH 31AH FA 2022"),
+                allOf(withId(R.id.course_row_text), withText("MATH 31AH FA 2022 Tiny"),
                         withParent(allOf(withId(R.id.frameLayout),
                                 withParent(withId(R.id.courses_recycler_view)))),
                         isDisplayed()));
-        textView11.check(matches(withText("MATH 31AH FA 2022")));
+        textView11.check(matches(withText("MATH 31AH FA 2022 Tiny")));
 
         ViewInteraction textView12 = onView(
-                allOf(withId(R.id.course_row_text), withText("MATH 31BH FA 2022"),
+                allOf(withId(R.id.course_row_text), withText("MATH 31BH FA 2022 Tiny"),
                         withParent(allOf(withId(R.id.frameLayout),
                                 withParent(withId(R.id.courses_recycler_view)))),
                         isDisplayed()));
-        textView12.check(matches(withText("MATH 31BH FA 2022")));
+        textView12.check(matches(withText("MATH 31BH FA 2022 Tiny")));
 
         ViewInteraction materialButton21 = onView(
                 allOf(withId(R.id.remove_course_button), withText("X"),
@@ -584,7 +584,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton22.perform(click());
 
@@ -609,7 +609,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText21.perform(replaceText("31AH"));
 
@@ -619,7 +619,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText22.perform(closeSoftKeyboard());
 
@@ -629,23 +629,23 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton24.perform(click());
 
         ViewInteraction textView14 = onView(
-                allOf(withId(R.id.course_row_text), withText("MATH 31BH FA 2022"),
+                allOf(withId(R.id.course_row_text), withText("MATH 31BH FA 2022 Tiny"),
                         withParent(allOf(withId(R.id.frameLayout),
                                 withParent(withId(R.id.courses_recycler_view)))),
                         isDisplayed()));
-        textView14.check(matches(withText("MATH 31BH FA 2022")));
+        textView14.check(matches(withText("MATH 31BH FA 2022 Tiny")));
 
         ViewInteraction textView15 = onView(
-                allOf(withId(R.id.course_row_text), withText("MATH 31AH FA 2022"),
+                allOf(withId(R.id.course_row_text), withText("MATH 31AH FA 2022 Tiny"),
                         withParent(allOf(withId(R.id.frameLayout),
                                 withParent(withId(R.id.courses_recycler_view)))),
                         isDisplayed()));
-        textView15.check(matches(withText("MATH 31AH FA 2022")));
+        textView15.check(matches(withText("MATH 31AH FA 2022 Tiny")));
 
         ViewInteraction appCompatEditText23 = onView(
                 allOf(withId(R.id.course_subject_textview), withText("MATH"),
@@ -653,7 +653,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText23.perform(replaceText("SE"));
 
@@ -663,7 +663,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                1),
+                                5),
                         isDisplayed()));
         appCompatEditText24.perform(closeSoftKeyboard());
 
@@ -673,7 +673,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText25.perform(replaceText("130L"));
 
@@ -683,7 +683,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText26.perform(closeSoftKeyboard());
 
@@ -693,7 +693,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                3),
+                                1),
                         isDisplayed()));
         appCompatSpinner.perform(click());
 
@@ -710,7 +710,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                4),
+                                3),
                         isDisplayed()));
         appCompatSpinner2.perform(click());
 
@@ -727,7 +727,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                5),
+                                6),
                         isDisplayed()));
         materialButton25.perform(click());
 
@@ -737,7 +737,7 @@ public class EnterCourseActivityTest {
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
         appCompatEditText27.perform(pressImeActionButton());
 
