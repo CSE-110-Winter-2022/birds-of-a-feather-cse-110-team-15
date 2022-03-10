@@ -24,10 +24,14 @@ import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.Student;
+import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class SeeClassmateListTest {
