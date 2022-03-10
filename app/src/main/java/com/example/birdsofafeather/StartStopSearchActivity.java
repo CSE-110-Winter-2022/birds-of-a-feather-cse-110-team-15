@@ -88,7 +88,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         me = db.studentWithCoursesDao().get(currentUUID);
 
         // set up a dropdown menu for sort option
-        String[] sortOptions = {"Default", "By Recent Classes", "By Small Classes"};
+        String[] sortOptions = {"Default", "Prioritize Recent", "Prioritize Small Classes"};
         sortOptionSpinner = (Spinner) findViewById(R.id.sort_option_spinner);
         ArrayAdapter<String> sortOptionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sortOptions);
         sortOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -309,21 +309,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
         }
 
         // else sort the student list by the algorithm chosen by the user
-        String sortOption = sortOptionSpinner.getSelectedItem().toString();
-
-        // sort the student list based on selected sort option
-        if (sortOption.equals("Default")){
-            // sort the list by the number of common courses in descending order
-            studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.DEFAULT, me, otherStudents);
-        }
-        else if (sortOption.equals("By Recent Classes")){
-            // sort the list by using the recency algorithm
-            studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.RECENCY, me, otherStudents);
-        }
-        else {
-            // sort the list by using the class size algorithm
-            studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.CLASS_SIZE, me, otherStudents);
-        }
+        Sorter.ALGORITHM[] sortEnums = {Sorter.ALGORITHM.DEFAULT, Sorter.ALGORITHM.RECENCY, Sorter.ALGORITHM.CLASS_SIZE};
+        int selectedPosition = sortOptionSpinner.getSelectedItemPosition();
+        studentAndCountPairList = sorter.sortList(sortEnums[selectedPosition], me, otherStudents);
 
         // update recycler based on student list obtained from sessions
         studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
