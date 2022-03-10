@@ -114,9 +114,6 @@ public class ViewProfileActivity extends AppCompatActivity {
 
         // Compare other student with user's classes
         // The user is always the first entry in the database, so we use id 1
-        String currentUserID = new UUIDManager(getApplicationContext()).getUserUUID();
-
-        StudentWithCourses me = db.studentWithCoursesDao().get(currentUserID);
         List<String> cc = student.getCommonCourses(me);
         StringBuilder displayList = new StringBuilder();
         for (String course : cc){
