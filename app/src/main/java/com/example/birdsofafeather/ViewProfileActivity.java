@@ -21,7 +21,6 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
-    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
     private StudentWithCourses me;
     private MessageListener mMessageListener;
     private Message mMessage;
@@ -31,12 +30,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_profile);
 
-        Intent intent = new Intent(this, NearbyBackgroundService.class);
         String uuid = new UUIDManager(getApplicationContext()).getUserUUID();
-        intent.putExtra("uuid", uuid);
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        serviceConnection.setBound(true);
-
 
         // Retrieve Student from database to put on ProfileView
         Bundle extras = getIntent().getExtras();
@@ -102,15 +96,8 @@ public class ViewProfileActivity extends AppCompatActivity {
                         db.studentWithCoursesDao().updateWaveFrom(student.getUUID(), true);
                         student.setWavedFromUser(true);
 
-                        // don't need to publish, since we're sending this data out instead of receiving
-                        //send wave by publishing message
-//                        NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
-//                        nearbyService.publish(waveMessage(student));
-
                         // publish wave message to Nearby Messages
-//                        Nearby.getMessagesClient(this).publish(mMessage);
-
-                        serviceConnection.getNearbyService().publish(mMessage);
+                        Nearby.getMessagesClient(this).publish(mMessage);
 
                         //wave cannot be unsent/sent again
                         waveCheck.setEnabled(false);
@@ -141,32 +128,13 @@ public class ViewProfileActivity extends AppCompatActivity {
         common_courses.setVisibility(View.VISIBLE);
     }
 
-    protected String waveMessage(StudentWithCourses student){
-        //obtain strings to input into service
-        StringBuilder studentInfo = new StringBuilder(me.getUUID() + ",,,,\n" +
-                me.getName() + ",,,,\n" +
-                me.getHeadshotURL() + ",,,,\n");
-        for(String course: me.getCourses()){
-            String temp = course.replace(" ", ",");
-            studentInfo.append(temp).append(",\n");
-        }
-        studentInfo.append(student.getUUID()).append(",wave,,,");
-
-        return studentInfo.toString();
-    }
-
     // make sure to stop service when ending activity
     @Override
     protected void onDestroy() {
         super.onDestroy();
         // make sure to stop publishing wave message, and unsubscribe messageListener
         // from this context
-        serviceConnection.getNearbyService().unpublish(mMessage);
-//        Nearby.getMessagesClient(this).unpublish(mMessage);
-//        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
-        if (serviceConnection.isBound())  {
-            unbindService(serviceConnection);
-            serviceConnection.setBound(false);
-        }
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
     }
 }

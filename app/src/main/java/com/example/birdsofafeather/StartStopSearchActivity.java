@@ -18,7 +18,6 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,9 +62,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
 
+    // Nearby Messages API stuff
     private MessageListener mMessageListener;
     private Message mMessage;
-    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +104,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
 
+        // create message listener and message to publish
         mMessageListener = new NearbyMessagesFactory().build(currentUUID, this);
         mMessage = new NearbyMessagesFactory().buildMessage(me, null);
 
@@ -224,29 +224,17 @@ public class StartStopSearchActivity extends AppCompatActivity {
                handler.postDelayed(runnable, updateListDelay);
        }, updateListDelay);
 
-       // test for putting nearby into services
-       Intent intent = new Intent(this, NearbyBackgroundService.class);
-       String uuid = new UUIDManager(getApplicationContext()).getUserUUID();
-       intent.putExtra("uuid", uuid);
-       bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-       serviceConnection.setBound(true);
-       serviceConnection.getNearbyService().publish(mMessage);
-
-//       Nearby.getMessagesClient(this).publish(mMessage);
-//       Nearby.getMessagesClient(this).subscribe(mMessageListener);
+       // start bluetooth
+       // make sure to publish your profile as a message and also subscribe to receive other profiles
+       Nearby.getMessagesClient(this).publish(mMessage);
+       Nearby.getMessagesClient(this).subscribe(mMessageListener);
     }
 
     public void onStopClick(View view) {
         //stop bluetooth
-        // test putting nearby into services
-        serviceConnection.getNearbyService().unpublish(mMessage);
-        if (serviceConnection.isBound())  {
-            unbindService(serviceConnection);
-            serviceConnection.setBound(false);
-        }
-
-//        Nearby.getMessagesClient(this).unpublish(mMessage);
-//        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        // make sure to unpublish message and also unsubscribe to stop receiving messages
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
 
         //hide stop
         StopButton = findViewById(R.id.stop_button);

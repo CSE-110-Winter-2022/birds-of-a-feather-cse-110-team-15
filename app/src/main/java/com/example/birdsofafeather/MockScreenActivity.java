@@ -13,9 +13,6 @@ import com.google.android.gms.nearby.messages.MessageListener;
 public class MockScreenActivity extends AppCompatActivity {
     private static final String TAG = "MOCK SCREEN";
 
-    // used to help facilitate binding/unbinding the NearbyBackgroundService
-    // to the MockScreenActivity
-    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
     private FakedMessageListener fakedMessageListener;
 
     @Override
