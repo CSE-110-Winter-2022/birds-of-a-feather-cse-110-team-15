@@ -8,43 +8,21 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.nearby.messages.MessageListener;
+
 public class MockScreenActivity extends AppCompatActivity {
     private static final String TAG = "MOCK SCREEN";
 
-    // used to help facilitate binding/unbinding the NearbyBackgroundService
-    // to the MockScreenActivity
-    private final BoFServiceConnection serviceConnection = new BoFServiceConnection();
+    private FakedMessageListener fakedMessageListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mock_screen);
 
-        // bindService will initiate the bound service NearbyBackgroundService
-        Intent intent = new Intent(this, NearbyBackgroundService.class);
-        intent.putExtra("uuid", new UUIDManager(getApplicationContext()).getUserUUID());
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
-        serviceConnection.setBound(true);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-
-    // make sure to stop service when ending activity
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (serviceConnection.isBound())  {
-            unbindService(serviceConnection);
-            serviceConnection.setBound(false);
-        }
+        // initiate faked listener to mock sending/receiving data
+        String uuid = new UUIDManager(this).getUserUUID();
+        fakedMessageListener = new FakedMessageListener(new NearbyMessagesFactory().build(uuid, this));
     }
 
     public void onEnterDataClicked(View view) {
@@ -54,8 +32,7 @@ public class MockScreenActivity extends AppCompatActivity {
         inputDataTextView.setText("");
 
         // send/publish message to service to relay to messageListener
-        NearbyBackgroundService nearbyService = serviceConnection.getNearbyService();
-        nearbyService.publish(inputString);
+        fakedMessageListener.receive(inputString);
     }
 
     public void onGoBackClicked(View view) {
