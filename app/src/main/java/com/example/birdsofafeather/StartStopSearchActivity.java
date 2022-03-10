@@ -19,7 +19,6 @@ import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,6 +27,9 @@ import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.SessionWithStudents;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,6 +63,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
+
+    // Nearby Messages API stuff
+    private MessageListener mMessageListener;
+    private Message mMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +127,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
 
+        // create message listener and message to publish
+        mMessageListener = new NearbyMessagesFactory().build(currentUUID, this);
+        mMessage = new NearbyMessagesFactory().buildMessage(me, null);
+
         // create reference to sorter class for different sort methods
         sorter = new Sorter();
     }
@@ -128,6 +138,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
     }
 
     @Override
@@ -161,8 +173,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
     }
 
     public void onStartClick(View view) {
-        //start bluetooth
-
         // add all the sessions found in database to sessions list
         List<String> sessions = new ArrayList<>();
         sessions.add("New Session");
@@ -239,10 +249,18 @@ public class StartStopSearchActivity extends AppCompatActivity {
                updateRecyclerView();
                handler.postDelayed(runnable, updateListDelay);
        }, updateListDelay);
+
+       // start bluetooth
+       // make sure to publish your profile as a message and also subscribe to receive other profiles
+       Nearby.getMessagesClient(this).publish(mMessage);
+       Nearby.getMessagesClient(this).subscribe(mMessageListener);
     }
 
     public void onStopClick(View view) {
         //stop bluetooth
+        // make sure to unpublish message and also unsubscribe to stop receiving messages
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
 
         //hide stop
         StopButton = findViewById(R.id.stop_button);
