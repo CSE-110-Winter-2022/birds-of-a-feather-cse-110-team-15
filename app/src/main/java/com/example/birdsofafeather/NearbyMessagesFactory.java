@@ -121,6 +121,11 @@ public class NearbyMessagesFactory {
 
     // converts a student object into a string that can be sent via Nearby Messages
     public Message buildMessage(StudentWithCourses student, String sendWaveUUID) {
+        // should not ever be null, but just send an empty message
+        if (student == null) {
+            Log.d("NearbyMessagesFactory", "student object is null");
+            return new Message("".getBytes(StandardCharsets.UTF_8));
+        }
         // order: UUID, Name, Headshot URL, Classes/Waves
         // add UUID, Name, Headshot URL
         String data = student.getUUID() + ",,,\n" + student.getName() + ",,,\n" + student.getHeadshotURL() + ",,,\n";
