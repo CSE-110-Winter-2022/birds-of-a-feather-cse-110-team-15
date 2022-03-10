@@ -76,6 +76,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
         StartButton.setOnClickListener(this::onStartClick);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.edit().clear().apply();    // make sure to have clean preference in onCreate state
         db = AppDatabase.singleton(this);
 
         // get the student by looking up based on the current user's UUID
