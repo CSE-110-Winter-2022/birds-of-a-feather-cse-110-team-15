@@ -52,27 +52,30 @@ public class SeeClassmateListTest {
         db.sessionWithStudentsDao().insert(new Session("dummy"));
 
         // Bob's classes
-        db.coursesDao().insert(new Course(uuid, "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course(uuid, "CSE 100 FA 2021")) ;
-        db.coursesDao().insert(new Course(uuid, "CSE 120 FA 2021")) ;
+        db.coursesDao().insert(new Course(uuid, "CSE 20 FA 2021 Large")) ;
+        db.coursesDao().insert(new Course(uuid, "CSE 100 FA 2021 Large")) ;
+        db.coursesDao().insert(new Course(uuid, "CSE 120 FA 2021 Medium")) ;
 
         // Bill's class (Has 2, shares 1)
-        db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course("s2ID", "CSE 15L FA 2021")) ;
+        db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021 Large")) ;
+        db.coursesDao().insert(new Course("s2ID", "CSE 15L FA 2021 Gigantic")) ;
 
         // Mary's classes (Has 2, shares 2)
-        db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021")) ;
+        db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021 Large")) ;
+        db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021 Large")) ;
 
         // Toby's class (Has 1, shares none)
-        db.coursesDao().insert(new Course("s4ID", "CSE 21 FA 2020 Large")) ;
-        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
-        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
-        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
+        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021 Gigantic")) ;
+
+        //Rick's class (Has 3, shares 3)
+        db.coursesDao().insert(new Course("s5ID", "CSE 20 FA 2021 Large")) ;
+        db.coursesDao().insert(new Course("s5ID", "CSE 100 FA 2021 Large")) ;
+        db.coursesDao().insert(new Course("s5ID", "CSE 120 FA 2021 Medium")) ;
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         preferences.edit().putInt("sessionId", 1).commit();
     }
+  
     @Test
     // Test to make sure a students' entries shows up correctly on the search page.
     public void testViewingList(){

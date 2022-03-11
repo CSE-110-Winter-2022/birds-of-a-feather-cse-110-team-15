@@ -12,13 +12,13 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.PopupWindow;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,6 +27,9 @@ import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.SessionWithStudents;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
+import com.google.android.gms.nearby.Nearby;
+import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,11 +49,12 @@ public class StartStopSearchActivity extends AppCompatActivity {
     private Runnable runnable;
     private final int updateListDelay = 5000; // update the list every 5 seconds
     private View startSessionPopupView;
-    private Spinner startSessionSpinner;
+    private Spinner startSessionSpinner, sortOptionSpinner;
     private int sessionId;
     private View savePopupView;
     private boolean isNewSession;
     private TextView sessionTitle;
+    private List<StudentWithCourses> otherStudents = new ArrayList<>();
 
     private Map<String, Integer> sessionIdMap;
     private String currentUUID;
@@ -59,6 +63,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     //list of pairs, each of which has a student and the number of common courses with the user
     private List<Pair<StudentWithCourses, Integer>> studentAndCountPairList;
+
+    // Nearby Messages API stuff
+    private MessageListener mMessageListener;
+    private Message mMessage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +87,26 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // get the student by looking up based on the current user's UUID
         me = db.studentWithCoursesDao().get(currentUUID);
 
+        // set up a dropdown menu for sort option
+        String[] sortOptions = {"Default", "Prioritize Recent", "Prioritize Small Classes"};
+        sortOptionSpinner = (Spinner) findViewById(R.id.sort_option_spinner);
+        ArrayAdapter<String> sortOptionAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sortOptions);
+        sortOptionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortOptionSpinner.setAdapter(sortOptionAdapter);
+
+        // set up the onItemSelected event
+        sortOptionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                updateRecyclerView();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // do nothing
+            }
+        });
+
         // Set up the RecycleView for the list of students
         studentAndCountPairList = new ArrayList<>(); // on creation, it's an empty list
         RecyclerView studentsRecycleView = findViewById(R.id.students_recycler_view);
@@ -98,6 +126,10 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // set savePopupView
         savePopupView = layoutInflater.inflate(R.layout.save_popup_window, null);
 
+        // create message listener and message to publish
+        mMessageListener = new NearbyMessagesFactory().build(currentUUID, this);
+        mMessage = new NearbyMessagesFactory().buildMessage(me, null);
+
         // create reference to sorter class for different sort methods
         sorter = new Sorter();
     }
@@ -105,6 +137,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        preferences.edit().clear().apply();
     }
 
     @Override
@@ -138,8 +173,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
     }
 
     public void onStartClick(View view) {
-        //start bluetooth
-
         // add all the sessions found in database to sessions list
         List<String> sessions = new ArrayList<>();
         sessions.add("New Session");
@@ -206,6 +239,9 @@ public class StartStopSearchActivity extends AppCompatActivity {
        StopButton = findViewById(R.id.stop_button);
        StopButton.setVisibility(View.VISIBLE);
 
+        // set the sorting option to be the default at the beginning of search
+        sortOptionSpinner.setSelection(0);
+
        // update the recycler view based on the current student list
        updateRecyclerView();
 
@@ -213,10 +249,18 @@ public class StartStopSearchActivity extends AppCompatActivity {
                updateRecyclerView();
                handler.postDelayed(runnable, updateListDelay);
        }, updateListDelay);
+
+       // start bluetooth
+       // make sure to publish your profile as a message and also subscribe to receive other profiles
+       Nearby.getMessagesClient(this).publish(mMessage);
+       Nearby.getMessagesClient(this).subscribe(mMessageListener);
     }
 
     public void onStopClick(View view) {
         //stop bluetooth
+        // make sure to unpublish message and also unsubscribe to stop receiving messages
+        Nearby.getMessagesClient(this).unpublish(mMessage);
+        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
 
         //hide stop
         StopButton = findViewById(R.id.stop_button);
@@ -257,6 +301,25 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
     // update the recycler view based on the current session in the database.
     public void updateRecyclerView() {
+        updateStudentList();
+        // if student list is empty, then return
+        if (otherStudents.isEmpty()) {
+            Log.d("StartStopSearchActivity", "There is no student to show!");
+            return;
+        }
+
+        // else sort the student list by the algorithm chosen by the user
+        Sorter.ALGORITHM[] sortEnums = {Sorter.ALGORITHM.DEFAULT, Sorter.ALGORITHM.RECENCY, Sorter.ALGORITHM.CLASS_SIZE};
+        int selectedPosition = sortOptionSpinner.getSelectedItemPosition();
+        studentAndCountPairList = sorter.sortList(sortEnums[selectedPosition], me, otherStudents);
+
+        // update recycler based on student list obtained from sessions
+        studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
+    }
+
+    // update the student list based on the current session in the database.
+    // but if session is not active, make no change to the list
+    public void updateStudentList(){
         sessionId = preferences.getInt("sessionId", 0);
         // if no session id in shared preferences, don't update recycler view
         if (sessionId == 0) {
@@ -264,11 +327,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
             return;
         }
         // get students of current session
-        List<StudentWithCourses> otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
-
-        studentAndCountPairList = sorter.sortList(Sorter.ALGORITHM.DEFAULT, me, otherStudents);
-        // update recycler based on student list obtained from sessions
-        studentsViewAdapter.updateStudentAndCoursesCountPairs(studentAndCountPairList);
+        otherStudents = db.sessionWithStudentsDao().get(sessionId).getStudents();
     }
 
     // create a popup for saving a new session and also renaming session
