@@ -47,7 +47,6 @@ public class SeeClassmateListTest {
         db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com", 1, false));
         db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 1, true, true));
         db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com", 1));
-        db.studentWithCoursesDao().insert(new Student("s5ID", "Rick", "rick.com", 1,true));
 
         // add dummy session
         db.sessionWithStudentsDao().insert(new Session("dummy"));
@@ -66,17 +65,14 @@ public class SeeClassmateListTest {
         db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021")) ;
 
         // Toby's class (Has 1, shares none)
+        db.coursesDao().insert(new Course("s4ID", "CSE 21 FA 2020 Large")) ;
         db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
-
-        //Rick's class (Has 3, shares 3)
-        db.coursesDao().insert(new Course("s5ID", "CSE 20 FA 2021")) ;
-        db.coursesDao().insert(new Course("s5ID", "CSE 100 FA 2021")) ;
-        db.coursesDao().insert(new Course("s5ID", "CSE 120 FA 2021")) ;
+        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
+        db.coursesDao().insert(new Course("s4ID", "CSE 8B FA 2021")) ;
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         preferences.edit().putInt("sessionId", 1).commit();
     }
-
     @Test
     // Test to make sure a students' entries shows up correctly on the search page.
     public void testViewingList(){
