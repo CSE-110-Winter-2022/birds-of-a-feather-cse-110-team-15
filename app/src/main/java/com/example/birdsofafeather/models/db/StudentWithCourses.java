@@ -45,6 +45,7 @@ public class StudentWithCourses {
 
     public List<String> getCourses() { return courses; }
 
+
     public List<String> getCommonCourses(StudentWithCourses otherStudent) {
         List<String> commonCourses = new ArrayList<>(courses);
         if (otherStudent == null) return new ArrayList<>();

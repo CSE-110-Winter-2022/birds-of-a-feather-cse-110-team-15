@@ -67,6 +67,7 @@ public class StartStopSearchActivity extends AppCompatActivity {
     // Nearby Messages API stuff
     private MessageListener mMessageListener;
     private Message mMessage;
+    private LoggedMessagesClient messagesClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,7 +130,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // create message listener and message to publish
         mMessageListener = new NearbyMessagesFactory().build(currentUUID, this);
         mMessage = new NearbyMessagesFactory().buildMessage(me, null);
-
+        messagesClient = new LoggedMessagesClient(Nearby.getMessagesClient(this));
+        messagesClient.subscribe(mMessageListener);
         // create reference to sorter class for different sort methods
         sorter = new Sorter();
     }
@@ -137,8 +139,8 @@ public class StartStopSearchActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Nearby.getMessagesClient(this).unpublish(mMessage);
-        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        messagesClient.unpublish(mMessage);
+        messagesClient.unsubscribe(mMessageListener);
         preferences.edit().clear().apply();
     }
 
@@ -252,15 +254,15 @@ public class StartStopSearchActivity extends AppCompatActivity {
 
        // start bluetooth
        // make sure to publish your profile as a message and also subscribe to receive other profiles
-       Nearby.getMessagesClient(this).publish(mMessage);
-       Nearby.getMessagesClient(this).subscribe(mMessageListener);
+       messagesClient.publish(mMessage);
+       messagesClient.subscribe(mMessageListener);
     }
 
     public void onStopClick(View view) {
         //stop bluetooth
         // make sure to unpublish message and also unsubscribe to stop receiving messages
-        Nearby.getMessagesClient(this).unpublish(mMessage);
-        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        messagesClient.unpublish(mMessage);
+        messagesClient.unsubscribe(mMessageListener);
 
         //hide stop
         StopButton = findViewById(R.id.stop_button);

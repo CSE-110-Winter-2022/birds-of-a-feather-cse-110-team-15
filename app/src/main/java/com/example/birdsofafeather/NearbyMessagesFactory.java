@@ -1,7 +1,5 @@
 package com.example.birdsofafeather;
 
-import static androidx.test.core.app.ApplicationProvider.getApplicationContext;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
@@ -22,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class NearbyMessagesFactory {
-    private String TAG = "MESSAGE LISTENER";
+    private final String TAG = "MESSAGE LISTENER";
 
     public MessageListener build(String uuid, Context context) {
         return new MessageListener() {

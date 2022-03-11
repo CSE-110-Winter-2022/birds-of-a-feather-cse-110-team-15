@@ -4,7 +4,6 @@ import android.util.Pair;
 
 import androidx.annotation.NonNull;
 
-import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import java.util.ArrayList;
