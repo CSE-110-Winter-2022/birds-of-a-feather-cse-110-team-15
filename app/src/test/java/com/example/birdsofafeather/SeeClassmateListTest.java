@@ -47,6 +47,7 @@ public class SeeClassmateListTest {
         db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com", 1, false));
         db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 1, true, true));
         db.studentWithCoursesDao().insert(new Student("s4ID", "Toby", "toby.com", 1));
+        db.studentWithCoursesDao().insert(new Student("s5ID", "Rick", "rick.com", 1,true));
 
         // add dummy session
         db.sessionWithStudentsDao().insert(new Session("dummy"));
