@@ -1,7 +1,5 @@
 package com.example.birdsofafeather;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
@@ -14,16 +12,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 import com.google.android.gms.nearby.Nearby;
-import com.google.android.gms.nearby.messages.MessageListener;
 import com.google.android.gms.nearby.messages.Message;
+import com.google.android.gms.nearby.messages.MessageListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
 public class ViewProfileActivity extends AppCompatActivity {
-    private StudentWithCourses me;
     private MessageListener mMessageListener;
     private Message mMessage;
+    private LoggedMessagesClient messagesClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +37,15 @@ public class ViewProfileActivity extends AppCompatActivity {
         StudentWithCourses student = db.studentWithCoursesDao().get(classmate_id);
 
         // get reference to me, the user
-        me = db.studentWithCoursesDao().get(uuid);
+        StudentWithCourses me = db.studentWithCoursesDao().get(uuid);
 
         // build messageListener and Message
         mMessageListener = new NearbyMessagesFactory().build(uuid, this);
         mMessage = new NearbyMessagesFactory().buildMessage(me, classmate_id);
-        // subscribe so that messages will still be received when viewing profile
-        Nearby.getMessagesClient(this).subscribe(mMessageListener);
+
+        // create a MessagesClient and subscribe so that messages will still be received while viewing profile
+        messagesClient = new LoggedMessagesClient(Nearby.getMessagesClient(this));
+        messagesClient.subscribe(mMessageListener);
 
         // Set profile name
         TextView nameView = findViewById(R.id.name_view);
@@ -97,7 +97,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                         student.setWavedFromUser(true);
 
                         // publish wave message to Nearby Messages
-                        Nearby.getMessagesClient(this).publish(mMessage);
+                        messagesClient.publish(mMessage);
 
                         //wave cannot be unsent/sent again
                         waveCheck.setEnabled(false);
@@ -131,7 +131,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         super.onDestroy();
         // make sure to stop publishing wave message, and unsubscribe messageListener
         // from this context
-        Nearby.getMessagesClient(this).unpublish(mMessage);
-        Nearby.getMessagesClient(this).unsubscribe(mMessageListener);
+        messagesClient.unpublish(mMessage);
+        messagesClient.unsubscribe(mMessageListener);
     }
 }
