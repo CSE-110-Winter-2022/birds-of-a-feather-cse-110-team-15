@@ -72,7 +72,11 @@ public class NearbyMessagesFactory {
                             // if wave isn't directed at you, shouldn't process it
                             else return;
                         } else {
-                            courses.add(String.join(" ", courseOrWave));
+                            // YEAR, QUARTER, COURSE SUBJ, COURSE NUM, SIZE
+                            String courseName = courseOrWave.get(2) + " " + courseOrWave.get(3) +
+                                    " " + courseOrWave.get(1) + " " + courseOrWave.get(0) +
+                                    " " + courseOrWave.get(4);
+                            courses.add(courseName);
                         }
                     }
                     i++;
@@ -132,11 +136,13 @@ public class NearbyMessagesFactory {
         // add courses
         for (String course : student.getCourses()) {
             String[] split = course.split(" ");
-            data += split[0] + "," + split[1] + "," + split[2] + "," + split[3] + "," + split[4] + "\n";
+            // COURSE SUBJ, COURSE NUM, QUARTER, YEAR, SIZE
+            data += split[3] + "," + split[2] + "," + split[0] + "," + split[1] + "," + split[4] + "\n";
         }
         if (sendWaveUUID != null) {
             data += sendWaveUUID + ",wave,,\n";
         }
+        Log.d("NearbyMessagesFactory", data);
         return new Message(data.getBytes(StandardCharsets.UTF_8));
     }
 }
