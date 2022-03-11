@@ -1,18 +1,12 @@
 package com.example.birdsofafeather;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.nearby.messages.MessageListener;
-
 public class MockScreenActivity extends AppCompatActivity {
-    private static final String TAG = "MOCK SCREEN";
-
     private FakedMessageListener fakedMessageListener;
 
     @Override
