@@ -38,7 +38,7 @@ public class SorterTest {
     // Mary shares 2, with recency score high and class size score low
     // Toby shares 3, with recency score low and class size score medium
     // Default sort:    Toby -> Mary -> Bill
-    // Recency sort:    Mary -> Bill -> Toby
+    // Recency sort:    Bill -> Mary -> Toby
     // Class size sort: Bill -> Toby -> Mary
     public void init() {
         AppDatabase.useTestSingleton(ApplicationProvider.getApplicationContext());
