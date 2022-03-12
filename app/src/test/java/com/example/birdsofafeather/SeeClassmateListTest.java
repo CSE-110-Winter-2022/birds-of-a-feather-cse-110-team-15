@@ -24,10 +24,14 @@ import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Session;
 import com.example.birdsofafeather.models.db.Student;
+import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RunWith(AndroidJUnit4.class)
 public class SeeClassmateListTest {
@@ -72,7 +76,7 @@ public class SeeClassmateListTest {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext());
         preferences.edit().putInt("sessionId", 1).commit();
     }
-
+  
     @Test
     // Test to make sure a students' entries shows up correctly on the search page.
     public void testViewingList(){
