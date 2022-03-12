@@ -18,6 +18,7 @@ import com.example.birdsofafeather.models.db.AppDatabase;
 import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.Student;
 
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,29 +27,35 @@ import org.junit.runner.RunWith;
 
 @RunWith(AndroidJUnit4.class)
 public class ViewProfileActivityTest {
+    private AppDatabase db;
 
     @Before
     public void init() {
         Context context = ApplicationProvider.getApplicationContext();
         String currentUserID = new UUIDManager(context).getUserUUID();
         AppDatabase.useTestSingleton(context);
-        AppDatabase db = AppDatabase.singleton(context);
+        db = AppDatabase.singleton(context);
 
         db.studentWithCoursesDao().insert(new Student(currentUserID, "Bob", "bob.com"));
         db.studentWithCoursesDao().insert(new Student("s2ID", "Bill", "bill.com"));
         db.studentWithCoursesDao().insert(new Student("s3ID", "Mary", "mary.com", 0, false, true));
 
         // Bob's classes
-        db.coursesDao().insert(new Course(currentUserID, "CSE 20 FA 2021"));
-        db.coursesDao().insert(new Course(currentUserID, "CSE 100 FA 2021"));
+        db.coursesDao().insert(new Course(currentUserID, "CSE 20 FA 2021 Large"));
+        db.coursesDao().insert(new Course(currentUserID, "CSE 100 FA 2021 Large"));
 
         // Bill's class (Has 2, shares 1)
-        db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021"));
-        db.coursesDao().insert(new Course("s2ID", "CSE 15L FA 2021"));
+        db.coursesDao().insert(new Course("s2ID", "CSE 20 FA 2021 Large"));
+        db.coursesDao().insert(new Course("s2ID", "CSE 15L FA 2021 Large"));
 
         // Mary's classes (Has 2, shares 2)
-        db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021"));
-        db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021"));
+        db.coursesDao().insert(new Course("s3ID", "CSE 20 FA 2021 Large"));
+        db.coursesDao().insert(new Course("s3ID", "CSE 100 FA 2021 Large"));
+    }
+
+    @After
+    public void teardown() {
+        db.close();
     }
 
     @Test
@@ -71,7 +78,7 @@ public class ViewProfileActivityTest {
                 TextView courses = activity.findViewById(R.id.common_classes_view);
                 // Test course loaded and visibility
                 assertEquals(View.VISIBLE, courses.getVisibility());
-                assertEquals("CSE 20 FA 2021\n", courses.getText());
+                assertEquals("CSE 20 FA 2021 Large\n", courses.getText());
             });
         }
     }
