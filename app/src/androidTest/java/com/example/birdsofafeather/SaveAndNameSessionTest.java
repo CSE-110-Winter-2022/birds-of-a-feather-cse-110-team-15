@@ -1,6 +1,5 @@
 package com.example.birdsofafeather;
 
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.espresso.DataInteraction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
@@ -30,12 +30,15 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
 import com.example.birdsofafeather.models.db.AppDatabase;
+import com.example.birdsofafeather.models.db.Course;
 import com.example.birdsofafeather.models.db.SessionWithStudents;
+import com.example.birdsofafeather.models.db.Student;
 import com.example.birdsofafeather.models.db.StudentWithCourses;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,288 +49,34 @@ import java.util.List;
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class SaveAndNameSessionTest {
-    AppDatabase db;
+    private Context context;
+    private AppDatabase db;
+
+    @Before
+    public void init() {
+        context = ApplicationProvider.getApplicationContext();
+        db = AppDatabase.singleton(context);
+        UUIDManager uuidManager = new UUIDManager(ApplicationProvider.getApplicationContext());
+        String UUID = uuidManager.getUserUUID();
+        // insert user into database
+        db.studentWithCoursesDao().insert(new Student(UUID, "Joe", "joe.com"));
+        db.coursesDao().insert(new Course(UUID, "CSE 21 FA 2020 Large"));
+        db.coursesDao().insert(new Course(UUID, "CSE 30 WI 2021 Large"));
+        db.coursesDao().insert(new Course(UUID, "CSE 105 WI 2022 Huge"));
+        db.coursesDao().insert(new Course(UUID, "CSE 110 WI 2022 Huge"));
+    }
 
     @Rule
-    public ActivityTestRule<UserNameActivity> mActivityTestRule = new ActivityTestRule<UserNameActivity>(UserNameActivity.class){
+    public ActivityTestRule<StartStopSearchActivity> mActivityTestRule = new ActivityTestRule<StartStopSearchActivity>(StartStopSearchActivity.class) {
         @Override
         public void beforeActivityLaunched() {
-            // set up to use test database
-            Context context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            context = ApplicationProvider.getApplicationContext();
             AppDatabase.useTestSingleton(context);
-            db = AppDatabase.singleton(context);
         }
     };
 
     @Test
     public void saveSessionTest() {
-        ViewInteraction appCompatEditText = onView(
-                allOf(withId(R.id.input_name_textview),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText.perform(replaceText("test"), closeSoftKeyboard());
-
-        ViewInteraction materialButton = onView(
-                allOf(withId(R.id.confirm), withText("CONFIRM"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
-                        isDisplayed()));
-        materialButton.perform(click());
-
-        ViewInteraction materialButton2 = onView(
-                allOf(withId(R.id.cont), withText("CONTINUE"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        materialButton2.perform(click());
-
-        ViewInteraction materialButton3 = onView(
-                allOf(withId(R.id.continueBtn), withText("Continue"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        materialButton3.perform(click());
-
-        ViewInteraction materialButton4 = onView(
-                allOf(withId(android.R.id.button1), withText("Ok"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        materialButton4.perform(scrollTo(), click());
-
-        ViewInteraction materialButton5 = onView(
-                allOf(withId(R.id.continueBtn), withText("Continue"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        materialButton5.perform(click());
-
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.course_subject_textview),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText2.perform(replaceText("CSE"), closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.course_number_textview),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText3.perform(replaceText("21"), closeSoftKeyboard());
-
-        ViewInteraction appCompatSpinner = onView(
-                allOf(withId(R.id.year_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
-                        isDisplayed()));
-        appCompatSpinner.perform(click());
-
-        DataInteraction appCompatCheckedTextView = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(2);
-        appCompatCheckedTextView.perform(click());
-
-        ViewInteraction materialButton6 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                5),
-                        isDisplayed()));
-        materialButton6.perform(click());
-
-        ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.course_number_textview), withText("21"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText4.perform(replaceText("30"));
-
-        ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.course_number_textview), withText("30"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText5.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatSpinner2 = onView(
-                allOf(withId(R.id.quarter_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatSpinner2.perform(click());
-
-        DataInteraction appCompatCheckedTextView2 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(1);
-        appCompatCheckedTextView2.perform(click());
-
-        ViewInteraction appCompatSpinner3 = onView(
-                allOf(withId(R.id.year_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
-                        isDisplayed()));
-        appCompatSpinner3.perform(click());
-
-        DataInteraction appCompatCheckedTextView3 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(1);
-        appCompatCheckedTextView3.perform(click());
-
-        ViewInteraction materialButton7 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                5),
-                        isDisplayed()));
-        materialButton7.perform(click());
-
-        ViewInteraction appCompatEditText6 = onView(
-                allOf(withId(R.id.course_number_textview), withText("30"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText6.perform(replaceText("105"));
-
-        ViewInteraction appCompatEditText7 = onView(
-                allOf(withId(R.id.course_number_textview), withText("105"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText7.perform(closeSoftKeyboard());
-
-        ViewInteraction appCompatSpinner4 = onView(
-                allOf(withId(R.id.year_spinner),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                4),
-                        isDisplayed()));
-        appCompatSpinner4.perform(click());
-
-        DataInteraction appCompatCheckedTextView4 = onData(anything())
-                .inAdapterView(childAtPosition(
-                        withClassName(is("android.widget.PopupWindow$PopupBackgroundView")),
-                        0))
-                .atPosition(0);
-        appCompatCheckedTextView4.perform(click());
-
-        ViewInteraction materialButton8 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                5),
-                        isDisplayed()));
-        materialButton8.perform(click());
-
-        ViewInteraction appCompatEditText8 = onView(
-                allOf(withId(R.id.course_number_textview), withText("105"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText8.perform(replaceText("110"));
-
-        ViewInteraction appCompatEditText9 = onView(
-                allOf(withId(R.id.course_number_textview), withText("110"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText9.perform(closeSoftKeyboard());
-
-        ViewInteraction materialButton9 = onView(
-                allOf(withId(R.id.enter_button), withText("Enter"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                5),
-                        isDisplayed()));
-        materialButton9.perform(click());
-
-        ViewInteraction appCompatEditText10 = onView(
-                allOf(withId(R.id.course_number_textview), withText("110"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText10.perform(closeSoftKeyboard());
-
-        ViewInteraction materialButton10 = onView(
-                allOf(withId(R.id.finish_button), withText("Done"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(android.R.id.content),
-                                        0),
-                                6),
-                        isDisplayed()));
-        materialButton10.perform(click());
-
         ViewInteraction materialButton11 = onView(
                 allOf(withId(R.id.start_button), withText("START"),
                         childAtPosition(
@@ -366,7 +115,7 @@ public class SaveAndNameSessionTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText11.perform(replaceText("Bob,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLWsX79MvqlAcyBXqHMtW5QY0T8LUhXg2dwFzA1Oi8zWPTt8o2l2iR2Rfpa_MgkuBpGJtlnJ9OKb5M5IIRrXgZEYKe4YCyuyKLeyncIVKP5n1dbFdhdkLkYURga3Gu7TWsB2tmWaalAYRXvxV0P61fpC=w612-h408-no?authuser=0,,,\nWCWP,10A,SP,2020\nCSE,110,WI,2022\nCSE,12,FA,2020"), closeSoftKeyboard());
+        appCompatEditText11.perform(replaceText("s2ID,,,\nBob,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLWsX79MvqlAcyBXqHMtW5QY0T8LUhXg2dwFzA1Oi8zWPTt8o2l2iR2Rfpa_MgkuBpGJtlnJ9OKb5M5IIRrXgZEYKe4YCyuyKLeyncIVKP5n1dbFdhdkLkYURga3Gu7TWsB2tmWaalAYRXvxV0P61fpC=w612-h408-no?authuser=0,,,\nWCWP,10A,SP,2020,Small\nCSE,110,WI,2022,Huge\nCSE,12,FA,2020,Large"), closeSoftKeyboard());
 
         ViewInteraction materialButton14 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -472,7 +221,7 @@ public class SaveAndNameSessionTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText13.perform(replaceText("Toby,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLVOqkfwjcRfaEo5UIwLKN9FLPM3iiVTvxJdr58qPI4G4ipBruOCWm8lUTC3q-YEWpK_JiWfdRzE3WPh6eezbcDVsRC1qYsxoy_UwUIx0X2YY8nMA_6-iPqWX2R3Z_9LaTIjNCaBRTSCcauP1OB6Bljb=w275-h183-no?authuser=0,,,\nCSE,21,FA,2020\nCSE,30,WI,2021\nCSE,105,WI,2022\nCSE,110,WI,2022"), closeSoftKeyboard());
+        appCompatEditText13.perform(replaceText("s3ID,,,\nToby,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLVOqkfwjcRfaEo5UIwLKN9FLPM3iiVTvxJdr58qPI4G4ipBruOCWm8lUTC3q-YEWpK_JiWfdRzE3WPh6eezbcDVsRC1qYsxoy_UwUIx0X2YY8nMA_6-iPqWX2R3Z_9LaTIjNCaBRTSCcauP1OB6Bljb=w275-h183-no?authuser=0,,,\nCSE,21,FA,2020,Large\nCSE,30,WI,2021,Large\nCSE,105,WI,2022,Huge\nCSE,110,WI,2022,Huge"), closeSoftKeyboard());
 
         ViewInteraction materialButton21 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -577,7 +326,7 @@ public class SaveAndNameSessionTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText17.perform(replaceText("Mary,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLUqD5Rbb9riO8QnmAJf6f216BvPqPJnEWxrT5X4jMsahJ2CajVYyEKk7Z-bm0rNT3i9E_w6dAhv42b-P80quY_MMWg5fmJZBItJny894ygxE4HK-eWfV8jRXJ2FooPrXwYl3xRn5hQRtlswAfjnE9ti=w540-h360-no?authuser=0,,,\nCSE,15L,FA,2020\nCSE,30,WI,2021\nCSE,105,WI,2022"), closeSoftKeyboard());
+        appCompatEditText17.perform(replaceText("s4ID,,,\nMary,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLUqD5Rbb9riO8QnmAJf6f216BvPqPJnEWxrT5X4jMsahJ2CajVYyEKk7Z-bm0rNT3i9E_w6dAhv42b-P80quY_MMWg5fmJZBItJny894ygxE4HK-eWfV8jRXJ2FooPrXwYl3xRn5hQRtlswAfjnE9ti=w540-h360-no?authuser=0,,,\nCSE,15L,FA,2020,Gigantic\nCSE,30,WI,2021,Large\nCSE,105,WI,2022,Huge"), closeSoftKeyboard());
 
         ViewInteraction materialButton28 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -708,26 +457,27 @@ public class SaveAndNameSessionTest {
         // get session data from database and check if session is properly saved
         List<SessionWithStudents> sessions = db.sessionWithStudentsDao().getAll();
         List<StudentWithCourses> students;  // student list in session
+
         // session 1
         students = sessions.get(0).getStudents();
-        assertEquals("CSE 110 WI 2022", sessions.get(0).getName());
+        assertEquals("CSE 110 WI 2022 Huge", sessions.get(0).getName());
         assertEquals("Bob", students.get(0).getName());
-        System.out.println("Expected: CSE 110 WI 2022   Actual: " + sessions.get(0).getName());
-        System.out.println("Expected: Bob               Actual: " + students.get(0).getName());
+        System.out.println("Expected: CSE 110 WI 2022 Huge   Actual: " + sessions.get(0).getName());
+        System.out.println("Expected: Bob                    Actual: " + students.get(0).getName());
 
         // session 2
         students = sessions.get(1).getStudents();
         assertEquals("CSE 105", sessions.get(1).getName());
         assertEquals("Toby", students.get(0).getName());
-        System.out.println("Expected: CSE 105           Actual: " + sessions.get(1).getName());
-        System.out.println("Expected: Toby              Actual: " + students.get(0).getName());
+        System.out.println("Expected: CSE 105                Actual: " + sessions.get(1).getName());
+        System.out.println("Expected: Toby                   Actual: " + students.get(0).getName());
 
         // session 3 (after renaming)
         students = sessions.get(2).getStudents();
         assertEquals("CSE 30", sessions.get(2).getName());
         assertEquals("Mary", students.get(0).getName());
-        System.out.println("Expected: CSE 30            Actual: " + sessions.get(2).getName());
-        System.out.println("Expected: Mary              Actual: " + students.get(0).getName());
+        System.out.println("Expected: CSE 30                 Actual: " + sessions.get(2).getName());
+        System.out.println("Expected: Mary                   Actual: " + students.get(0).getName());
     }
 
     private static Matcher<View> childAtPosition(
