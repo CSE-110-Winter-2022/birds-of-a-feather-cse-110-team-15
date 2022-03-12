@@ -138,6 +138,8 @@ public class StudentsViewAdapter extends RecyclerView.Adapter<StudentsViewAdapte
             //if student waved to user, wave is visible
             if(student.getWavedToUser()){
                 waveView.setVisibility(View.VISIBLE);
+            } else {
+                waveView.setVisibility(View.INVISIBLE);
             }
         }
 
