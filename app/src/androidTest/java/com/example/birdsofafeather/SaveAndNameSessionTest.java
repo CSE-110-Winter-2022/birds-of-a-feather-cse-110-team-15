@@ -115,7 +115,7 @@ public class SaveAndNameSessionTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText11.perform(replaceText("s2ID,,,\nBob,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLWsX79MvqlAcyBXqHMtW5QY0T8LUhXg2dwFzA1Oi8zWPTt8o2l2iR2Rfpa_MgkuBpGJtlnJ9OKb5M5IIRrXgZEYKe4YCyuyKLeyncIVKP5n1dbFdhdkLkYURga3Gu7TWsB2tmWaalAYRXvxV0P61fpC=w612-h408-no?authuser=0,,,\nWCWP,10A,SP,2020,Small\nCSE,110,WI,2022,Huge\nCSE,12,FA,2020,Large"), closeSoftKeyboard());
+        appCompatEditText11.perform(replaceText("s2ID,,,\nBob,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLWsX79MvqlAcyBXqHMtW5QY0T8LUhXg2dwFzA1Oi8zWPTt8o2l2iR2Rfpa_MgkuBpGJtlnJ9OKb5M5IIRrXgZEYKe4YCyuyKLeyncIVKP5n1dbFdhdkLkYURga3Gu7TWsB2tmWaalAYRXvxV0P61fpC=w612-h408-no?authuser=0,,,\n2020,SP,WCWP,10A,Small\n2022,WI,CSE,110,Huge\n2020,FA,CSE,12,Large"), closeSoftKeyboard());
 
         ViewInteraction materialButton14 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -146,6 +146,12 @@ public class SaveAndNameSessionTest {
                                 3),
                         isDisplayed()));
         materialButton15.perform(click());
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e){
+            // do nothing
+        }
 
         ViewInteraction materialButton16 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
@@ -221,7 +227,7 @@ public class SaveAndNameSessionTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText13.perform(replaceText("s3ID,,,\nToby,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLVOqkfwjcRfaEo5UIwLKN9FLPM3iiVTvxJdr58qPI4G4ipBruOCWm8lUTC3q-YEWpK_JiWfdRzE3WPh6eezbcDVsRC1qYsxoy_UwUIx0X2YY8nMA_6-iPqWX2R3Z_9LaTIjNCaBRTSCcauP1OB6Bljb=w275-h183-no?authuser=0,,,\nCSE,21,FA,2020,Large\nCSE,30,WI,2021,Large\nCSE,105,WI,2022,Huge\nCSE,110,WI,2022,Huge"), closeSoftKeyboard());
+        appCompatEditText13.perform(replaceText("s3ID,,,\nToby,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLVOqkfwjcRfaEo5UIwLKN9FLPM3iiVTvxJdr58qPI4G4ipBruOCWm8lUTC3q-YEWpK_JiWfdRzE3WPh6eezbcDVsRC1qYsxoy_UwUIx0X2YY8nMA_6-iPqWX2R3Z_9LaTIjNCaBRTSCcauP1OB6Bljb=w275-h183-no?authuser=0,,,\n2020,FA,CSE,21,Large\n2021,WI,CSE,30,Large\n2022,WI,CSE,105,Huge\n2022,WI,CSE,110,Huge"), closeSoftKeyboard());
 
         ViewInteraction materialButton21 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -252,6 +258,12 @@ public class SaveAndNameSessionTest {
                                 3),
                         isDisplayed()));
         materialButton22.perform(click());
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e){
+            // do nothing
+        }
 
         ViewInteraction materialButton23 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
@@ -326,7 +338,7 @@ public class SaveAndNameSessionTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText17.perform(replaceText("s4ID,,,\nMary,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLUqD5Rbb9riO8QnmAJf6f216BvPqPJnEWxrT5X4jMsahJ2CajVYyEKk7Z-bm0rNT3i9E_w6dAhv42b-P80quY_MMWg5fmJZBItJny894ygxE4HK-eWfV8jRXJ2FooPrXwYl3xRn5hQRtlswAfjnE9ti=w540-h360-no?authuser=0,,,\nCSE,15L,FA,2020,Gigantic\nCSE,30,WI,2021,Large\nCSE,105,WI,2022,Huge"), closeSoftKeyboard());
+        appCompatEditText17.perform(replaceText("s4ID,,,\nMary,,,\nhttps://lh3.googleusercontent.com/pw/AM-JKLUqD5Rbb9riO8QnmAJf6f216BvPqPJnEWxrT5X4jMsahJ2CajVYyEKk7Z-bm0rNT3i9E_w6dAhv42b-P80quY_MMWg5fmJZBItJny894ygxE4HK-eWfV8jRXJ2FooPrXwYl3xRn5hQRtlswAfjnE9ti=w540-h360-no?authuser=0,,,\n2020,FA,CSE,15L,Gigantic\n2021,WI,CSE,30,Large\n2022,WI,CSE,105,Huge"), closeSoftKeyboard());
 
         ViewInteraction materialButton28 = onView(
                 allOf(withId(R.id.enter_button), withText("Enter"),
@@ -357,6 +369,12 @@ public class SaveAndNameSessionTest {
                                 3),
                         isDisplayed()));
         materialButton29.perform(click());
+
+        try {
+            Thread.sleep(3000);
+        } catch (Exception e){
+            // do nothing
+        }
 
         ViewInteraction materialButton30 = onView(
                 allOf(withId(R.id.stop_button), withText("STOP"),
