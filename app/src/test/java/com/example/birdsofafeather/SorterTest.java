@@ -49,7 +49,7 @@ public class SorterTest {
 
         String uuid = "s1ID";
         db.studentWithCoursesDao().insert(new Student(uuid, "Bob", "bob.com"));
-        db.studentWithCoursesDao().insert(new Student("s2ID", billName, billURL, 1));
+        db.studentWithCoursesDao().insert(new Student("s2ID", billName, billURL, 1, true));
         db.studentWithCoursesDao().insert(new Student("s3ID", maryName, maryURL, 1));
         db.studentWithCoursesDao().insert(new Student("s4ID", tobyName, tobyURL, 1));
 
@@ -101,40 +101,43 @@ public class SorterTest {
     }
 
     // test if default sort is properly sorted by the number of common courses with the user
-    // expected order is Toby -> Mary -> Bill
+    // order without wave is Toby -> Mary -> Bill
+    // expected order: Bill -> Toby -> Mary
     @Test
     public void testDefaultSort() {
         List<Pair<StudentWithCourses, Integer>> result = sorter.sortList(Sorter.ALGORITHM.DEFAULT, me, otherStudentsList);
         // make sure order is correct
         out.println("Testing Default Sort");
-        assertStudentInfo(toby, result.get(0));
-        assertStudentInfo(mary, result.get(1));
-        assertStudentInfo(bill, result.get(2));
+        assertStudentInfo(bill, result.get(0));
+        assertStudentInfo(toby, result.get(1));
+        assertStudentInfo(mary, result.get(2));
 
         // visualize the test
-        out.println("[1st] Expected: Toby    Actual: " + result.get(0).first.getName());
-        out.println("[2nd] Expected: Mary    Actual: " + result.get(1).first.getName());
-        out.println("[3rd] Expected: Bill    Actual: " + result.get(2).first.getName());
+        out.println("[1st] Expected: Bill    Actual: " + result.get(0).first.getName());
+        out.println("[2nd] Expected: Toby    Actual: " + result.get(1).first.getName());
+        out.println("[3rd] Expected: Mary    Actual: " + result.get(2).first.getName());
     }
 
     // test if recency sort is properly sorted by most recency to least
-    // expected order is Mary -> Bill -> Toby
+    // order without wave is Mary -> Bill -> Toby
+    // expected order: Bill -> Mary -> Toby
     @Test
     public void testRecencySort() {
         List<Pair<StudentWithCourses, Integer>> result = sorter.sortList(Sorter.ALGORITHM.RECENCY, me, otherStudentsList);
         out.println("Testing Recency Sort");
 
-        assertStudentInfo(mary, result.get(0));
-        assertStudentInfo(bill, result.get(1));
+        assertStudentInfo(bill, result.get(0));
+        assertStudentInfo(mary, result.get(1));
         assertStudentInfo(toby, result.get(2));
 
-        out.println("[1st] Expected: Mary    Actual: " + result.get(0).first.getName());
-        out.println("[2nd] Expected: Bill    Actual: " + result.get(1).first.getName());
+        out.println("[1st] Expected: Bill    Actual: " + result.get(0).first.getName());
+        out.println("[2nd] Expected: Mary    Actual: " + result.get(1).first.getName());
         out.println("[3rd] Expected: Toby    Actual: " + result.get(2).first.getName());
     }
 
     // test if class size sort is properly sorted by smallest class sizes to largest
-    // expected order is Bill -> Toby -> Mary
+    // order without wave is Bill -> Toby -> Mary
+    // expected order: Bill -> Toby -> Mary
     @Test
     public void testClassSizeSort() {
         List<Pair<StudentWithCourses, Integer>> result = sorter.sortList(Sorter.ALGORITHM.CLASS_SIZE, me, otherStudentsList);
