@@ -307,7 +307,6 @@ public class StartStopSearchActivity extends AppCompatActivity {
         // if student list is empty, then return
         if (otherStudents.isEmpty()) {
             Log.d("StartStopSearchActivity", "There is no student to show!");
-            return;
         }
 
         // else sort the student list by the algorithm chosen by the user
